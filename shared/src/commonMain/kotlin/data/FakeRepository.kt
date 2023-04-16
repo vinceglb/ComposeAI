@@ -1,0 +1,4 @@
+package data
+
+class FakeRepository {
+}
