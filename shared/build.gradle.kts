@@ -30,16 +30,34 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
+                implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                // Voyager
+                val voyagerVersion = "1.0.0-rc04"
+                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+
+                // Koin
+                val koinVersion = "3.4.0"
+                implementation("io.insert-koin:koin-core:$koinVersion")
+
+                // Image Loader
+                val imageLoaderVersion = "1.4.0"
+                implementation("io.github.qdsfdhvh:image-loader:$imageLoaderVersion")
+
+                // Resource
+                implementation("com.goncalossilva:resources:0.3.2")
+
+                // OpenAI
+                implementation("com.aallam.openai:openai-client:3.2.1")
             }
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.activity:activity-compose:1.6.1")
+                api("androidx.activity:activity-compose:1.7.0")
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.9.0")
+                api("androidx.core:core-ktx:1.10.0")
             }
         }
         val iosX64Main by getting
@@ -59,7 +77,7 @@ android {
     namespace = "com.myapplication.common"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
