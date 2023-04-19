@@ -2,6 +2,7 @@ package com.myapplication
 
 import android.app.Application
 import di.initKoin
+import org.koin.android.ext.koin.androidContext
 import ui.components.appContextForImagesMP
 
 class App : Application() {
@@ -11,7 +12,9 @@ class App : Application() {
 
         appContextForImagesMP = this
 
-        initKoin()
+        initKoin {
+            androidContext(this@App)
+        }
     }
 
 }
