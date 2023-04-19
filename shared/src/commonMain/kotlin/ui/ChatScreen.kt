@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,12 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.chat.ChatMessage
 import di.getScreenModel
 
 internal object ChatScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val screenModel: ChatScreenModel = getScreenModel()
@@ -43,25 +41,23 @@ internal object ChatScreen : Screen {
             Column(modifier = Modifier.padding(contentPadding)) {
                 Text(
                     "Chat Screen",
-                    // fontWeight = FontWeight.Black,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp),
                 )
+                DisplayChat(screenModel.messages)
             }
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     @Composable
-    fun DisplayChat(screenModel: ChatScreenModel) {
+    fun DisplayChat(messages: List<ChatMessage>) {
         LazyColumn {
-            items(screenModel.messages) { chatMessage ->
+            items(messages) { chatMessage ->
                 Text(chatMessage.content, modifier = Modifier.padding(16.dp))
             }
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ChatBottomBar(
         text: String,
@@ -70,11 +66,6 @@ internal object ChatScreen : Screen {
     ) {
         BottomAppBar {
             Row {
-//                BasicTextField(
-//                    value = text,
-//                    onValueChange = onTextChange,
-//                    modifier = Modifier.weight(1f)
-//                )
                 OutlinedTextField(
                     value = text,
                     onValueChange = onTextChange,
