@@ -13,7 +13,7 @@ class ChatScreenModel(
     private val chatMessageRepository: ChatMessageRepository,
 ) : ScreenModel {
 
-    var text by mutableStateOf("Hello, World!")
+    var text by mutableStateOf("")
 
     var messages: List<ChatMessageEntity> by mutableStateOf(emptyList())
         private set
