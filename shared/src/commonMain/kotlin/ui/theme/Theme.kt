@@ -11,7 +11,6 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,       // Dynamic color is available on Android 12+
     content: @Composable () -> Unit
 ) {
     // Load Typography

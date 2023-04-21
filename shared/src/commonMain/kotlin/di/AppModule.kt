@@ -2,9 +2,11 @@ package di
 
 import com.aallam.openai.client.OpenAI
 import com.myapplication.common.BuildKonfig
+import com.myapplication.common.Database
 import data.local.ChatMessageLocalDataSource
 import data.local.SettingsFactory
 import data.repository.ChatMessageRepository
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -35,7 +37,11 @@ val commonModule = module {
     // DataSources
     factoryOf(::ChatMessageLocalDataSource)
 
+    // Databases
+    factory { get<Database>().chatMessageQueries }
+
     // Others
+    factory { Dispatchers.Default }
     single { OpenAI(BuildKonfig.OPENAI_API_KEY) }
     single {
         val factory: SettingsFactory = get()

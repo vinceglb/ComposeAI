@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.aallam.openai.api.chat.ChatMessage
+import com.myapplication.common.ChatMessageEntity
 import di.getScreenModel
 
 internal object ChatScreen : Screen {
@@ -50,7 +50,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun DisplayChat(messages: List<ChatMessage>) {
+    fun DisplayChat(messages: List<ChatMessageEntity>) {
         LazyColumn {
             items(messages) { chatMessage ->
                 Text(chatMessage.content, modifier = Modifier.padding(16.dp))

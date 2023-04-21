@@ -7,6 +7,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.codingfeline.buildkonfig")
+    id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
 kotlin {
@@ -31,6 +32,7 @@ kotlin {
 
     val settingsVersion = "1.0.0"
     val koinVersion = "3.4.0"
+    val sqlDelight = "2.0.0-alpha05"
 
     sourceSets {
         val commonMain by getting {
@@ -61,6 +63,15 @@ kotlin {
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings:$settingsVersion")
                 implementation("com.russhwolf:multiplatform-settings-coroutines:$settingsVersion")
+
+                // SQL
+                implementation("app.cash.sqldelight:coroutines-extensions:$sqlDelight")
+
+                // UUID
+                implementation("com.benasher44:uuid:0.7.0")
+
+                // DateTime
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
             }
         }
         val androidMain by getting {
@@ -77,6 +88,9 @@ kotlin {
 
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings-datastore:$settingsVersion")
+
+                // SQL
+                implementation("app.cash.sqldelight:android-driver:$sqlDelight")
             }
         }
         val iosX64Main by getting
@@ -87,6 +101,11 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+
+            dependencies {
+                // SQL
+                api("app.cash.sqldelight:native-driver:$sqlDelight")
+            }
         }
     }
 }
@@ -132,7 +151,13 @@ buildkonfig {
     }
 }
 
-
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.myapplication.common")
+        }
+    }
+}
 
 kotlin.sourceSets.all {
     languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
