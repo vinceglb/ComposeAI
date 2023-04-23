@@ -11,5 +11,6 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+        classpath("io.github.skeptick.libres:gradle-plugin:1.1.8")
     }
 }

@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.codingfeline.buildkonfig")
     id("app.cash.sqldelight") version "2.0.0-alpha05"
+    id("io.github.skeptick.libres")
 }
 
 kotlin {
@@ -73,11 +74,14 @@ kotlin {
 
                 // DateTime
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+                // Libres (resources)
+                implementation("io.github.skeptick.libres:libres-compose:1.1.8")
             }
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.activity:activity-compose:1.7.0")
+                api("androidx.activity:activity-compose:1.7.1")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.10.0")
 
@@ -158,6 +162,12 @@ sqldelight {
             packageName.set("com.myapplication.common")
         }
     }
+}
+
+// https://github.com/Skeptick/libres
+libres {
+    generatedClassName = "MainRes"
+    camelCaseNamesForAppleFramework = true
 }
 
 kotlin.sourceSets.all {

@@ -41,9 +41,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.aallam.openai.api.chat.ChatRole
 import com.myapplication.common.ChatMessageEntity
+import com.myapplication.common.MainRes
 import di.getScreenModel
 import expect.platform
 import expect.shareText
+import io.github.skeptick.libres.compose.painterResource
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 
@@ -109,7 +111,7 @@ internal object ChatScreen : Screen {
         onClickShare: (String) -> Unit,
     ) {
         val avatar =
-            if (message.role == ChatRole.User) "images/avatar.jpeg" else "images/appgpt-icon.png"
+            if (message.role == ChatRole.User) MainRes.image.avatar else MainRes.image.appgpt
         val cardAlpha = if (message.role == ChatRole.User) 0f else 0.4f
         val shareIcon =
             if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
