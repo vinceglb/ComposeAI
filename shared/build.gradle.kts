@@ -42,6 +42,7 @@ kotlin {
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+                implementation(compose.materialIconsExtended)
 
                 // Voyager
                 val voyagerVersion = "1.0.0-rc04"

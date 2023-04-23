@@ -1,4 +1,4 @@
-rootProject.name = "My application"
+rootProject.name = "Compose AI"
 
 include(":androidApp")
 include(":shared")

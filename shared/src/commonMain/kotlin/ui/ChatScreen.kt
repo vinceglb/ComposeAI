@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.CopyAll
+import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.BottomAppBar
@@ -23,9 +25,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -33,11 +35,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.aallam.openai.api.chat.ChatRole
 import com.myapplication.common.ChatMessageEntity
 import di.getScreenModel
+import expect.platform
+import expect.shareText
+import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 
 internal object ChatScreen : Screen {
@@ -45,6 +52,7 @@ internal object ChatScreen : Screen {
     @Composable
     override fun Content() {
         val screenModel: ChatScreenModel = getScreenModel()
+        val localClipboardManager = LocalClipboardManager.current
 
         Scaffold(
             bottomBar = {
@@ -63,10 +71,11 @@ internal object ChatScreen : Screen {
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp),
                 )
+
                 DisplayChat(
                     messages = screenModel.messages,
-                    onClickCopy = {},
-                    onClickShare = {},
+                    onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
+                    onClickShare = { shareText(it) },
                 )
             }
         }
@@ -102,6 +111,8 @@ internal object ChatScreen : Screen {
         val avatar =
             if (message.role == ChatRole.User) "images/avatar.jpeg" else "images/appgpt-icon.png"
         val cardAlpha = if (message.role == ChatRole.User) 0f else 0.4f
+        val shareIcon =
+            if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
 
         Card(
             colors = CardDefaults.cardColors(
@@ -124,33 +135,41 @@ internal object ChatScreen : Screen {
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     // Content text
-                    Text(message.content, modifier = Modifier.padding(top = 8.dp))
+                    SelectionContainer {
+                        Text(message.content, modifier = Modifier.padding(top = 8.dp))
+                    }
 
                     // Copy and share buttons
                     if (message.role == ChatRole.Assistant) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row {
                             // Copy button
-                            IconButton(
+                            SuggestionChip(
                                 onClick = { onClickCopy(message.content) },
-                            ) {
-                                Icon(
-                                    Icons.Rounded.Add,
-                                    contentDescription = null,
-                                    // tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
+                                label = { Text("Copy") },
+                                icon = {
+                                    Icon(
+                                        Icons.Rounded.CopyAll,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
 
                             // Share button
-                            IconButton(
+                            SuggestionChip(
                                 onClick = { onClickShare(message.content) },
-                            ) {
-                                Icon(
-                                    Icons.Rounded.Share,
-                                    contentDescription = null,
-                                    // tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
+                                label = { Text("Share") },
+                                icon = {
+                                    Icon(
+                                        shareIcon,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -187,12 +206,11 @@ internal object ChatScreen : Screen {
                 ) {
                     Icon(
                         Icons.Rounded.Send,
-                        contentDescription = null,
-
-                        )
+                        contentDescription = null
+                    )
                 }
             }
         }
     }
-
 }
+
