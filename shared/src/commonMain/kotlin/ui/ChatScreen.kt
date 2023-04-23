@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -74,12 +76,37 @@ internal object ChatScreen : Screen {
                     modifier = Modifier.padding(16.dp),
                 )
 
+                TestImages()
+
                 DisplayChat(
                     messages = screenModel.messages,
                     onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
                     onClickShare = { shareText(it) },
                 )
             }
+        }
+    }
+
+    @Composable
+    fun TestImages() {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Image(
+                painter = painterResource(MainRes.image.appgpt),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Image(
+                painter = painterResource(MainRes.image.avatar),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
         }
     }
 
