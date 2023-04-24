@@ -50,6 +50,7 @@ import expect.shareText
 import io.github.skeptick.libres.compose.painterResource
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
+import ui.images.AppImages
 
 internal object ChatScreen : Screen {
 
@@ -76,7 +77,7 @@ internal object ChatScreen : Screen {
                     modifier = Modifier.padding(16.dp),
                 )
 
-                TestImages()
+//                TestImages()
 
                 DisplayChat(
                     messages = screenModel.messages,
@@ -87,28 +88,28 @@ internal object ChatScreen : Screen {
         }
     }
 
-    @Composable
-    fun TestImages() {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Image(
-                painter = painterResource(MainRes.image.appgpt),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(4.dp))
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Image(
-                painter = painterResource(MainRes.image.avatar),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(4.dp))
-            )
-        }
-    }
+//    @Composable
+//    fun TestImages() {
+//        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+//            Image(
+//                painter = painterResource(MainRes.image.appgpt2),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .size(60.dp)
+//                    .clip(RoundedCornerShape(4.dp))
+//            )
+//
+//            Spacer(modifier = Modifier.width(16.dp))
+//
+//            Image(
+//                painter = painterResource(MainRes.image.avatar2),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .size(60.dp)
+//                    .clip(RoundedCornerShape(4.dp))
+//            )
+//        }
+//    }
 
     @Composable
     fun DisplayChat(
@@ -138,7 +139,7 @@ internal object ChatScreen : Screen {
         onClickShare: (String) -> Unit,
     ) {
         val avatar =
-            if (message.role == ChatRole.User) MainRes.image.avatar else MainRes.image.appgpt
+            if (message.role == ChatRole.User) AppImages.avatar else AppImages.appgpt
         val cardAlpha = if (message.role == ChatRole.User) 0f else 0.4f
         val shareIcon =
             if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
