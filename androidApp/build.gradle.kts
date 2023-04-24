@@ -10,6 +10,9 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(project(":shared"))
+
+                // Material theme
+                implementation("com.google.android.material:material:1.8.0")
             }
         }
     }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Allows us to override night specific attributes in the
+     values-night folder. -->
+    <style name="NightAdjusted.Theme.ComposeAI" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
+
+    <!-- Allows us to override platform level specific attributes in their
+         respective values-vXX folder. -->
+    <style name="PlatformAdjusted.Theme.ComposeAI" parent="NightAdjusted.Theme.ComposeAI">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- The final theme we use -->
+    <style name="Theme.ComposeAI" parent="PlatformAdjusted.Theme.ComposeAI" />
+</resources>
