@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
@@ -33,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -43,11 +41,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.aallam.openai.api.chat.ChatRole
 import com.myapplication.common.ChatMessageEntity
-import com.myapplication.common.MainRes
 import di.getScreenModel
 import expect.platform
 import expect.shareText
-import io.github.skeptick.libres.compose.painterResource
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 import ui.images.AppImages
@@ -77,8 +73,6 @@ internal object ChatScreen : Screen {
                     modifier = Modifier.padding(16.dp),
                 )
 
-//                TestImages()
-
                 DisplayChat(
                     messages = screenModel.messages,
                     onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
@@ -87,29 +81,6 @@ internal object ChatScreen : Screen {
             }
         }
     }
-
-//    @Composable
-//    fun TestImages() {
-//        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-//            Image(
-//                painter = painterResource(MainRes.image.appgpt2),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .clip(RoundedCornerShape(4.dp))
-//            )
-//
-//            Spacer(modifier = Modifier.width(16.dp))
-//
-//            Image(
-//                painter = painterResource(MainRes.image.avatar2),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .clip(RoundedCornerShape(4.dp))
-//            )
-//        }
-//    }
 
     @Composable
     fun DisplayChat(
