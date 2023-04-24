@@ -13,28 +13,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
 import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -56,6 +57,7 @@ internal object ChatScreen : Screen {
         val localClipboardManager = LocalClipboardManager.current
 
         Scaffold(
+            topBar = { ChatTopBar() },
             bottomBar = {
                 ChatBottomBar(
                     text = screenModel.text,
@@ -67,12 +69,6 @@ internal object ChatScreen : Screen {
             }
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding)) {
-                Text(
-                    "Chat Screen",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp),
-                )
-
                 DisplayChat(
                     messages = screenModel.messages,
                     onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
@@ -179,31 +175,56 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
+    fun ChatTopBar() {
+        CenterAlignedTopAppBar(
+            title = { Text("Compose AI") },
+        )
+    }
+
+    @Composable
     fun ChatBottomBar(
         text: String,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
     ) {
-        BottomAppBar {
-            Row {
-                TextField(
-                    value = text,
-                    onValueChange = onTextChange,
-                    modifier = Modifier.weight(1f),
-                    shape = CircleShape,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
-                    placeholder = { Text("Type your message") },
-                    maxLines = 3,
-                )
+        Surface {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    BasicTextField(
+                        value = text,
+                        onValueChange = onTextChange,
+                        maxLines = 3,
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                        decorationBox = { innerTextField ->
+                            if (text.isBlank()) {
+                                Text(
+                                    text = "Ask me anything...",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.alpha(0.6f)
+                                )
+                            }
+                            innerTextField()
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 18.dp)
+                            .weight(1f)
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
                 FilledIconButton(
                     onClick = onSend,
                     modifier = Modifier.size(56.dp),
                     enabled = text.isNotBlank(),
+                    shape = MaterialTheme.shapes.large,
                 ) {
                     Icon(
                         Icons.Rounded.Send,
