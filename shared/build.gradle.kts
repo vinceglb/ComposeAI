@@ -142,7 +142,7 @@ buildkonfig {
     val props = Properties()
 
     try {
-        props.load(file("key.properties").inputStream())
+        props.load(file("../local.properties").inputStream())
     } catch (e: Exception) {
         // keys are private and can not be committed to git
     }
