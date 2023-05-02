@@ -13,6 +13,7 @@ import com.myapplication.common.ChatMessageQueries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import model.asModel
 
@@ -26,7 +27,7 @@ class ChatMessageRepository(
             .asFlow()
             .mapToList(defaultDispatcher)
 
-    suspend fun sendMessage(contentMessage: String): Unit = with(defaultDispatcher) {
+    suspend fun sendMessage(contentMessage: String): Unit = withContext(defaultDispatcher) {
         // Save user message
         val userMessage = ChatMessage(role = ChatRole.User, content = contentMessage)
         chatMessageQueries.upsertChatMessage(
@@ -62,6 +63,10 @@ class ChatMessageRepository(
                 )
             }
         }
+    }
+
+    suspend fun deleteAllMessages(): Unit = withContext(defaultDispatcher){
+        chatMessageQueries.deleteAllMessages()
     }
 
 }

@@ -21,3 +21,6 @@ WHERE id = ?;
 upsertChatMessage:
 INSERT OR REPLACE INTO ChatMessageEntity(id, content, role, createdAt)
 VALUES (?, ?, ?, ?);
+
+deleteAllMessages:
+DELETE FROM ChatMessageEntity;

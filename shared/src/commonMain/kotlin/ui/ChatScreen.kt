@@ -1,11 +1,19 @@
 package ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +26,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
 import androidx.compose.material.icons.rounded.IosShare
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
@@ -25,16 +34,22 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
@@ -57,10 +72,13 @@ internal object ChatScreen : Screen {
         val localClipboardManager = LocalClipboardManager.current
 
         Scaffold(
-            topBar = { ChatTopBar() },
+            topBar = { ChatTopBar(
+                onReset = { screenModel.reset() },
+            ) },
             bottomBar = {
                 ChatBottomBar(
                     text = screenModel.text,
+                    isLoading = screenModel.isSending,
                     onTextChange = { screenModel.text = it },
                     onSend = {
                         screenModel.sendMessage(screenModel.text)
@@ -175,61 +193,122 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatTopBar() {
+    fun ChatTopBar(
+        onReset: () -> Unit,
+    ) {
         CenterAlignedTopAppBar(
             title = { Text("Compose AI") },
+            actions = {
+                IconButton(
+                    onClick = onReset,
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        Icons.Rounded.Replay,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         )
     }
 
     @Composable
     fun ChatBottomBar(
         text: String,
+        isLoading: Boolean,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
     ) {
+        val enableSend = text.isNotBlank() && !isLoading
+        val transition = updateTransition(targetState = enableSend)
+        val sendContainerColor by transition.animateColor { state ->
+            when (state) {
+                true -> MaterialTheme.colorScheme.primary
+                false -> Color.Transparent
+            }
+        }
+        val sendContentColor by transition.animateColor { state ->
+            when (state) {
+                true -> MaterialTheme.colorScheme.onPrimary
+                false -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            }
+        }
+        val sendIconRotation by transition.animateFloat { state ->
+            when (state) {
+                true -> -10f
+                false -> -0f
+            }
+        }
+
         Surface {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Surface(
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.weight(1f)
+            Column {
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
                 ) {
-                    BasicTextField(
-                        value = text,
-                        onValueChange = onTextChange,
-                        maxLines = 3,
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                        decorationBox = { innerTextField ->
-                            if (text.isBlank()) {
-                                Text(
-                                    text = "Ask me anything...",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.alpha(0.6f)
-                                )
-                            }
-                            innerTextField()
-                        },
+                    LinearProgressIndicator(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                            .weight(1f)
+                            .fillMaxWidth()
+                            .height(2.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                FilledIconButton(
-                    onClick = onSend,
-                    enabled = text.isNotBlank(),
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.size(48.dp)
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.Bottom,
                 ) {
-                    Icon(
-                        Icons.Rounded.Send,
-                        contentDescription = null
-                    )
+                    Surface(
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .defaultMinSize(minHeight = 48.dp)
+                            .weight(1f)
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.CenterStart,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            BasicTextField(
+                                value = text,
+                                onValueChange = onTextChange,
+                                maxLines = 3,
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+                                decorationBox = { innerTextField ->
+                                    if (text.isBlank()) {
+                                        Text(
+                                            text = "Ask me anything...",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.alpha(0.6f)
+                                        )
+                                    }
+                                    innerTextField()
+                                },
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FilledIconButton(
+                        onClick = onSend,
+                        enabled = enableSend,
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.size(48.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = sendContainerColor,
+                            disabledContainerColor = sendContainerColor,
+                            contentColor = sendContentColor,
+                            disabledContentColor = sendContentColor,
+                        )
+                    ) {
+                        Icon(
+                            Icons.Rounded.Send,
+                            contentDescription = null,
+                            modifier = Modifier.rotate(sendIconRotation)
+                        )
+                    }
                 }
             }
         }

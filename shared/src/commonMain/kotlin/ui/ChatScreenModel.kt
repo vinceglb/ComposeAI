@@ -15,6 +15,9 @@ class ChatScreenModel(
 
     var text by mutableStateOf("")
 
+    var isSending by mutableStateOf(false)
+        private set
+
     var messages: List<ChatMessageEntity> by mutableStateOf(emptyList())
         private set
 
@@ -30,8 +33,15 @@ class ChatScreenModel(
 
         // Send message
         coroutineScope.launch {
+            isSending = true
             chatMessageRepository.sendMessage(message)
-            println("finish here !")
+            isSending = false
+        }
+    }
+
+    fun reset() {
+        coroutineScope.launch {
+            chatMessageRepository.deleteAllMessages()
         }
     }
 
