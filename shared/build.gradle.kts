@@ -46,7 +46,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
 
                 // Voyager
-                val voyagerVersion = "1.0.0-rc04"
+                val voyagerVersion = "1.0.0-rc05"
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
 
                 // Koin
@@ -60,7 +60,7 @@ kotlin {
                 implementation("com.goncalossilva:resources:0.3.2")
 
                 // OpenAI
-                implementation("com.aallam.openai:openai-client:3.2.1")
+                implementation("com.aallam.openai:openai-client:3.2.3")
 
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings:$settingsVersion")
