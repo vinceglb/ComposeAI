@@ -1,5 +1,7 @@
 package ui.theme
 
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF0961a4)
@@ -55,3 +57,8 @@ val md_theme_dark_outline = Color(0xFF8d9199)
 val md_theme_dark_inverseOnSurface = Color(0xFF1b1b1b)
 val md_theme_dark_inverseSurface = Color(0xFFe2e2e6)
 val md_theme_dark_inversePrimary = Color(0xFF0961a4)
+
+fun getBackgroundColor(isDarkTheme: Boolean): Triple<Double, Double, Double> {
+    val color = if (isDarkTheme) darkColorScheme().background else lightColorScheme().background
+    return Triple(color.red.toDouble(), color.green.toDouble(), color.blue.toDouble())
+}

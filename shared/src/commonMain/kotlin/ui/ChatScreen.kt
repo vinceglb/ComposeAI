@@ -193,7 +193,7 @@ internal object ChatScreen : Screen {
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Surface(
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.medium,
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.weight(1f)
                 ) {
@@ -215,16 +215,16 @@ internal object ChatScreen : Screen {
                             innerTextField()
                         },
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 18.dp)
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
                             .weight(1f)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 FilledIconButton(
                     onClick = onSend,
-                    modifier = Modifier.size(56.dp),
                     enabled = text.isNotBlank(),
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         Icons.Rounded.Send,
