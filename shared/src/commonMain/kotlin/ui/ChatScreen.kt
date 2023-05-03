@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -75,9 +76,11 @@ internal object ChatScreen : Screen {
         val localClipboardManager = LocalClipboardManager.current
 
         Scaffold(
-            topBar = { ChatTopBar(
-                onReset = { screenModel.reset() },
-            ) },
+            topBar = {
+                ChatTopBar(
+                    onReset = { screenModel.reset() },
+                )
+            },
             bottomBar = {
                 ChatBottomBar(
                     text = screenModel.text,
@@ -105,12 +108,14 @@ internal object ChatScreen : Screen {
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
     ) {
+        val reverseMessages = remember(messages) { messages.reversed() }
+
         LazyColumn(
             contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             reverseLayout = true,
         ) {
-            items(messages.reversed()) { chatMessage ->
+            items(reverseMessages) { chatMessage ->
                 MessageLine(
                     chatMessage,
                     onClickCopy = onClickCopy,
