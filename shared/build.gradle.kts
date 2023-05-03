@@ -117,7 +117,7 @@ kotlin {
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.myapplication.common"
+    namespace = "com.ebfstudio.appgpt.common"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
@@ -137,7 +137,7 @@ android {
 }
 
 buildkonfig {
-    packageName = "com.myapplication.common"
+    packageName = "com.ebfstudio.appgpt.common"
 
     val props = Properties()
 
@@ -159,7 +159,7 @@ buildkonfig {
 sqldelight {
     databases {
         create("Database") {
-            packageName.set("com.myapplication.common")
+            packageName.set("com.ebfstudio.appgpt.common")
         }
     }
 }

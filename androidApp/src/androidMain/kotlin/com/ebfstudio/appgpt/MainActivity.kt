@@ -1,4 +1,4 @@
-package com.myapplication
+package com.ebfstudio.appgpt
 
 import MainView
 import android.os.Bundle

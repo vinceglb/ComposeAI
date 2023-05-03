@@ -1,4 +1,4 @@
-package com.myapplication
+package com.ebfstudio.appgpt
 
 import android.app.Application
 import di.initKoin

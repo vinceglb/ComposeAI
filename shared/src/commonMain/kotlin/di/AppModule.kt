@@ -1,8 +1,8 @@
 package di
 
 import com.aallam.openai.client.OpenAI
-import com.myapplication.common.BuildKonfig
-import com.myapplication.common.Database
+import com.ebfstudio.appgpt.common.BuildKonfig
+import com.ebfstudio.appgpt.common.Database
 import data.local.ChatMessageLocalDataSource
 import data.local.SettingsFactory
 import data.repository.ChatMessageRepository

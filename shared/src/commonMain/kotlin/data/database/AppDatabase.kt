@@ -3,8 +3,8 @@ package data.database
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 import com.aallam.openai.api.chat.ChatRole
-import com.myapplication.common.ChatMessageEntity
-import com.myapplication.common.Database
+import com.ebfstudio.appgpt.common.ChatMessageEntity
+import com.ebfstudio.appgpt.common.Database
 import kotlinx.datetime.Instant
 
 object AppDatabase {

@@ -8,8 +8,8 @@ import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.benasher44.uuid.uuid4
-import com.myapplication.common.ChatMessageEntity
-import com.myapplication.common.ChatMessageQueries
+import com.ebfstudio.appgpt.common.ChatMessageEntity
+import com.ebfstudio.appgpt.common.ChatMessageQueries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

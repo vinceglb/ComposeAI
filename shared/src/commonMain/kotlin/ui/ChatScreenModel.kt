@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.myapplication.common.ChatMessageEntity
+import com.ebfstudio.appgpt.common.ChatMessageEntity
 import data.repository.ChatMessageRepository
 import kotlinx.coroutines.launch
 
