@@ -6,6 +6,7 @@ import com.ebfstudio.appgpt.common.Database
 import data.local.ChatMessageLocalDataSource
 import data.local.SettingsFactory
 import data.repository.ChatMessageRepository
+import data.repository.ChatRepository
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -23,22 +24,25 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
 }
 
 // for ios
+@Suppress("unused")
 fun initKoin() {
     initKoin {  }
 }
 
 val commonModule = module {
     // ScreenModels
-    factoryOf(::ChatScreenModel)
+    factory { params -> ChatScreenModel(get(), get(), initialChatId = params.getOrNull()) }
 
     // Repositories
+    singleOf(::ChatRepository)
     singleOf(::ChatMessageRepository)
 
     // DataSources
     factoryOf(::ChatMessageLocalDataSource)
 
     // Databases
-    factory { get<Database>().chatMessageQueries }
+    factory { get<Database>().chatEntityQueries }
+    factory { get<Database>().chatMessageEntityQueries }
 
     // Others
     factory { Dispatchers.Default }

@@ -3,6 +3,7 @@ package data.database
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 import com.aallam.openai.api.chat.ChatRole
+import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.Database
 import kotlinx.datetime.Instant
@@ -14,7 +15,10 @@ object AppDatabase {
             ChatMessageEntityAdapter = ChatMessageEntity.Adapter(
                 roleAdapter = ChatRoleAdapter,
                 createdAtAdapter = InstantAdapter,
-            )
+            ),
+            ChatEntityAdapter = ChatEntity.Adapter(
+                createdAtAdapter = InstantAdapter,
+            ),
         )
     }
 
