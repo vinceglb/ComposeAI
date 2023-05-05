@@ -22,7 +22,7 @@ suspend fun appTypography(defaultTypography: Typography): Typography {
         headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = outfitFamily),
         headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = outfitFamily),
         headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = outfitFamily),
-        titleLarge = defaultTypography.titleLarge.copy(fontFamily = outfitFamily),
+        titleLarge = defaultTypography.titleLarge.copy(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold),
         titleMedium = defaultTypography.titleMedium.copy(fontFamily = outfitFamily),
         titleSmall = defaultTypography.titleSmall.copy(fontFamily = outfitFamily),
     )

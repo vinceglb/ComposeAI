@@ -21,36 +21,53 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ChatBubble
+import androidx.compose.material.icons.rounded.ChatBubbleOutline
 import androidx.compose.material.icons.rounded.CopyAll
+import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.IosShare
-import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -60,44 +77,122 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.aallam.openai.api.chat.ChatRole
+import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import di.getScreenModel
 import expect.platform
 import expect.shareText
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.parameter.parametersOf
 import ui.images.AppImages
 
 internal object ChatScreen : Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: ChatScreenModel = getScreenModel()
-        val localClipboardManager = LocalClipboardManager.current
+        val screenModel: ChatScreenModel = getScreenModel { parametersOf(null as String?) }
+        val messagesUiState by screenModel.messagesUiState.collectAsState()
+        val screenUiState by screenModel.screenUiState.collectAsState()
+        val chatsUiState by screenModel.chatsUiState.collectAsState()
+        val currentChat by screenModel.currentChat.collectAsState()
 
-        Scaffold(
-            topBar = {
-                ChatTopBar(
-                    onReset = { screenModel.reset() },
-                )
-            },
-            bottomBar = {
-                ChatBottomBar(
-                    text = screenModel.text,
-                    isLoading = screenModel.isSending,
-                    onTextChange = { screenModel.text = it },
-                    onSend = {
-                        screenModel.sendMessage(screenModel.text)
+        ContentScreen(
+            onSend = screenModel::onSendMessage,
+            onNewChat = screenModel::onNewChat,
+            onChatSelected = screenModel::onChatSelected,
+            onTextChange = screenModel::onTextChange,
+            screenUiState = screenUiState,
+            messagesUiState = messagesUiState,
+            chatsUiState = chatsUiState,
+            currentChat = currentChat,
+        )
+    }
+
+    @Composable
+    fun ContentScreen(
+        onSend: () -> Unit,
+        onNewChat: () -> Unit,
+        onChatSelected: (String) -> Unit,
+        onTextChange: (String) -> Unit,
+        screenUiState: ChatScreenUiState,
+        messagesUiState: ChatMessagesUiState,
+        chatsUiState: ChatsUiState,
+        currentChat: ChatEntity?,
+    ) {
+        val localClipboardManager = LocalClipboardManager.current
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        val focusRequester = remember { FocusRequester() }
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet {
+                    Spacer(Modifier.height(12.dp))
+                    when (chatsUiState) {
+                        ChatsUiState.Loading -> Unit
+                        is ChatsUiState.Success -> {
+                            chatsUiState.chats.forEach { chat ->
+                                val isSelected = chat.id == currentChat?.id
+                                NavigationDrawerItem(
+                                    label = { Text(chat.title ?: "Empty chat") },
+                                    icon = {
+                                        Icon(
+                                            if (isSelected) Icons.Rounded.ChatBubble else Icons.Rounded.ChatBubbleOutline,
+                                            contentDescription = null,
+                                        )
+                                    },
+                                    selected = isSelected,
+                                    onClick = {
+                                        onChatSelected(chat.id)
+                                        scope.launch { drawerState.close() }
+                                    },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
+                            }
+                        }
                     }
-                )
-            }
-        ) { contentPadding ->
-            Column(modifier = Modifier.padding(contentPadding)) {
-                DisplayChat(
-                    messages = screenModel.messages,
-                    onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
-                    onClickShare = { shareText(it) },
-                )
+                }
+            },
+        ) {
+            Scaffold(
+                topBar = {
+                    ChatTopBar(
+                        chatTitle = currentChat?.title,
+                        onNewChat = {
+                            onNewChat()
+                            focusRequester.requestFocus()
+                        },
+                        onMenuClick = { scope.launch { drawerState.open() } },
+                    )
+                },
+                bottomBar = {
+                    ChatBottomBar(
+                        text = screenUiState.text,
+                        isLoading = screenUiState.isSending,
+                        focusRequester = focusRequester,
+                        onTextChange = onTextChange,
+                        onSend = onSend,
+                    )
+                },
+            ) { contentPadding ->
+                Column(modifier = Modifier.padding(contentPadding)) {
+                    when (messagesUiState) {
+                        ChatMessagesUiState.Empty,
+                        ChatMessagesUiState.Loading -> Unit
+
+                        is ChatMessagesUiState.Success -> {
+                            DisplayChat(
+                                messages = messagesUiState.messages,
+                                onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
+                                onClickShare = { shareText(it) },
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -133,9 +228,11 @@ internal object ChatScreen : Screen {
     ) {
         val avatar =
             if (message.role == ChatRole.User) AppImages.avatar else AppImages.appgpt
-        val cardAlpha = if (message.role == ChatRole.User) 0f else 0.4f
+        val cardAlpha = if (message.role == ChatRole.User) 0.5f else 0.25f
         val shareIcon =
             if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
+
+        var showOptions by remember { mutableStateOf(false) }
 
         Card(
             colors = CardDefaults.cardColors(
@@ -143,6 +240,7 @@ internal object ChatScreen : Screen {
                     alpha = cardAlpha
                 )
             ),
+            onClick = { showOptions = !showOptions },
             modifier = Modifier
                 .padding(horizontal = 4.dp)
                 .fillMaxWidth(),
@@ -164,35 +262,40 @@ internal object ChatScreen : Screen {
 
                     // Copy and share buttons
                     if (message.role == ChatRole.Assistant) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row {
-                            // Copy button
-                            SuggestionChip(
-                                onClick = { onClickCopy(message.content) },
-                                label = { Text("Copy") },
-                                icon = {
-                                    Icon(
-                                        Icons.Rounded.CopyAll,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            )
+                        AnimatedVisibility(
+                            visible = showOptions,
+                        ) {
+                            Row(modifier = Modifier.padding(top = 16.dp)) {
+                                // Copy button
+                                SuggestionChip(
+                                    onClick = { onClickCopy(message.content) },
+                                    label = { Text("Copy") },
+                                    icon = {
+                                        Icon(
+                                            Icons.Rounded.CopyAll,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
+                                    shape = CircleShape,
+                                )
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
 
-                            // Share button
-                            SuggestionChip(
-                                onClick = { onClickShare(message.content) },
-                                label = { Text("Share") },
-                                icon = {
-                                    Icon(
-                                        shareIcon,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            )
+                                // Share button
+                                SuggestionChip(
+                                    onClick = { onClickShare(message.content) },
+                                    label = { Text("Share") },
+                                    icon = {
+                                        Icon(
+                                            shareIcon,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    },
+                                    shape = CircleShape,
+                                )
+                            }
                         }
                     }
                 }
@@ -202,17 +305,29 @@ internal object ChatScreen : Screen {
 
     @Composable
     fun ChatTopBar(
-        onReset: () -> Unit,
+        chatTitle: String?,
+        onNewChat: () -> Unit,
+        onMenuClick: () -> Unit,
     ) {
         CenterAlignedTopAppBar(
-            title = { Text("Compose AI") },
+            title = { TypewriterText(chatTitle ?: "Compose AI") },
+            navigationIcon = {
+                IconButton(
+                    onClick = onMenuClick,
+                ) {
+                    Icon(
+                        Icons.Rounded.Forum,
+                        contentDescription = null,
+                    )
+                }
+            },
             actions = {
                 IconButton(
-                    onClick = onReset,
+                    onClick = onNewChat,
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
-                        Icons.Rounded.Replay,
+                        Icons.Rounded.Add,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp)
                     )
@@ -225,6 +340,7 @@ internal object ChatScreen : Screen {
     fun ChatBottomBar(
         text: String,
         isLoading: Boolean,
+        focusRequester: FocusRequester,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
     ) {
@@ -244,7 +360,7 @@ internal object ChatScreen : Screen {
         }
         val sendIconRotation by transition.animateFloat { state ->
             when (state) {
-                true -> -10f
+                true -> -45f
                 false -> -0f
             }
         }
@@ -294,11 +410,14 @@ internal object ChatScreen : Screen {
                                     }
                                     innerTextField()
                                 },
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
                                     capitalization = KeyboardCapitalization.Sentences,
                                 ),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                                    .fillMaxWidth(1f)
+                                    .focusRequester(focusRequester)
                             )
                         }
                     }
@@ -324,6 +443,29 @@ internal object ChatScreen : Screen {
                 }
             }
         }
+    }
+
+    @Composable
+    fun TypewriterText(text: String) {
+        var targetText by remember { mutableStateOf(text) }
+        var currentText by remember { mutableStateOf("") }
+
+        LaunchedEffect(text) {
+            if (targetText != text) {
+                for (i in currentText.length - 1 downTo 0) {
+                    delay(50)
+                    currentText = currentText.substring(0, i)
+                }
+                targetText = text
+            }
+
+            for (i in currentText.length until text.length) {
+                delay(50)
+                currentText += text[i]
+            }
+        }
+
+        Text(currentText)
     }
 }
 
