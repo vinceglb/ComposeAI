@@ -176,4 +176,6 @@ kotlin.sourceSets.all {
     languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
     languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
     languageSettings.optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+    languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+    languageSettings.optIn("androidx.compose.ui.ExperimentalComposeUiApi")
 }
