@@ -1,0 +1,31 @@
+import com.aallam.openai.api.chat.ChatRole;
+import kotlinx.datetime.Instant;
+
+CREATE TABLE ChatMessageEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    content TEXT NOT NULL,
+    role TEXT AS ChatRole NOT NULL,
+    createdAt TEXT AS Instant NOT NULL,
+    chatId TEXT NOT NULL,
+    FOREIGN KEY (chatId) REFERENCES ChatEntity(id)
+);
+
+getChatMessagesWithChatId:
+SELECT *
+FROM ChatMessageEntity
+WHERE chatId = ?
+ORDER BY createdAt ASC;
+
+getChatMessageByChatId:
+SELECT *
+FROM ChatMessageEntity
+WHERE chatId = ?;
+
+insertChatMessage:
+INSERT INTO ChatMessageEntity(id, content, role, createdAt, chatId)
+VALUES (?, ?, ?, ?, ?);
+
+updateChatMessageContent:
+UPDATE ChatMessageEntity
+SET content = ?
+WHERE id = ?;

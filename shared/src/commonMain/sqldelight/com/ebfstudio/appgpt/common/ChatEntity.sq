@@ -1,0 +1,28 @@
+import kotlinx.datetime.Instant;
+
+CREATE TABLE ChatEntity (
+  id TEXT NOT NULL PRIMARY KEY,
+  title TEXT,
+  createdAt TEXT AS Instant NOT NULL
+);
+
+getAllChats:
+SELECT ChatEntity.id, ChatEntity.title, ChatEntity.createdAt
+FROM ChatEntity
+LEFT JOIN ChatMessageEntity ON ChatEntity.id = ChatMessageEntity.chatId
+GROUP BY ChatEntity.id, ChatEntity.title, ChatEntity.createdAt
+ORDER BY MAX(ChatMessageEntity.createdAt) DESC;
+
+getChatById:
+SELECT *
+FROM ChatEntity
+WHERE ChatEntity.id = ?;
+
+insertChat:
+INSERT INTO ChatEntity (id, title, createdAt)
+VALUES (?, ?, ?);
+
+updateChatTitle:
+UPDATE ChatEntity
+SET title = ?
+WHERE id = ?;
