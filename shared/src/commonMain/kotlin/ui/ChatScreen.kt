@@ -74,6 +74,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.aallam.openai.api.chat.ChatRole
@@ -310,7 +311,14 @@ internal object ChatScreen : Screen {
         onMenuClick: () -> Unit,
     ) {
         CenterAlignedTopAppBar(
-            title = { TypewriterText(chatTitle ?: "Compose AI") },
+            title = {
+                TypewriterText(
+                    text = chatTitle ?: "Compose AI",
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            },
             navigationIcon = {
                 IconButton(
                     onClick = onMenuClick,
@@ -446,7 +454,12 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun TypewriterText(text: String) {
+    fun TypewriterText(
+        text: String,
+        modifier: Modifier = Modifier,
+        overflow: TextOverflow = TextOverflow.Clip,
+        softWrap: Boolean = true,
+    ) {
         var targetText by remember { mutableStateOf(text) }
         var currentText by remember { mutableStateOf("") }
 
@@ -465,7 +478,12 @@ internal object ChatScreen : Screen {
             }
         }
 
-        Text(currentText)
+        Text(
+            currentText,
+            overflow = overflow,
+            softWrap = softWrap,
+            modifier = modifier,
+        )
     }
 }
 

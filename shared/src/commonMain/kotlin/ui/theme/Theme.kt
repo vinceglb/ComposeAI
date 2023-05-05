@@ -1,10 +1,9 @@
 package ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.runBlocking
 
@@ -16,11 +15,7 @@ fun AppTheme(
     // Load Typography
     val defaultTypography = MaterialTheme.typography
     val typography: Typography = runBlocking { appTypography(defaultTypography) }
-
-    val colorScheme = when {
-        darkTheme -> darkColorScheme()
-        else -> lightColorScheme()
-    }
+    val colorScheme = platformColorScheme(darkTheme)
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -29,3 +24,6 @@ fun AppTheme(
         content = content
     )
 }
+
+@Composable
+expect fun platformColorScheme(darkTheme: Boolean): ColorScheme

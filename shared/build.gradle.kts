@@ -96,6 +96,9 @@ kotlin {
 
                 // SQL
                 implementation("app.cash.sqldelight:android-driver:$sqlDelight")
+
+                // Accompanist
+                implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
             }
         }
         val iosX64Main by getting
