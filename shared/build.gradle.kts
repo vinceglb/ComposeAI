@@ -93,6 +93,9 @@ kotlin {
 
                 // Accompanist
                 implementation(libs.accompanist.systemuicontroller)
+
+                // Splash Screen
+                api(libs.core.splashscreen)
             }
         }
         val iosX64Main by getting

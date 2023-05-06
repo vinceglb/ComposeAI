@@ -6,6 +6,7 @@ appcompat = "1.6.1"
 buildkonfigGradlePlugin = "0.13.3"
 compose = "1.4.0"
 coreKtx = "1.10.0"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
 imageLoader = "1.4.0"
 koin = "3.4.0"
@@ -25,6 +26,7 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }

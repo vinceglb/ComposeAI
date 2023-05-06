@@ -16,4 +16,14 @@
 
     <!-- The final theme we use -->
     <style name="Theme.ComposeAI" parent="PlatformAdjusted.Theme.ComposeAI" />
+
+    <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
+
+    <style name="Theme.ComposeAI.Splash" parent="NightAdjusted.Theme.Splash">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.ComposeAI</item>
+    </style>
 </resources>
