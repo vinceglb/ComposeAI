@@ -25,8 +25,8 @@ android {
         applicationId = "com.ebfstudio.appgpt"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 8
-        versionName = "1.0.0-alpha02"
+        versionCode = 9
+        versionName = "1.0.0-alpha03"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
