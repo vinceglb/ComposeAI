@@ -10,17 +10,18 @@ import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.rememberAsyncImagePainter
 
 @Composable
-internal fun Image(
+internal fun ImageUrl(
     url: String,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
+    contentDescription: String? = null,
 ) {
     CompositionLocalProvider(
         LocalImageLoader provides generateImageLoader(),
     ) {
         Image(
             painter = rememberAsyncImagePainter(url),
-            contentDescription = null,
+            contentDescription = contentDescription,
             modifier = modifier,
             contentScale = contentScale,
         )

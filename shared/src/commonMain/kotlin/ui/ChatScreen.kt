@@ -6,7 +6,10 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +27,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChatBubble
@@ -53,6 +55,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -88,6 +91,7 @@ import kotlinx.coroutines.launch
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
+import ui.components.ImageUrl
 import ui.images.AppImages
 
 internal object ChatScreen : Screen {
@@ -139,11 +143,18 @@ internal object ChatScreen : Screen {
                             chatsUiState.chats.forEach { chat ->
                                 val isSelected = chat.id == currentChat?.id
                                 NavigationDrawerItem(
-                                    label = { Text(chat.title ?: "Empty chat") },
+                                    label = {
+                                        Text(
+                                            text = chat.title ?: "Empty chat",
+                                            overflow = TextOverflow.Ellipsis,
+                                            softWrap = false
+                                        )
+                                    },
                                     icon = {
                                         Icon(
                                             if (isSelected) Icons.Rounded.ChatBubble else Icons.Rounded.ChatBubbleOutline,
                                             contentDescription = null,
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     },
                                     selected = isSelected,
@@ -227,39 +238,73 @@ internal object ChatScreen : Screen {
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
     ) {
-        val avatar =
-            if (message.role == ChatRole.User) AppImages.avatar else AppImages.appgpt
-        val cardAlpha = if (message.role == ChatRole.User) 0.5f else 0.25f
+        val isDarkMode = isSystemInDarkTheme()
+        val avatar = when {
+            message.role == ChatRole.User -> AppImages.avatar
+            isDarkMode -> AppImages.composeAIDark
+            else -> AppImages.composeAILight
+        }
         val shareIcon =
             if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
+
+        val containerColor = when (message.role) {
+            ChatRole.User -> MaterialTheme.colorScheme.surfaceVariant
+            else -> MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        }
+
+        val contentColor = when (message.role) {
+            ChatRole.User -> MaterialTheme.colorScheme.onSurfaceVariant
+            else -> MaterialTheme.colorScheme.onSurface
+        }
+
+        val borderColor = when (message.role) {
+            ChatRole.User -> MaterialTheme.colorScheme.surfaceColorAtElevation(40.dp)
+            else -> MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
+        }
 
         var showOptions by remember { mutableStateOf(false) }
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                    alpha = cardAlpha
-                )
+                contentColor = contentColor,
+                containerColor = containerColor,
             ),
+            border = BorderStroke(1.dp, borderColor),
             onClick = { showOptions = !showOptions },
             modifier = Modifier
-                .padding(horizontal = 4.dp)
+                .padding(horizontal = 8.dp)
                 .fillMaxWidth(),
         ) {
             Row(modifier = Modifier.padding(12.dp)) {
-                Image(
-                    painter = painterResource(avatar),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(MaterialTheme.shapes.small)
-                )
+                if (message.role == ChatRole.Assistant) {
+                    Image(
+                        painter = painterResource(avatar),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .border(2.dp, borderColor, MaterialTheme.shapes.small)
+                    )
+                } else {
+                    ImageUrl(
+                        url = "https://api.dicebear.com/6.x/shapes/svg?seed=${message.id}",
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .border(2.dp, borderColor, MaterialTheme.shapes.small)
+                    )
+                }
+
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     // Content text
-                    SelectionContainer {
-                        Text(message.content, modifier = Modifier.padding(top = 8.dp))
-                    }
+                    //SelectionContainer {
+                    Text(
+                        message.content,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    // }
 
                     // Copy and share buttons
                     if (message.role == ChatRole.Assistant) {
