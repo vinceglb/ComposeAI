@@ -31,10 +31,6 @@ kotlin {
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
-    val settingsVersion = "1.0.0"
-    val koinVersion = "3.4.0"
-    val sqlDelight = "2.0.0-alpha05"
-
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -46,59 +42,57 @@ kotlin {
                 implementation(compose.materialIconsExtended)
 
                 // Voyager
-                val voyagerVersion = "1.0.0-rc05"
-                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+                implementation(libs.voyager.navigator)
 
                 // Koin
-                api("io.insert-koin:koin-core:$koinVersion")
+                implementation(libs.koin.core)
 
                 // Image Loader
-                val imageLoaderVersion = "1.4.0"
-                implementation("io.github.qdsfdhvh:image-loader:$imageLoaderVersion")
+                implementation(libs.image.loader)
 
                 // Resource
-                implementation("com.goncalossilva:resources:0.3.2")
+                implementation(libs.resources)
 
                 // OpenAI
-                implementation("com.aallam.openai:openai-client:3.2.3")
+                implementation(libs.openai.client)
 
                 // Settings
-                implementation("com.russhwolf:multiplatform-settings:$settingsVersion")
-                implementation("com.russhwolf:multiplatform-settings-coroutines:$settingsVersion")
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.coroutines)
 
                 // SQL
-                implementation("app.cash.sqldelight:coroutines-extensions:$sqlDelight")
+                implementation(libs.coroutines.extensions)
 
                 // UUID
-                implementation("com.benasher44:uuid:0.7.0")
+                implementation(libs.uuid)
 
                 // DateTime
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                implementation(libs.kotlinx.datetime)
 
                 // Libres (resources)
-                implementation("io.github.skeptick.libres:libres-compose:1.1.8")
+                implementation(libs.libres.compose)
             }
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.activity:activity-compose:1.7.1")
-                api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.0")
+                api(libs.activity.compose)
+                api(libs.appcompat)
+                api(libs.core.ktx)
 
                 // Koin
-                api("io.insert-koin:koin-android:$koinVersion")
+                api(libs.koin.android)
 
                 // DataStore
-                implementation("androidx.datastore:datastore-preferences:1.0.0")
+                implementation(libs.datastore.preferences)
 
                 // Settings
-                implementation("com.russhwolf:multiplatform-settings-datastore:$settingsVersion")
+                implementation(libs.multiplatform.settings.datastore)
 
                 // SQL
-                implementation("app.cash.sqldelight:android-driver:$sqlDelight")
+                implementation(libs.android.driver)
 
                 // Accompanist
-                implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+                implementation(libs.accompanist.systemuicontroller)
             }
         }
         val iosX64Main by getting
@@ -112,7 +106,7 @@ kotlin {
 
             dependencies {
                 // SQL
-                api("app.cash.sqldelight:native-driver:$sqlDelight")
+                api(libs.native.driver)
             }
         }
     }

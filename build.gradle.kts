@@ -2,15 +2,15 @@
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
-    kotlin("multiplatform").apply(false)
-    id("com.android.application").apply(false)
-    id("com.android.library").apply(false)
-    id("org.jetbrains.compose").apply(false)
+    kotlin("multiplatform") apply false
+    id("com.android.application") apply false
+    id("com.android.library") apply false
+    id("org.jetbrains.compose") apply false
 }
 
 buildscript {
     dependencies {
-        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
-        classpath("io.github.skeptick.libres:gradle-plugin:1.1.8")
+        classpath(libs.buildkonfig.gradle.plugin)
+        classpath(libs.gradle.plugin)
     }
 }
