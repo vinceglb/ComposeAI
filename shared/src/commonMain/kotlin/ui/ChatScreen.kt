@@ -218,7 +218,7 @@ internal object ChatScreen : Screen {
         val reverseMessages = remember(messages) { messages.reversed() }
 
         LazyColumn(
-            contentPadding = PaddingValues(vertical = 16.dp),
+            contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             reverseLayout = true,
         ) {
@@ -438,6 +438,7 @@ internal object ChatScreen : Screen {
                     Surface(
                         shape = MaterialTheme.shapes.large,
                         color = MaterialTheme.colorScheme.surfaceVariant,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.12f)),
                         modifier = Modifier
                             .defaultMinSize(minHeight = 48.dp)
                             .weight(1f)
