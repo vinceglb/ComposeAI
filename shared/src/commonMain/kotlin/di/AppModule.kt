@@ -14,7 +14,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
-import ui.ChatScreenModel
+import ui.screens.chat.ChatScreenModel
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {

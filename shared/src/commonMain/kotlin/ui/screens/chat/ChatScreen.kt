@@ -1,4 +1,4 @@
-package ui
+package ui.screens.chat
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -7,39 +7,30 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material.icons.rounded.ChatBubbleOutline
-import androidx.compose.material.icons.rounded.CopyAll
 import androidx.compose.material.icons.rounded.Forum
-import androidx.compose.material.icons.rounded.IosShare
 import androidx.compose.material.icons.rounded.Send
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,24 +41,20 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.PermanentDrawerSheet
+import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -80,19 +67,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.aallam.openai.api.chat.ChatRole
 import com.ebfstudio.appgpt.common.ChatEntity
-import com.ebfstudio.appgpt.common.ChatMessageEntity
 import di.getScreenModel
-import expect.platform
 import expect.shareText
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import model.AppPlatform
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
-import ui.components.ImageUrl
-import ui.images.AppImages
+import ui.components.TypewriterText
+import ui.screens.chat.components.Messages
 
 internal object ChatScreen : Screen {
 
@@ -103,8 +84,9 @@ internal object ChatScreen : Screen {
         val screenUiState by screenModel.screenUiState.collectAsState()
         val chatsUiState by screenModel.chatsUiState.collectAsState()
         val currentChat by screenModel.currentChat.collectAsState()
+        val localClipboardManager = LocalClipboardManager.current
 
-        ContentScreen(
+        ChatScreen(
             onSend = screenModel::onSendMessage,
             onNewChat = screenModel::onNewChat,
             onChatSelected = screenModel::onChatSelected,
@@ -113,237 +95,202 @@ internal object ChatScreen : Screen {
             messagesUiState = messagesUiState,
             chatsUiState = chatsUiState,
             currentChat = currentChat,
+            onClickCopy = { text -> localClipboardManager.setText(AnnotatedString(text)) },
+            onClickShare = { text -> shareText(text) }
         )
     }
 
     @Composable
-    fun ContentScreen(
+    fun ChatScreen(
         onSend: () -> Unit,
         onNewChat: () -> Unit,
         onChatSelected: (String) -> Unit,
         onTextChange: (String) -> Unit,
+        onClickCopy: (String) -> Unit,
+        onClickShare: (String) -> Unit,
         screenUiState: ChatScreenUiState,
         messagesUiState: ChatMessagesUiState,
         chatsUiState: ChatsUiState,
         currentChat: ChatEntity?,
     ) {
-        val localClipboardManager = LocalClipboardManager.current
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         val scope = rememberCoroutineScope()
-        val focusRequester = remember { FocusRequester() }
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet {
-                    Spacer(Modifier.height(12.dp))
-                    when (chatsUiState) {
-                        ChatsUiState.Loading -> Unit
-                        is ChatsUiState.Success -> {
-                            chatsUiState.chats.forEach { chat ->
-                                val isSelected = chat.id == currentChat?.id
-                                NavigationDrawerItem(
-                                    label = {
-                                        Text(
-                                            text = chat.title ?: "Empty chat",
-                                            overflow = TextOverflow.Ellipsis,
-                                            softWrap = false
-                                        )
-                                    },
-                                    icon = {
-                                        Icon(
-                                            if (isSelected) Icons.Rounded.ChatBubble else Icons.Rounded.ChatBubbleOutline,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    },
-                                    selected = isSelected,
-                                    onClick = {
-                                        onChatSelected(chat.id)
-                                        scope.launch { drawerState.close() }
-                                    },
-                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                                )
-                            }
+        BoxWithConstraints {
+            val maxWidth = maxWidth
+            if (maxWidth < 600.dp) {
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            ChatDrawerContent(
+                                showCreateChatButton = false,
+                                chatsUiState = chatsUiState,
+                                currentChat = currentChat,
+                                onNewChat = onNewChat,
+                                onChatSelected = onChatSelected,
+                                onCloseDrawer = { scope.launch { drawerState.close() } }
+                            )
                         }
-                    }
-                }
-            },
-        ) {
-            Scaffold(
-                topBar = {
-                    ChatTopBar(
-                        chatTitle = currentChat?.title,
-                        onNewChat = {
-                            onNewChat()
-                            focusRequester.requestFocus()
-                        },
-                        onMenuClick = { scope.launch { drawerState.open() } },
-                    )
-                },
-                bottomBar = {
-                    ChatBottomBar(
-                        text = screenUiState.text,
-                        isLoading = screenUiState.isSending,
-                        focusRequester = focusRequester,
+                    },
+                ) {
+                    ChatScreenContent(
+                        showTopBarActions = true,
+                        messagesUiState = messagesUiState,
+                        onClickCopy = onClickCopy,
+                        onClickShare = onClickShare,
                         onTextChange = onTextChange,
                         onSend = onSend,
+                        onNewChat = onNewChat,
+                        screenUiState = screenUiState,
+                        currentChat = currentChat,
+                        onMenuClick = { scope.launch { drawerState.open() } },
                     )
-                },
-            ) { contentPadding ->
-                Column(modifier = Modifier.padding(contentPadding)) {
-                    when (messagesUiState) {
-                        ChatMessagesUiState.Empty,
-                        ChatMessagesUiState.Loading -> Unit
-
-                        is ChatMessagesUiState.Success -> {
-                            DisplayChat(
-                                messages = messagesUiState.messages,
-                                onClickCopy = { localClipboardManager.setText(AnnotatedString(it)) },
-                                onClickShare = { shareText(it) },
+                }
+            } else {
+                PermanentNavigationDrawer(
+                    drawerContent = {
+                        PermanentDrawerSheet(Modifier.width(maxWidth / 5 * 2)) {
+                            ChatDrawerContent(
+                                showCreateChatButton = true,
+                                chatsUiState = chatsUiState,
+                                currentChat = currentChat,
+                                onNewChat = onNewChat,
+                                onChatSelected = onChatSelected,
+                                onCloseDrawer = { scope.launch { drawerState.close() } },
                             )
                         }
                     }
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun DisplayChat(
-        messages: List<ChatMessageEntity>,
-        onClickCopy: (String) -> Unit,
-        onClickShare: (String) -> Unit,
-    ) {
-        val reverseMessages = remember(messages) { messages.reversed() }
-
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            reverseLayout = true,
-        ) {
-            items(reverseMessages) { chatMessage ->
-                MessageLine(
-                    chatMessage,
-                    onClickCopy = onClickCopy,
-                    onClickShare = onClickShare,
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun MessageLine(
-        message: ChatMessageEntity,
-        onClickCopy: (String) -> Unit,
-        onClickShare: (String) -> Unit,
-    ) {
-        val isDarkMode = isSystemInDarkTheme()
-        val avatar = when {
-            message.role == ChatRole.User -> AppImages.avatar
-            isDarkMode -> AppImages.composeAIDark
-            else -> AppImages.composeAILight
-        }
-        val shareIcon =
-            if (platform() == AppPlatform.ANDROID) Icons.Rounded.Share else Icons.Rounded.IosShare
-
-        val containerColor = when (message.role) {
-            ChatRole.User -> MaterialTheme.colorScheme.surfaceVariant
-            else -> MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-        }
-
-        val contentColor = when (message.role) {
-            ChatRole.User -> MaterialTheme.colorScheme.onSurfaceVariant
-            else -> MaterialTheme.colorScheme.onSurface
-        }
-
-        val borderColor = when (message.role) {
-            ChatRole.User -> MaterialTheme.colorScheme.surfaceColorAtElevation(40.dp)
-            else -> MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
-        }
-
-        var showOptions by remember { mutableStateOf(false) }
-
-        Card(
-            colors = CardDefaults.cardColors(
-                contentColor = contentColor,
-                containerColor = containerColor,
-            ),
-            border = BorderStroke(1.dp, borderColor),
-            onClick = { showOptions = !showOptions },
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-        ) {
-            Row(modifier = Modifier.padding(12.dp)) {
-                if (message.role == ChatRole.Assistant) {
-                    Image(
-                        painter = painterResource(avatar),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(MaterialTheme.shapes.small)
-                            .border(2.dp, borderColor, MaterialTheme.shapes.small)
-                    )
-                } else {
-                    ImageUrl(
-                        url = "https://api.dicebear.com/6.x/shapes/svg?seed=${message.id}",
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(MaterialTheme.shapes.small)
-                            .border(2.dp, borderColor, MaterialTheme.shapes.small)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    // Content text
-                    //SelectionContainer {
-                    Text(
-                        message.content,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                    // }
-
-                    // Copy and share buttons
-                    if (message.role == ChatRole.Assistant) {
-                        AnimatedVisibility(
-                            visible = showOptions,
-                        ) {
-                            Row(modifier = Modifier.padding(top = 16.dp)) {
-                                // Copy button
-                                SuggestionChip(
-                                    onClick = { onClickCopy(message.content) },
-                                    label = { Text("Copy") },
-                                    icon = {
-                                        Icon(
-                                            Icons.Rounded.CopyAll,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    },
-                                    shape = CircleShape,
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                // Share button
-                                SuggestionChip(
-                                    onClick = { onClickShare(message.content) },
-                                    label = { Text("Share") },
-                                    icon = {
-                                        Icon(
-                                            shareIcon,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    },
-                                    shape = CircleShape,
-                                )
-                            }
-                        }
+                ) {
+                    Row {
+                        Divider(
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
+                            modifier = Modifier.width(1.dp).fillMaxHeight()
+                        )
+                        ChatScreenContent(
+                            showTopBarActions = false,
+                            messagesUiState = messagesUiState,
+                            onClickCopy = onClickCopy,
+                            onClickShare = onClickShare,
+                            onTextChange = onTextChange,
+                            onSend = onSend,
+                            onNewChat = onNewChat,
+                            screenUiState = screenUiState,
+                            currentChat = currentChat,
+                            onMenuClick = { scope.launch { drawerState.open() } },
+                        )
                     }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ChatScreenContent(
+        currentChat: ChatEntity?,
+        screenUiState: ChatScreenUiState,
+        messagesUiState: ChatMessagesUiState,
+        showTopBarActions: Boolean,
+        onSend: () -> Unit,
+        onNewChat: () -> Unit,
+        onMenuClick: () -> Unit,
+        onClickCopy: (String) -> Unit,
+        onClickShare: (String) -> Unit,
+        onTextChange: (String) -> Unit,
+        modifier: Modifier = Modifier,
+    ) {
+        val focusRequester = remember { FocusRequester() }
+
+        Scaffold(
+            topBar = {
+                ChatTopBar(
+                    chatTitle = currentChat?.title,
+                    showTopBarActions = showTopBarActions,
+                    onNewChat = {
+                        onNewChat()
+                        focusRequester.requestFocus()
+                    },
+                    onMenuClick = onMenuClick,
+                )
+            },
+            bottomBar = {
+                ChatBottomBar(
+                    text = screenUiState.text,
+                    isLoading = screenUiState.isSending,
+                    focusRequester = focusRequester,
+                    onTextChange = onTextChange,
+                    onSend = onSend,
+                )
+            },
+            modifier = modifier,
+        ) { contentPadding ->
+            Column(modifier = Modifier.padding(contentPadding)) {
+                when (messagesUiState) {
+                    ChatMessagesUiState.Empty,
+                    ChatMessagesUiState.Loading -> Unit
+
+                    is ChatMessagesUiState.Success -> {
+                        Messages(
+                            messages = messagesUiState.messages,
+                            onClickCopy = onClickCopy,
+                            onClickShare = onClickShare,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ChatDrawerContent(
+        chatsUiState: ChatsUiState,
+        currentChat: ChatEntity?,
+        showCreateChatButton: Boolean,
+        onChatSelected: (String) -> Unit,
+        onCloseDrawer: () -> Unit,
+        onNewChat: () -> Unit,
+    ) {
+        Spacer(Modifier.height(12.dp))
+        if (showCreateChatButton) {
+            ExtendedFloatingActionButton(
+                onClick = onNewChat,
+                text = { Text(text = "New chat") },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = null
+                    )
+                },
+            )
+            Spacer(Modifier.height(12.dp))
+        }
+        when (chatsUiState) {
+            ChatsUiState.Loading -> Unit
+            is ChatsUiState.Success -> {
+                chatsUiState.chats.forEach { chat ->
+                    val isSelected = chat.id == currentChat?.id
+                    NavigationDrawerItem(
+                        label = {
+                            Text(
+                                text = chat.title ?: "Empty chat",
+                                overflow = TextOverflow.Ellipsis,
+                                softWrap = false
+                            )
+                        },
+                        icon = {
+                            Icon(
+                                if (isSelected) Icons.Rounded.ChatBubble else Icons.Rounded.ChatBubbleOutline,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        selected = isSelected,
+                        onClick = {
+                            onChatSelected(chat.id)
+                            onCloseDrawer()
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
                 }
             }
         }
@@ -352,6 +299,7 @@ internal object ChatScreen : Screen {
     @Composable
     fun ChatTopBar(
         chatTitle: String?,
+        showTopBarActions: Boolean,
         onNewChat: () -> Unit,
         onMenuClick: () -> Unit,
     ) {
@@ -365,6 +313,7 @@ internal object ChatScreen : Screen {
                 )
             },
             navigationIcon = {
+                if (showTopBarActions.not()) return@CenterAlignedTopAppBar
                 IconButton(
                     onClick = onMenuClick,
                 ) {
@@ -375,14 +324,13 @@ internal object ChatScreen : Screen {
                 }
             },
             actions = {
+                if (showTopBarActions.not()) return@CenterAlignedTopAppBar
                 IconButton(
                     onClick = onNewChat,
-                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         Icons.Rounded.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -445,7 +393,7 @@ internal object ChatScreen : Screen {
                     ) {
                         Box(
                             contentAlignment = Alignment.CenterStart,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             BasicTextField(
                                 value = text,
@@ -497,39 +445,6 @@ internal object ChatScreen : Screen {
                 }
             }
         }
-    }
-
-    @Composable
-    fun TypewriterText(
-        text: String,
-        modifier: Modifier = Modifier,
-        overflow: TextOverflow = TextOverflow.Clip,
-        softWrap: Boolean = true,
-    ) {
-        var targetText by remember { mutableStateOf(text) }
-        var currentText by remember { mutableStateOf("") }
-
-        LaunchedEffect(text) {
-            if (targetText != text) {
-                for (i in currentText.length - 1 downTo 0) {
-                    delay(50)
-                    currentText = currentText.substring(0, i)
-                }
-                targetText = text
-            }
-
-            for (i in currentText.length until text.length) {
-                delay(50)
-                currentText += text[i]
-            }
-        }
-
-        Text(
-            currentText,
-            overflow = overflow,
-            softWrap = softWrap,
-            modifier = modifier,
-        )
     }
 }
 

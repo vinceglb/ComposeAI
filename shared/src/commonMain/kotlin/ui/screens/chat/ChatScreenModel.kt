@@ -1,4 +1,4 @@
-package ui
+package ui.screens.chat
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
