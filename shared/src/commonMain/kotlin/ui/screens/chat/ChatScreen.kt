@@ -101,7 +101,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatScreen(
+    private fun ChatScreen(
         onSend: () -> Unit,
         onNewChat: () -> Unit,
         onChatSelected: (String) -> Unit,
@@ -186,7 +186,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatScreenContent(
+    private fun ChatScreenContent(
         currentChat: ChatEntity?,
         screenUiState: ChatScreenUiState,
         messagesUiState: ChatMessagesUiState,
@@ -242,7 +242,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatDrawerContent(
+    private fun ChatDrawerContent(
         chatsUiState: ChatsUiState,
         currentChat: ChatEntity?,
         showCreateChatButton: Boolean,
@@ -297,7 +297,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatTopBar(
+    private fun ChatTopBar(
         chatTitle: String?,
         showTopBarActions: Boolean,
         onNewChat: () -> Unit,
@@ -338,7 +338,7 @@ internal object ChatScreen : Screen {
     }
 
     @Composable
-    fun ChatBottomBar(
+    private fun ChatBottomBar(
         text: String,
         isLoading: Boolean,
         focusRequester: FocusRequester,
