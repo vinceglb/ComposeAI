@@ -82,10 +82,20 @@ class ChatScreenModel(
     }
 
     fun onSendMessage() {
-        val chatId = this.chatId.value ?: return
-
         coroutineScope.launch {
-            val contentMessage = screenUiState.value.text
+            // Get chat id, or create a new one
+            val chatId = when {
+                chatId.value != null -> chatId.value
+                else -> {
+                    chatRepository.createChat().let { id ->
+                        chatId.update { id }
+                        id
+                    }
+                }
+            } ?: return@launch
+
+            // Get message text (before reset)
+            val contentText = screenUiState.value.text
 
             // Reset text and start loading
             screenUiState.update {
@@ -98,7 +108,7 @@ class ChatScreenModel(
             // Send message
             chatMessageRepository.sendMessage(
                 chatId = chatId,
-                contentMessage = contentMessage
+                contentMessage = contentText
             )
 
             // Stop loading
@@ -116,10 +126,7 @@ class ChatScreenModel(
     }
 
     fun onNewChat() {
-        coroutineScope.launch {
-            val id = chatRepository.createChat()
-            chatId.update { id }
-        }
+        chatId.update { null }
     }
 
     fun onChatSelected(chatId: String) {
