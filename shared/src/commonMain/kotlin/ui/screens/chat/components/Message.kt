@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,7 +41,7 @@ import expect.platform
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 import ui.components.ImageUrl
-import ui.images.AppImages
+import ui.components.appImagePath
 
 @Composable
 fun Messages(
@@ -73,10 +72,7 @@ fun MessageLine(
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
 ) {
-    val assistantImage = when(isSystemInDarkTheme()) {
-        true -> AppImages.composeAIDark
-        else -> AppImages.composeAILight
-    }
+    val assistantImage = appImagePath()
 
     val shareIcon = when (platform() == AppPlatform.ANDROID) {
         true -> Icons.Rounded.Share

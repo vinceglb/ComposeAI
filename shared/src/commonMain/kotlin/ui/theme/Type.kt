@@ -3,6 +3,7 @@ package ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 expect suspend fun outfitFontFamily(): FontFamily
 
@@ -19,9 +20,9 @@ suspend fun appTypography(defaultTypography: Typography): Typography {
         displayLarge = defaultTypography.displayLarge.copy(fontFamily = outfitFamily),
         displayMedium = defaultTypography.displayMedium.copy(fontFamily = outfitFamily),
         displaySmall = defaultTypography.displaySmall.copy(fontFamily = outfitFamily),
-        headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = outfitFamily),
-        headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = outfitFamily),
-        headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = outfitFamily),
+        headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, letterSpacing = (-1).sp),
+        headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, letterSpacing = (-1).sp),
+        headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, letterSpacing = (-1).sp),
         titleLarge = defaultTypography.titleLarge.copy(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold),
         titleMedium = defaultTypography.titleMedium.copy(fontFamily = outfitFamily),
         titleSmall = defaultTypography.titleSmall.copy(fontFamily = outfitFamily),
