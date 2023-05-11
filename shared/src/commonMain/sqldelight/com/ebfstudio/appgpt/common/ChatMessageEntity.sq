@@ -1,5 +1,6 @@
 import com.aallam.openai.api.chat.ChatRole;
 import kotlinx.datetime.Instant;
+import model.ChatMessageStatus;
 
 CREATE TABLE ChatMessageEntity (
     id TEXT NOT NULL PRIMARY KEY,
@@ -7,6 +8,7 @@ CREATE TABLE ChatMessageEntity (
     role TEXT AS ChatRole NOT NULL,
     createdAt TEXT AS Instant NOT NULL,
     chatId TEXT NOT NULL,
+    status TEXT AS ChatMessageStatus NOT NULL DEFAULT 'SENT',
     FOREIGN KEY (chatId) REFERENCES ChatEntity(id)
 );
 
@@ -16,16 +18,25 @@ FROM ChatMessageEntity
 WHERE chatId = ?
 ORDER BY createdAt ASC;
 
-getChatMessageByChatId:
+getChatMessagesWithChatIdAndStatus:
 SELECT *
 FROM ChatMessageEntity
-WHERE chatId = ?;
+WHERE chatId = ? AND status = ?;
 
 insertChatMessage:
-INSERT INTO ChatMessageEntity(id, content, role, createdAt, chatId)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO ChatMessageEntity(id, content, role, createdAt, chatId, status)
+VALUES (?, ?, ?, ?, ?, ?);
 
 updateChatMessageContent:
 UPDATE ChatMessageEntity
 SET content = ?
+WHERE id = ?;
+
+updateChatMessageStatus:
+UPDATE ChatMessageEntity
+SET status = ?
+WHERE id = ?;
+
+deleteChatMessage:
+DELETE FROM ChatMessageEntity
 WHERE id = ?;
