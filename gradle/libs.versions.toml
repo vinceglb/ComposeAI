@@ -12,6 +12,7 @@ imageLoader = "1.4.0"
 koin = "3.4.0"
 kotlinxDatetime = "0.4.0"
 libresCompose = "1.1.8"
+napier = "2.6.1"
 openaiClient = "3.2.3"
 resources = "0.3.2"
 settings = "1.0.0"
@@ -38,6 +39,7 @@ libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "settings" }
 multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "settings" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClient" }
 resources = { module = "com.goncalossilva:resources", version.ref = "resources" }

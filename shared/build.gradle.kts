@@ -71,6 +71,9 @@ kotlin {
 
                 // Libres (resources)
                 implementation(libs.libres.compose)
+
+                // Napier (log)
+                implementation(libs.napier)
             }
         }
         val androidMain by getting {
@@ -160,6 +163,7 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.ebfstudio.appgpt.common")
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
 }

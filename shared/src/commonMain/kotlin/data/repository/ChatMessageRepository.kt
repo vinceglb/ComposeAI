@@ -10,11 +10,12 @@ import com.aallam.openai.client.OpenAI
 import com.benasher44.uuid.uuid4
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntityQueries
+import data.repository.util.suspendRunCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import model.ChatMessageStatus
 import model.asModel
 
 class ChatMessageRepository(
@@ -24,14 +25,14 @@ class ChatMessageRepository(
 ) {
 
     fun getMessagesStream(chatId: String): Flow<List<ChatMessageEntity>> =
-        chatMessageQueries.getChatMessageByChatId(chatId)
+        chatMessageQueries.getChatMessagesWithChatId(chatId)
             .asFlow()
             .mapToList(defaultDispatcher)
 
     suspend fun sendMessage(
         chatId: String,
         contentMessage: String,
-    ): Unit = withContext(defaultDispatcher) {
+    ): Result<Unit> = suspendRunCatching(defaultDispatcher) {
         // Save user message
         val userMessage = ChatMessage(role = ChatRole.User, content = contentMessage)
         chatMessageQueries.insertChatMessage(
@@ -40,45 +41,29 @@ class ChatMessageRepository(
             content = userMessage.content,
             createdAt = Clock.System.now(),
             chatId = chatId,
+            status = ChatMessageStatus.SENT,
         )
 
-        // Save empty assistant message
-        val assistantMessageId = uuid4().toString()
-        chatMessageQueries.insertChatMessage(
-            id = assistantMessageId,
-            role = ChatRole.Assistant,
-            content = "",
-            createdAt = Clock.System.now(),
-            chatId = chatId,
-        )
+        // Send message to OpenAI
+        sendReceiveAndSaveAI(chatId = chatId)
+    }
 
-        val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)
+    suspend fun retrySendMessage(chatId: String): Result<Unit> = suspendRunCatching(defaultDispatcher) {
+        val failedMessages = chatMessageQueries
+            .getChatMessagesWithChatIdAndStatus(chatId, ChatMessageStatus.FAILED)
             .executeAsList()
-            .map(ChatMessageEntity::asModel)
 
-        // Create request to OpenAI
-        val request = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
-            messages = messages,
-        )
-
-        // Get assistant response
-        var assistantMessage = ""
-
-        openAI.chatCompletions(request).collect { chunk ->
-            chunk.choices.first().delta?.content?.let {
-                assistantMessage += it
-                chatMessageQueries.updateChatMessageContent(
-                    id = assistantMessageId,
-                    content = assistantMessage,
-                )
-            }
+        failedMessages.forEach { message ->
+            chatMessageQueries.deleteChatMessage(message.id)
         }
+
+        // Send message to OpenAI
+        sendReceiveAndSaveAI(chatId = chatId)
     }
 
     suspend fun generateTitleFromChat(
         chatId: String,
-    ): String = withContext(defaultDispatcher) {
+    ): Result<String> = suspendRunCatching(defaultDispatcher) {
         val instruction = ChatMessage(
             role = ChatRole.System,
             content = "Generate a very short title for this chat. Use the language used in the chat. Do not add any punctuation.",
@@ -97,4 +82,65 @@ class ChatMessageRepository(
         response.choices.first().message?.content ?: "?"
     }
 
+    /**
+     * Send message to OpenAI and save the response
+     * - Save empty assistant message
+     * - Send request to OpenAI
+     * - Save response
+     * - Update assistant message status to sent
+     *
+     * @param chatId Chat id
+     * @param assistantMessageId Assistant message id
+     */
+    private suspend fun sendReceiveAndSaveAI(chatId: String) {
+        // Save empty assistant message
+        val assistantMessageId = uuid4().toString()
+        chatMessageQueries.insertChatMessage(
+            id = assistantMessageId,
+            role = ChatRole.Assistant,
+            content = "",
+            createdAt = Clock.System.now(),
+            chatId = chatId,
+            status = ChatMessageStatus.LOADING,
+        )
+
+        val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)
+            .executeAsList()
+            .map(ChatMessageEntity::asModel)
+
+        // Create request to OpenAI
+        val request = ChatCompletionRequest(
+            model = ModelId("gpt-3.5-turbo"),
+            messages = messages,
+        )
+
+        // Get assistant response
+        var assistantMessage = ""
+
+        try {
+            // Sending request to OpenAI
+            openAI.chatCompletions(request).collect { chunk ->
+                chunk.choices.first().delta?.content?.let {
+                    assistantMessage += it
+                    chatMessageQueries.updateChatMessageContent(
+                        id = assistantMessageId,
+                        content = assistantMessage,
+                    )
+                }
+            }
+
+            // Update assistant message status to sent
+            chatMessageQueries.updateChatMessageStatus(
+                id = assistantMessageId,
+                status = ChatMessageStatus.SENT,
+            )
+        } catch (e: Exception) {
+            // Update assistant message status to failed
+            chatMessageQueries.updateChatMessageStatus(
+                id = assistantMessageId,
+                status = ChatMessageStatus.FAILED,
+            )
+            throw e
+        }
+    }
 }
