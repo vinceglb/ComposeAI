@@ -89,6 +89,7 @@ internal object ChatScreen : Screen {
         ChatScreen(
             onSend = screenModel::onSendMessage,
             onNewChat = screenModel::onNewChat,
+            onRetry = screenModel::onRetrySendMessage,
             onChatSelected = screenModel::onChatSelected,
             onTextChange = screenModel::onTextChange,
             screenUiState = screenUiState,
@@ -104,6 +105,7 @@ internal object ChatScreen : Screen {
     private fun ChatScreen(
         onSend: () -> Unit,
         onNewChat: () -> Unit,
+        onRetry: () -> Unit,
         onChatSelected: (String) -> Unit,
         onTextChange: (String) -> Unit,
         onClickCopy: (String) -> Unit,
@@ -141,6 +143,7 @@ internal object ChatScreen : Screen {
                         onClickShare = onClickShare,
                         onTextChange = onTextChange,
                         onSend = onSend,
+                        onRetry = onRetry,
                         onNewChat = onNewChat,
                         screenUiState = screenUiState,
                         currentChat = currentChat,
@@ -174,6 +177,7 @@ internal object ChatScreen : Screen {
                             onClickShare = onClickShare,
                             onTextChange = onTextChange,
                             onSend = onSend,
+                            onRetry = onRetry,
                             onNewChat = onNewChat,
                             screenUiState = screenUiState,
                             currentChat = currentChat,
@@ -192,6 +196,7 @@ internal object ChatScreen : Screen {
         messagesUiState: ChatMessagesUiState,
         showTopBarActions: Boolean,
         onSend: () -> Unit,
+        onRetry: () -> Unit,
         onNewChat: () -> Unit,
         onMenuClick: () -> Unit,
         onClickCopy: (String) -> Unit,
@@ -234,6 +239,7 @@ internal object ChatScreen : Screen {
                             messages = messagesUiState.messages,
                             onClickCopy = onClickCopy,
                             onClickShare = onClickShare,
+                            onRetry = onRetry,
                         )
                     }
                 }

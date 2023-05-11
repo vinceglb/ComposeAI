@@ -1,6 +1,7 @@
 package data.database
 
 import app.cash.sqldelight.ColumnAdapter
+import app.cash.sqldelight.EnumColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 import com.aallam.openai.api.chat.ChatRole
 import com.ebfstudio.appgpt.common.ChatEntity
@@ -15,6 +16,7 @@ object AppDatabase {
             ChatMessageEntityAdapter = ChatMessageEntity.Adapter(
                 roleAdapter = ChatRoleAdapter,
                 createdAtAdapter = InstantAdapter,
+                statusAdapter = EnumColumnAdapter(),
             ),
             ChatEntityAdapter = ChatEntity.Adapter(
                 createdAtAdapter = InstantAdapter,

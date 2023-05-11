@@ -69,13 +69,12 @@ class ChatScreenModel(
             )
 
     init {
+        // If no chat id is provided, get the latest chat id
         if (initialChatId == null) {
             coroutineScope.launch {
                 val latestChat = chatRepository.getChatsStream().first().firstOrNull()
                 if (latestChat != null) {
                     chatId.update { latestChat.id }
-                } else {
-                    onNewChat()
                 }
             }
         }
@@ -106,7 +105,7 @@ class ChatScreenModel(
             }
 
             // Send message
-            chatMessageRepository.sendMessage(
+            val sendMessageResult = chatMessageRepository.sendMessage(
                 chatId = chatId,
                 contentMessage = contentText
             )
@@ -116,8 +115,31 @@ class ChatScreenModel(
                 it.copy(isSending = false)
             }
 
-            val title = chatMessageRepository.generateTitleFromChat(chatId)
-            chatRepository.updateChatTitle(chatId, title)
+            // Update chat title
+            if (sendMessageResult.isSuccess) {
+                chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
+                    chatRepository.updateChatTitle(chatId, it)
+                }
+            }
+        }
+    }
+
+    fun onRetrySendMessage() {
+        val chatId = chatId.value ?: return
+
+        coroutineScope.launch {
+            // Start loading
+            screenUiState.update {
+                it.copy(isSending = true)
+            }
+
+            // Retry send message
+            chatMessageRepository.retrySendMessage(chatId = chatId)
+
+            // Stop loading
+            screenUiState.update {
+                it.copy(isSending = false)
+            }
         }
     }
 

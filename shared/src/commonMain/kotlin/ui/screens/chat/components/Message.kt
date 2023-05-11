@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
 import androidx.compose.material.icons.rounded.IosShare
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +40,7 @@ import com.aallam.openai.api.chat.ChatRole
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import expect.platform
 import model.AppPlatform
+import model.isFailed
 import org.jetbrains.compose.resources.painterResource
 import ui.components.ImageUrl
 import ui.components.appImagePath
@@ -48,6 +50,7 @@ fun Messages(
     messages: List<ChatMessageEntity>,
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
+    onRetry: () -> Unit,
 ) {
     val reverseMessages = remember(messages) { messages.reversed() }
 
@@ -61,6 +64,7 @@ fun Messages(
                 chatMessage,
                 onClickCopy = onClickCopy,
                 onClickShare = onClickShare,
+                onRetry = onRetry,
             )
         }
     }
@@ -71,6 +75,7 @@ fun MessageLine(
     message: ChatMessageEntity,
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
+    onRetry: () -> Unit,
 ) {
     val assistantImage = appImagePath()
 
@@ -130,15 +135,23 @@ fun MessageLine(
 
             Column {
                 // Content text
-                //SelectionContainer {
-                Text(
-                    message.content,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-                // }
+                if (message.isFailed.not()) {
+                    //SelectionContainer {
+                    Text(
+                        message.content,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                    // }
+                } else {
+                    Text(
+                        "Failed to receive response",
+                        modifier = Modifier.padding(top = 8.dp),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
 
                 // Copy and share buttons
-                if (message.role == ChatRole.Assistant) {
+                if (message.role == ChatRole.Assistant && !message.isFailed) {
                     AnimatedVisibility(
                         visible = showOptions,
                     ) {
@@ -174,6 +187,25 @@ fun MessageLine(
                             )
                         }
                     }
+                }
+
+                AnimatedVisibility(
+                    visible = message.isFailed,
+                ) {
+                    // Retry button
+                    SuggestionChip(
+                        onClick = onRetry,
+                        label = { Text("Retry") },
+                        icon = {
+                            Icon(
+                                Icons.Rounded.Replay,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        shape = CircleShape,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
                 }
             }
         }
