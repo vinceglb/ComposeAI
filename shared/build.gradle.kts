@@ -130,6 +130,10 @@ android {
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
