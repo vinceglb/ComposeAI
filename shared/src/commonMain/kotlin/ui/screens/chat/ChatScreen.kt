@@ -1,5 +1,6 @@
 package ui.screens.chat
 
+import analytics.TrackScreenViewEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateFloat
@@ -69,7 +70,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.ebfstudio.appgpt.common.ChatEntity
 import di.getScreenModel
-import expect.shareText
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import ui.components.TypewriterText
@@ -96,8 +96,11 @@ internal object ChatScreen : Screen {
             messagesUiState = messagesUiState,
             chatsUiState = chatsUiState,
             currentChat = currentChat,
-            onClickCopy = { text -> localClipboardManager.setText(AnnotatedString(text)) },
-            onClickShare = { text -> shareText(text) }
+            onClickShare = screenModel::onMessageShared,
+            onClickCopy = { text ->
+                localClipboardManager.setText(AnnotatedString(text))
+                screenModel.onMessageCopied()
+            },
         )
     }
 
@@ -187,6 +190,8 @@ internal object ChatScreen : Screen {
                 }
             }
         }
+
+        TrackScreenViewEvent(screenName = "Chat")
     }
 
     @Composable
@@ -392,7 +397,10 @@ internal object ChatScreen : Screen {
                     Surface(
                         shape = MaterialTheme.shapes.large,
                         color = MaterialTheme.colorScheme.surfaceVariant,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.12f)),
+                        border = BorderStroke(
+                            1.dp,
+                            MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.12f)
+                        ),
                         modifier = Modifier
                             .defaultMinSize(minHeight = 48.dp)
                             .weight(1f)

@@ -73,7 +73,7 @@ kotlin {
                 implementation(libs.libres.compose)
 
                 // Napier (log)
-                implementation(libs.napier)
+                api(libs.napier)
             }
         }
         val androidMain by getting {
@@ -99,6 +99,10 @@ kotlin {
 
                 // Splash Screen
                 api(libs.core.splashscreen)
+
+                // Firebase
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.analytics)
             }
         }
         val iosX64Main by getting
@@ -125,6 +129,10 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()

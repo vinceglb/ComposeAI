@@ -1,5 +1,8 @@
 package data.repository
 
+import analytics.AnalyticsHelper
+import analytics.logMessageReceived
+import analytics.logMessageSent
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -22,6 +25,7 @@ class ChatMessageRepository(
     private val openAI: OpenAI,
     private val chatMessageQueries: ChatMessageEntityQueries,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val analyticsHelper: AnalyticsHelper,
 ) {
 
     fun getMessagesStream(chatId: String): Flow<List<ChatMessageEntity>> =
@@ -33,6 +37,8 @@ class ChatMessageRepository(
         chatId: String,
         contentMessage: String,
     ): Result<Unit> = suspendRunCatching(defaultDispatcher) {
+        analyticsHelper.logMessageSent()
+
         // Save user message
         val userMessage = ChatMessage(role = ChatRole.User, content = contentMessage)
         chatMessageQueries.insertChatMessage(
@@ -49,6 +55,8 @@ class ChatMessageRepository(
     }
 
     suspend fun retrySendMessage(chatId: String): Result<Unit> = suspendRunCatching(defaultDispatcher) {
+        analyticsHelper.logMessageSent(isRetry = true)
+
         val failedMessages = chatMessageQueries
             .getChatMessagesWithChatIdAndStatus(chatId, ChatMessageStatus.FAILED)
             .executeAsList()
@@ -134,12 +142,16 @@ class ChatMessageRepository(
                 id = assistantMessageId,
                 status = ChatMessageStatus.SENT,
             )
+
+            analyticsHelper.logMessageReceived(receivedSuccessfully = true)
         } catch (e: Exception) {
             // Update assistant message status to failed
             chatMessageQueries.updateChatMessageStatus(
                 id = assistantMessageId,
                 status = ChatMessageStatus.FAILED,
             )
+
+            analyticsHelper.logMessageReceived(receivedSuccessfully = false)
             throw e
         }
     }

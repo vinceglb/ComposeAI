@@ -1,11 +1,17 @@
 package ui.screens.chat
 
+import analytics.AnalyticsHelper
+import analytics.logConversationSelected
+import analytics.logCreateNewConversation
+import analytics.logMessageCopied
+import analytics.logMessageShared
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
+import expect.shareText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +25,7 @@ import kotlinx.coroutines.launch
 class ChatScreenModel(
     private val chatRepository: ChatRepository,
     private val chatMessageRepository: ChatMessageRepository,
+    private val analyticsHelper: AnalyticsHelper,
     initialChatId: String?,
 ) : ScreenModel {
 
@@ -149,10 +156,21 @@ class ChatScreenModel(
 
     fun onNewChat() {
         chatId.update { null }
+        analyticsHelper.logCreateNewConversation()
     }
 
     fun onChatSelected(chatId: String) {
         this.chatId.update { chatId }
+        analyticsHelper.logConversationSelected()
+    }
+
+    fun onMessageCopied() {
+        analyticsHelper.logMessageCopied()
+    }
+
+    fun onMessageShared(text: String) {
+        shareText(text)
+        analyticsHelper.logMessageShared()
     }
 
 }

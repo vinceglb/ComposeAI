@@ -10,6 +10,7 @@ plugins {
 
 buildscript {
     dependencies {
+        classpath(libs.google.services)
         classpath(libs.buildkonfig.gradle.plugin)
         classpath(libs.gradle.plugin)
     }

@@ -1,5 +1,6 @@
 package ui.screens.welcome
 
+import analytics.TrackScreenViewEvent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -107,6 +108,8 @@ internal object WelcomeScreen : Screen {
 
             Spacer(modifier = Modifier.height(40.dp))
         }
+
+        TrackScreenViewEvent(screenName = "Welcome")
     }
 
 }
