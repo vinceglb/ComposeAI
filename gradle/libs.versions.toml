@@ -33,6 +33,7 @@ core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = 
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }

@@ -103,6 +103,7 @@ kotlin {
                 // Firebase
                 implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.analytics)
+                api(libs.firebase.appcheck.playintegrity)
             }
         }
         val iosX64Main by getting
