@@ -103,6 +103,7 @@ kotlin {
                 // Firebase
                 implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.analytics)
+                implementation(libs.firebase.crashlytics.ktx)
                 api(libs.firebase.appcheck.playintegrity)
             }
         }
