@@ -1,5 +1,9 @@
 package di
 
+import analytics.AnalyticsHelper
+import analytics.FirebaseAnalyticsHelper
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import data.database.AppDatabase
 import data.database.DriverFactory
 import data.local.SettingsFactory
@@ -12,5 +16,13 @@ actual fun sharedPlatformModule(): Module = module {
     single {
         val driver = DriverFactory(get()).createDriver()
         AppDatabase.getDatabase(driver)
+    }
+
+    // Firebase
+    single { Firebase.analytics }
+
+    // Analytics
+    single<AnalyticsHelper> {
+        FirebaseAnalyticsHelper(get())
     }
 }

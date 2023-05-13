@@ -5,9 +5,11 @@ androidGradlePlugin = "8.0.1"
 appcompat = "1.6.1"
 buildkonfigGradlePlugin = "0.13.3"
 compose = "1.4.0"
-coreKtx = "1.10.0"
+coreKtx = "1.10.1"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
+firebaseBom = "32.0.0"
+googleServices = "4.3.15"
 imageLoader = "1.4.0"
 koin = "3.4.0"
 kotlinxDatetime = "0.4.0"
@@ -30,6 +32,9 @@ core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
