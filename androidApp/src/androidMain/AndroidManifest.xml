@@ -31,12 +31,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Disable Firebase Analytics by default -->
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+
         <!-- Disable collection of AD_ID for all build variants -->
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
 
         <!-- Disable Automatic Firebase Analytics screen reporting
              https://firebase.google.com/docs/analytics/screenviews#disable_screenview_tracking -->
         <meta-data android:name="google_analytics_automatic_screen_reporting_enabled" android:value="false" />
+
+        <!-- Disable Crashlytics by default
+             https://firebase.google.com/docs/crashlytics/customize-crash-reports?platform=android#enable-reporting -->
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
 
     </application>
 
