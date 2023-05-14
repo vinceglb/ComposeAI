@@ -1,5 +1,4 @@
 
-import AppScreenUiState.Loading
 import AppScreenUiState.Success
 import analytics.AnalyticsHelper
 import analytics.LocalAnalyticsHelper
@@ -30,12 +29,18 @@ fun App(
     // Waiting koinInject for Multiplatform to be released
     // https://insert-koin.io/docs/reference/koin-compose/multiplatform#koin-features-for-your-composable-wip
     val appScreenModel = remember { AppScreenModel() }
-    var uiState: AppScreenUiState by mutableStateOf(Loading)
+    var firstScreen by remember { mutableStateOf<Screen?>(null) }
 
     // Load UI state
     LaunchedEffect(Unit) {
-        appScreenModel.uiState.collect {
-            uiState = it
+        appScreenModel.uiState.collect { uiState ->
+            // Load first screen only once to avoid screen flickering
+            if (uiState is Success && firstScreen == null) {
+                firstScreen = when (uiState.isWelcomeShown) {
+                    true -> ChatScreen
+                    false -> WelcomeScreen
+                }
+            }
         }
     }
 
@@ -44,8 +49,7 @@ fun App(
             setup()
 
             Surface {
-                val destination = startDestination(uiState)
-                Crossfade (destination) { screen ->
+                Crossfade (firstScreen) { screen ->
                     when (screen) {
                         null -> Box(modifier = Modifier.fillMaxSize())
                         else -> Navigator(screen)
@@ -55,14 +59,3 @@ fun App(
         }
     }
 }
-
-private fun startDestination(
-    uiState: AppScreenUiState
-): Screen? = when (uiState) {
-    Loading -> null
-    is Success -> when (uiState.isWelcomeShown) {
-        true -> ChatScreen
-        false -> WelcomeScreen
-    }
-}
-
