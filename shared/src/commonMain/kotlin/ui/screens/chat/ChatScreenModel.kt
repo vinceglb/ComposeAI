@@ -15,11 +15,13 @@ import expect.shareText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 class ChatScreenModel(
@@ -35,35 +37,22 @@ class ChatScreenModel(
     val screenUiState: MutableStateFlow<ChatScreenUiState> =
         MutableStateFlow(ChatScreenUiState())
 
-    val messagesUiState: StateFlow<ChatMessagesUiState> =
+    val currentChatUiState: StateFlow<ChatMessagesUiState> =
         chatId.flatMapLatest { id ->
             if (id == null) {
                 MutableStateFlow(ChatMessagesUiState.Empty)
             } else {
-                chatRepository.getChatStream(id).flatMapLatest {
-                    chatMessageRepository.getMessagesStream(id)
-                        .map { messages ->
-                            ChatMessagesUiState.Success(messages = messages)
-                        }
+                combine(
+                    chatRepository.getChatStream(id),
+                    chatMessageRepository.getMessagesStream(id),
+                ) { chat, messages ->
+                    ChatMessagesUiState.Success(chat = chat, messages = messages)
                 }
             }
         }.stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly,
             initialValue = ChatMessagesUiState.Loading,
-        )
-
-    val currentChat: StateFlow<ChatEntity?> =
-        chatId.flatMapLatest { id ->
-            if (id == null) {
-                MutableStateFlow(null)
-            } else {
-                chatRepository.getChatStream(id)
-            }
-        }.stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
         )
 
     val chatsUiState: StateFlow<ChatsUiState> =
@@ -93,10 +82,8 @@ class ChatScreenModel(
             val chatId = when {
                 chatId.value != null -> chatId.value
                 else -> {
-                    chatRepository.createChat().let { id ->
-                        chatId.update { id }
-                        id
-                    }
+                    val newId = chatRepository.createChat()
+                    chatId.updateAndGet { newId }
                 }
             } ?: return@launch
 
@@ -186,8 +173,15 @@ sealed interface ChatMessagesUiState {
     object Empty : ChatMessagesUiState
     object Loading : ChatMessagesUiState
     data class Success(
+        val chat: ChatEntity? = null,
         val messages: List<ChatMessageEntity> = emptyList()
     ) : ChatMessagesUiState
+
+    val chatOrNull: ChatEntity?
+        get() = when (this) {
+            is Success -> chat
+            else -> null
+        }
 }
 
 data class ChatScreenUiState(

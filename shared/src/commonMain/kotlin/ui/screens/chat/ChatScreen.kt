@@ -68,7 +68,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.ebfstudio.appgpt.common.ChatEntity
 import di.getScreenModel
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
@@ -80,10 +79,9 @@ internal object ChatScreen : Screen {
     @Composable
     override fun Content() {
         val screenModel: ChatScreenModel = getScreenModel { parametersOf(null as String?) }
-        val messagesUiState by screenModel.messagesUiState.collectAsState()
+        val currentChatUiState by screenModel.currentChatUiState.collectAsState()
         val screenUiState by screenModel.screenUiState.collectAsState()
         val chatsUiState by screenModel.chatsUiState.collectAsState()
-        val currentChat by screenModel.currentChat.collectAsState()
         val localClipboardManager = LocalClipboardManager.current
 
         ChatScreen(
@@ -93,9 +91,8 @@ internal object ChatScreen : Screen {
             onChatSelected = screenModel::onChatSelected,
             onTextChange = screenModel::onTextChange,
             screenUiState = screenUiState,
-            messagesUiState = messagesUiState,
+            currentChatUiState = currentChatUiState,
             chatsUiState = chatsUiState,
-            currentChat = currentChat,
             onClickShare = screenModel::onMessageShared,
             onClickCopy = { text ->
                 localClipboardManager.setText(AnnotatedString(text))
@@ -114,9 +111,8 @@ internal object ChatScreen : Screen {
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
         screenUiState: ChatScreenUiState,
-        messagesUiState: ChatMessagesUiState,
+        currentChatUiState: ChatMessagesUiState,
         chatsUiState: ChatsUiState,
-        currentChat: ChatEntity?,
     ) {
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         val scope = rememberCoroutineScope()
@@ -131,7 +127,7 @@ internal object ChatScreen : Screen {
                             ChatDrawerContent(
                                 showCreateChatButton = false,
                                 chatsUiState = chatsUiState,
-                                currentChat = currentChat,
+                                currentChatUiState = currentChatUiState,
                                 onNewChat = onNewChat,
                                 onChatSelected = onChatSelected,
                                 onCloseDrawer = { scope.launch { drawerState.close() } }
@@ -141,7 +137,6 @@ internal object ChatScreen : Screen {
                 ) {
                     ChatScreenContent(
                         showTopBarActions = true,
-                        messagesUiState = messagesUiState,
                         onClickCopy = onClickCopy,
                         onClickShare = onClickShare,
                         onTextChange = onTextChange,
@@ -149,7 +144,7 @@ internal object ChatScreen : Screen {
                         onRetry = onRetry,
                         onNewChat = onNewChat,
                         screenUiState = screenUiState,
-                        currentChat = currentChat,
+                        currentChatUiState = currentChatUiState,
                         onMenuClick = { scope.launch { drawerState.open() } },
                     )
                 }
@@ -160,7 +155,7 @@ internal object ChatScreen : Screen {
                             ChatDrawerContent(
                                 showCreateChatButton = true,
                                 chatsUiState = chatsUiState,
-                                currentChat = currentChat,
+                                currentChatUiState = currentChatUiState,
                                 onNewChat = onNewChat,
                                 onChatSelected = onChatSelected,
                                 onCloseDrawer = { scope.launch { drawerState.close() } },
@@ -175,7 +170,6 @@ internal object ChatScreen : Screen {
                         )
                         ChatScreenContent(
                             showTopBarActions = false,
-                            messagesUiState = messagesUiState,
                             onClickCopy = onClickCopy,
                             onClickShare = onClickShare,
                             onTextChange = onTextChange,
@@ -183,7 +177,7 @@ internal object ChatScreen : Screen {
                             onRetry = onRetry,
                             onNewChat = onNewChat,
                             screenUiState = screenUiState,
-                            currentChat = currentChat,
+                            currentChatUiState = currentChatUiState,
                             onMenuClick = { scope.launch { drawerState.open() } },
                         )
                     }
@@ -196,9 +190,8 @@ internal object ChatScreen : Screen {
 
     @Composable
     private fun ChatScreenContent(
-        currentChat: ChatEntity?,
         screenUiState: ChatScreenUiState,
-        messagesUiState: ChatMessagesUiState,
+        currentChatUiState: ChatMessagesUiState,
         showTopBarActions: Boolean,
         onSend: () -> Unit,
         onRetry: () -> Unit,
@@ -214,7 +207,7 @@ internal object ChatScreen : Screen {
         Scaffold(
             topBar = {
                 ChatTopBar(
-                    chatTitle = currentChat?.title,
+                    chatTitle = currentChatUiState.chatOrNull?.title,
                     showTopBarActions = showTopBarActions,
                     onNewChat = {
                         onNewChat()
@@ -235,13 +228,13 @@ internal object ChatScreen : Screen {
             modifier = modifier,
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding)) {
-                when (messagesUiState) {
+                when (currentChatUiState) {
                     ChatMessagesUiState.Empty,
                     ChatMessagesUiState.Loading -> Unit
 
                     is ChatMessagesUiState.Success -> {
                         Messages(
-                            messages = messagesUiState.messages,
+                            messages = currentChatUiState.messages,
                             onClickCopy = onClickCopy,
                             onClickShare = onClickShare,
                             onRetry = onRetry,
@@ -255,7 +248,7 @@ internal object ChatScreen : Screen {
     @Composable
     private fun ChatDrawerContent(
         chatsUiState: ChatsUiState,
-        currentChat: ChatEntity?,
+        currentChatUiState: ChatMessagesUiState,
         showCreateChatButton: Boolean,
         onChatSelected: (String) -> Unit,
         onCloseDrawer: () -> Unit,
@@ -279,7 +272,7 @@ internal object ChatScreen : Screen {
             ChatsUiState.Loading -> Unit
             is ChatsUiState.Success -> {
                 chatsUiState.chats.forEach { chat ->
-                    val isSelected = chat.id == currentChat?.id
+                    val isSelected = chat.id == currentChatUiState.chatOrNull?.id
                     NavigationDrawerItem(
                         label = {
                             Text(

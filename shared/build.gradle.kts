@@ -101,9 +101,9 @@ kotlin {
                 api(libs.core.splashscreen)
 
                 // Firebase
-                implementation(project.dependencies.platform(libs.firebase.bom))
-                implementation(libs.firebase.analytics)
-                implementation(libs.firebase.crashlytics.ktx)
+                api(project.dependencies.platform(libs.firebase.bom))
+                api(libs.firebase.analytics.ktx)
+                api(libs.firebase.crashlytics.ktx)
                 api(libs.firebase.appcheck.playintegrity)
             }
         }
