@@ -29,6 +29,10 @@ kotlin {
             isStatic = true
         }
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+
+        pod("FirebaseAnalytics") {
+            version = "~> 10.9.0"
+        }
     }
 
     sourceSets {

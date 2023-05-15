@@ -19,14 +19,13 @@ package analytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import io.github.aakira.napier.Napier
-import javax.inject.Inject
 
-private const val TAG = "FirebaseAnalyticsHelper"
+private const val TAG = "FirebaseAnalyticsHelperAndroid"
 
 /**
  * Implementation of `AnalyticsHelper` which logs events to a Firebase backend.
  */
-class FirebaseAnalyticsHelper @Inject constructor(
+class FirebaseAnalyticsHelper(
     private val firebaseAnalytics: FirebaseAnalytics,
 ) : AnalyticsHelper {
 

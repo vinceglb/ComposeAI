@@ -44,5 +44,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>FirebaseAutomaticScreenReportingEnabled</key>
+    <false/>
 </dict>
 </plist>
