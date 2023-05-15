@@ -78,6 +78,9 @@ kotlin {
 
                 // Napier (log)
                 api(libs.napier)
+
+                // Insets
+                implementation(libs.insetsx)
             }
         }
         val androidMain by getting {

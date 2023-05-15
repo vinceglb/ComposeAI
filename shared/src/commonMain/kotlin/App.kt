@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
+import com.moriatsushi.insetsx.safeDrawingPadding
 import ui.screens.chat.ChatScreen
 import ui.screens.welcome.WelcomeScreen
 import ui.theme.AppTheme
@@ -49,10 +50,12 @@ fun App(
             setup()
 
             Surface {
-                Crossfade (firstScreen) { screen ->
-                    when (screen) {
-                        null -> Box(modifier = Modifier.fillMaxSize())
-                        else -> Navigator(screen)
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    Crossfade (firstScreen) { screen ->
+                        when (screen) {
+                            null -> Box(modifier = Modifier.fillMaxSize())
+                            else -> Navigator(screen)
+                        }
                     }
                 }
             }

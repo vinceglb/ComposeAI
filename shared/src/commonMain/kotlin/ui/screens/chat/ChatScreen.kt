@@ -228,17 +228,23 @@ internal object ChatScreen : Screen {
             modifier = modifier,
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding)) {
-                when (currentChatUiState) {
-                    ChatMessagesUiState.Empty,
-                    ChatMessagesUiState.Loading -> Unit
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    when (currentChatUiState) {
+                        ChatMessagesUiState.Empty,
+                        ChatMessagesUiState.Loading -> Unit
 
-                    is ChatMessagesUiState.Success -> {
-                        Messages(
-                            messages = currentChatUiState.messages,
-                            onClickCopy = onClickCopy,
-                            onClickShare = onClickShare,
-                            onRetry = onRetry,
-                        )
+                        is ChatMessagesUiState.Success -> {
+                            Messages(
+                                messages = currentChatUiState.messages,
+                                onClickCopy = onClickCopy,
+                                onClickShare = onClickShare,
+                                onRetry = onRetry,
+                            )
+                        }
                     }
                 }
             }

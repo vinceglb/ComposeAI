@@ -12,6 +12,7 @@ firebaseBom = "32.0.0"
 firebaseCrashlyticsGradle = "2.9.5"
 googleServices = "4.3.15"
 imageLoader = "1.4.0"
+insetsx = "0.1.0-alpha05"
 koin = "3.4.0"
 kotlinxDatetime = "0.4.0"
 libresCompose = "1.1.8"
@@ -41,6 +42,7 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
+insetsx = { module = "com.moriatsushi.insetsx:insetsx", version.ref = "insetsx" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
