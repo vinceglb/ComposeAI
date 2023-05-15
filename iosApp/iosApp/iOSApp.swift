@@ -16,6 +16,7 @@ struct iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     init() {
+        NapierProxyKt.debugBuild()
         AppModuleKt.doInitKoin()
     }
     

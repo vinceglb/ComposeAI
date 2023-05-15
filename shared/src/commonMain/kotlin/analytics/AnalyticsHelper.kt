@@ -16,10 +16,17 @@
 
 package analytics
 
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
 /**
  * Interface for logging analytics events. See `FirebaseAnalyticsHelper` and
  * `StubAnalyticsHelper` for implementations.
  */
 interface AnalyticsHelper {
     fun logEvent(event: AnalyticsEvent)
+}
+
+class AnalyticsInjected : KoinComponent {
+    val analyticsHelper: AnalyticsHelper by inject()
 }

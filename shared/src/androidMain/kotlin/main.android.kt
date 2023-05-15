@@ -1,4 +1,4 @@
-import analytics.AnalyticsHelper
+
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -6,9 +6,8 @@ import androidx.compose.runtime.DisposableEffect
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun MainView(analyticsHelper: AnalyticsHelper) {
+fun MainView() {
     App(
-        analyticsHelper = analyticsHelper,
         setup = {
             // Remember a SystemUiController
             val systemUiController = rememberSystemUiController()

@@ -1,8 +1,8 @@
 
 import AppScreenUiState.Success
 import analytics.AnalyticsHelper
+import analytics.AnalyticsInjected
 import analytics.LocalAnalyticsHelper
-import analytics.NoOpAnalyticsHelper
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +23,7 @@ import ui.theme.AppTheme
 
 @Composable
 fun App(
-    analyticsHelper: AnalyticsHelper = NoOpAnalyticsHelper(),
+    analyticsHelper: AnalyticsHelper = AnalyticsInjected().analyticsHelper,
     setup: @Composable () -> Unit = {},
 ) {
     // Waiting koinInject for Multiplatform to be released
