@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.aallam.openai.api.chat.ChatRole
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import expect.platform
+import markdown.compose.Markdown
+import markdown.model.markdownPadding
 import model.AppPlatform
 import model.isFailed
 import org.jetbrains.compose.resources.painterResource
@@ -110,7 +112,7 @@ fun MessageLine(
         onClick = { showOptions = !showOptions },
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Row(modifier = Modifier.padding(12.dp)) {
+        Row(modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 16.dp, bottom = 16.dp)) {
             if (message.role == ChatRole.Assistant) {
                 Image(
                     painter = painterResource(assistantImage),
@@ -136,12 +138,11 @@ fun MessageLine(
             Column {
                 // Content text
                 if (message.isFailed.not()) {
-                    //SelectionContainer {
-                    Text(
-                        message.content,
-                        modifier = Modifier.padding(top = 8.dp),
+                    Markdown(
+                        content = message.content,
+                        modifier = Modifier.padding(top = 9.dp),
+                        padding = markdownPadding(block = 24.dp, list = 8.dp)
                     )
-                    // }
                 } else {
                     Text(
                         "Failed to receive response",

@@ -78,6 +78,9 @@ kotlin {
 
                 // Napier (log)
                 api(libs.napier)
+
+                // Markdown
+                implementation(libs.markdown)
             }
         }
         val androidMain by getting {
