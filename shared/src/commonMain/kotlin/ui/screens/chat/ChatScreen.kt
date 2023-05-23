@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChatBubble
@@ -55,20 +53,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import di.getScreenModel
+import expect.ChatTextField
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import ui.components.TypewriterText
@@ -402,32 +397,41 @@ internal object ChatScreen : Screen {
                             contentAlignment = Alignment.CenterStart,
                             modifier = Modifier.weight(1f),
                         ) {
-                            BasicTextField(
+                            ChatTextField(
                                 value = text,
                                 onValueChange = onTextChange,
-                                maxLines = 3,
-                                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-                                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
-                                decorationBox = { innerTextField ->
-                                    if (text.isBlank()) {
-                                        Text(
-                                            text = "Ask me anything...",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.alpha(0.6f)
-                                        )
-                                    }
-                                    innerTextField()
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    capitalization = KeyboardCapitalization.Sentences,
-                                ),
+                                label = "Ask me anything...",
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp, vertical = 12.dp)
                                     .fillMaxWidth(1f)
                                     .focusRequester(focusRequester)
                             )
+//                            BasicTextField(
+//                                value = text,
+//                                onValueChange = onTextChange,
+//                                maxLines = 3,
+//                                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+//                                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+//                                decorationBox = { innerTextField ->
+//                                    if (text.isBlank()) {
+//                                        Text(
+//                                            text = "Ask me anything...",
+//                                            style = MaterialTheme.typography.bodyLarge,
+//                                            color = MaterialTheme.colorScheme.onSurface,
+//                                            modifier = Modifier.alpha(0.6f)
+//                                        )
+//                                    }
+//                                    innerTextField()
+//                                },
+//                                keyboardOptions = KeyboardOptions(
+//                                    keyboardType = KeyboardType.Text,
+//                                    capitalization = KeyboardCapitalization.Sentences,
+//                                ),
+//                                modifier = Modifier
+//                                    .padding(horizontal = 16.dp, vertical = 12.dp)
+//                                    .fillMaxWidth(1f)
+//                                    .focusRequester(focusRequester)
+//                            )
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
