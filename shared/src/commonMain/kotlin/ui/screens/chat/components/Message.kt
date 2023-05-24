@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -116,6 +118,8 @@ fun MessageLine(
         else -> MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
     }
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     var showOptions by remember { mutableStateOf<Boolean?>(null) }
 
     Card(
@@ -124,8 +128,13 @@ fun MessageLine(
             containerColor = containerColor,
         ),
         border = BorderStroke(1.dp, borderColor),
-        onClick = { showOptions = showOptions?.let { !it } ?: !isLast },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                enabled = message.role == ChatRole.Assistant,
+                indication = null,
+                interactionSource = interactionSource,
+            ) { showOptions = showOptions?.let { !it } ?: !isLast },
     ) {
         Row(modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 16.dp, bottom = 16.dp)) {
             if (message.role == ChatRole.Assistant) {
