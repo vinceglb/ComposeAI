@@ -14,7 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CopyAll
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,26 +57,40 @@ fun Messages(
     onRetry: () -> Unit,
 ) {
     val reverseMessages = remember(messages) { messages.reversed() }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(all = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         reverseLayout = true,
     ) {
-        items(reverseMessages) { chatMessage ->
+        itemsIndexed(
+            items = reverseMessages,
+            key = { _, item -> item.id },
+            contentType = { _, item -> item.role },
+        ) { index, chatMessage ->
             MessageLine(
                 chatMessage,
+                isLast = index == 0,
                 onClickCopy = onClickCopy,
                 onClickShare = onClickShare,
                 onRetry = onRetry,
             )
         }
     }
+
+//    // Scroll to the bottom whenever a new message appears
+//    LaunchedEffect(messages.size) {
+//        listState.animateScrollToItem(0)
+//    }
 }
 
 @Composable
 fun MessageLine(
     message: ChatMessageEntity,
+    isLast: Boolean,
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
     onRetry: () -> Unit,
@@ -101,7 +117,7 @@ fun MessageLine(
         else -> MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
     }
 
-    var showOptions by remember { mutableStateOf(false) }
+    var showOptions by remember { mutableStateOf<Boolean?>(null) }
 
     Card(
         colors = CardDefaults.cardColors(
@@ -109,7 +125,7 @@ fun MessageLine(
             containerColor = containerColor,
         ),
         border = BorderStroke(1.dp, borderColor),
-        onClick = { showOptions = !showOptions },
+        onClick = { showOptions = showOptions?.let { !it } ?: !isLast },
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 16.dp, bottom = 16.dp)) {
@@ -154,7 +170,7 @@ fun MessageLine(
                 // Copy and share buttons
                 if (message.role == ChatRole.Assistant && !message.isFailed) {
                     AnimatedVisibility(
-                        visible = showOptions,
+                        visible = showOptions == true || (isLast && showOptions == null),
                     ) {
                         Row(modifier = Modifier.padding(top = 16.dp)) {
                             // Copy button
