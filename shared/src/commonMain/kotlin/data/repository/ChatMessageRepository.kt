@@ -159,7 +159,10 @@ class ChatMessageRepository(
                 status = ChatMessageStatus.FAILED,
             )
 
-            analyticsHelper.logMessageReceived(receivedSuccessfully = false)
+            analyticsHelper.logMessageReceived(
+                receivedSuccessfully = false,
+                errorName = e::class.simpleName,
+            )
             throw e
         }
     }
