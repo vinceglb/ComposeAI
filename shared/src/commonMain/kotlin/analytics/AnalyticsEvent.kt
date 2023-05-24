@@ -53,6 +53,7 @@ data class AnalyticsEvent(
     class ParamKeys {
         companion object {
             const val SCREEN_NAME = "screen_name"
+            const val AI_ERROR_NAME = "ai_error_name"
         }
     }
 }

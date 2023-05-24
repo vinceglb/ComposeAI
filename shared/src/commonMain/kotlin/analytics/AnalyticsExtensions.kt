@@ -43,10 +43,15 @@ fun AnalyticsHelper.logMessageSent(isRetry: Boolean = false) {
     )
 }
 
-fun AnalyticsHelper.logMessageReceived(receivedSuccessfully: Boolean) {
+fun AnalyticsHelper.logMessageReceived(receivedSuccessfully: Boolean, errorName: String? = null) {
     val eventType = if (receivedSuccessfully) "ai_message_successful" else "ai_message_failed"
     logEvent(
-        AnalyticsEvent(type = eventType),
+        AnalyticsEvent(
+            type = eventType,
+            extras = errorName?.let {
+                listOf(Param(ParamKeys.AI_ERROR_NAME, errorName))
+            } ?: emptyList()
+        ),
     )
 }
 
