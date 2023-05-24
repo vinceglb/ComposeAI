@@ -110,11 +110,11 @@ class ChatScreenModel(
             }
 
             // Update chat title
-            if (sendMessageResult.isSuccess) {
-                chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
-                    chatRepository.updateChatTitle(chatId, it)
-                }
-            }
+//            if (sendMessageResult.isSuccess) {
+//                chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
+//                    chatRepository.updateChatTitle(chatId, it)
+//                }
+//            }
         }
     }
 

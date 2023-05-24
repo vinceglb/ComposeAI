@@ -1,12 +1,14 @@
 package markdown.utils
 
 import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import markdown.compose.LocalMarkdownColors
+import markdown.compose.LocalMarkdownTypography
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.MarkdownTokenTypes.Companion.TEXT
@@ -15,6 +17,7 @@ import org.intellij.markdown.ast.findChildOfType
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.flavours.gfm.GFMTokenTypes
 
+@Composable
 internal fun AnnotatedString.Builder.appendMarkdownLink(content: String, node: ASTNode) {
     val linkText = node.findChildOfType(MarkdownElementTypes.LINK_TEXT)?.children?.innerList()
     if (linkText == null) {
@@ -29,6 +32,7 @@ internal fun AnnotatedString.Builder.appendMarkdownLink(content: String, node: A
     pop()
 }
 
+@Composable
 internal fun AnnotatedString.Builder.appendAutoLink(content: String, node: ASTNode) {
     val destination = node.getTextInNode(content).toString()
     pushStringAnnotation(TAG_URL, (destination))
@@ -37,11 +41,16 @@ internal fun AnnotatedString.Builder.appendAutoLink(content: String, node: ASTNo
     pop()
 }
 
+@Composable
 internal fun AnnotatedString.Builder.buildMarkdownAnnotatedString(content: String, node: ASTNode) {
     buildMarkdownAnnotatedString(content, node.children)
 }
 
+@Composable
 internal fun AnnotatedString.Builder.buildMarkdownAnnotatedString(content: String, children: List<ASTNode>) {
+    val typography = LocalMarkdownTypography.current
+    val backgroundCodeColor = LocalMarkdownColors.current.backgroundCode
+
     children.forEach { child ->
         when (child.type) {
             MarkdownElementTypes.PARAGRAPH -> buildMarkdownAnnotatedString(content, child)
@@ -59,11 +68,11 @@ internal fun AnnotatedString.Builder.buildMarkdownAnnotatedString(content: Strin
                 pop()
             }
             MarkdownElementTypes.CODE_SPAN -> {
-                pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
-                append(' ')
+                append("  ")
+                pushStyle(typography.code.toSpanStyle().copy(background = backgroundCodeColor))
                 buildMarkdownAnnotatedString(content, child.children.innerList())
-                append(' ')
                 pop()
+                append("  ")
             }
             MarkdownElementTypes.AUTOLINK -> appendAutoLink(content, child)
             MarkdownElementTypes.INLINE_LINK -> appendMarkdownLink(content, child)
