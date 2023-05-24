@@ -1,9 +1,9 @@
 package markdown.compose.elements
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +18,12 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import extendedspans.ExtendedSpans
+import extendedspans.RoundedCornerSpanPainter
+import extendedspans.SquigglyUnderlineSpanPainter
+import extendedspans.drawBehind
+import extendedspans.rememberSquigglyUnderlineAnimator
+import markdown.compose.LocalMarkdownColors
 import markdown.compose.LocalMarkdownTypography
 import markdown.compose.LocalReferenceLinkHandler
 import markdown.utils.TAG_IMAGE_URL
@@ -55,7 +61,7 @@ internal fun MarkdownText(
         }
     } else modifier
 
-    Text(
+    ExtendedSpansText(
         text = content,
         modifier = textModifier,
         style = style,
@@ -72,5 +78,50 @@ internal fun MarkdownText(
             }
         ),
         onTextLayout = { layoutResult.value = it }
+    )
+}
+
+@Composable
+fun ExtendedSpansText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    style: TextStyle = LocalTextStyle.current,
+    inlineContent: Map<String, InlineTextContent> = mapOf(),
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+) {
+    val borderColor = LocalMarkdownColors.current.borderBlockCodeColor
+    val underlineAnimator = rememberSquigglyUnderlineAnimator()
+    val extendedSpans = remember {
+        ExtendedSpans(
+            RoundedCornerSpanPainter(
+                cornerRadius = 4.sp,
+                padding = RoundedCornerSpanPainter.TextPaddingValues(horizontal = 3.sp),
+                topMargin = 2.sp,
+                bottomMargin = 1.sp,
+                stroke = RoundedCornerSpanPainter.Stroke(
+                    color = borderColor.copy(alpha = 0.4f)
+                ),
+            ),
+            SquigglyUnderlineSpanPainter(
+                width = 4.sp,
+                wavelength = 20.sp,
+                amplitude = 2.sp,
+                bottomOffset = 2.sp,
+                animator = underlineAnimator
+            )
+        )
+    }
+
+    Text(
+        modifier = modifier.drawBehind(extendedSpans),
+        text = remember(text) {
+            extendedSpans.extend(text)
+        },
+        onTextLayout = { result ->
+            extendedSpans.onTextLayout(result)
+            onTextLayout(result)
+        },
+        style = style,
+        inlineContent = inlineContent,
     )
 }

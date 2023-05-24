@@ -109,8 +109,8 @@ class ChatScreenModel(
                 it.copy(isSending = false)
             }
 
-            // Update chat title
-            if (sendMessageResult.isSuccess) {
+            // Update chat title for the first message
+            if (sendMessageResult.isSuccess && sendMessageResult.getOrThrow() == 1) {
                 chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
                     chatRepository.updateChatTitle(chatId, it)
                 }

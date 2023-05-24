@@ -1,5 +1,6 @@
 package markdown.compose.elements
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,14 +22,16 @@ private fun MarkdownCode(
     style: TextStyle = LocalMarkdownTypography.current.code
 ) {
     val backgroundCodeColor = LocalMarkdownColors.current.backgroundCode
+    val borderCodeColor = LocalMarkdownColors.current.borderBlockCodeColor
     Surface(
         color = backgroundCodeColor,
+        border = BorderStroke(1.dp, borderCodeColor),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp)
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 12.dp)
     ) {
         Text(
             code,
-            modifier = Modifier.horizontalScroll(rememberScrollState()).padding(8.dp),
+            modifier = Modifier.horizontalScroll(rememberScrollState()).padding(12.dp),
             style = style
         )
     }

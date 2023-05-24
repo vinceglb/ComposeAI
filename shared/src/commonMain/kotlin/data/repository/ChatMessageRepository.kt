@@ -36,7 +36,7 @@ class ChatMessageRepository(
     suspend fun sendMessage(
         chatId: String,
         contentMessage: String,
-    ): Result<Unit> = suspendRunCatching(defaultDispatcher) {
+    ): Result<Int> = suspendRunCatching(defaultDispatcher) {
         analyticsHelper.logMessageSent()
 
         // Save user message
@@ -54,27 +54,28 @@ class ChatMessageRepository(
         sendReceiveAndSaveAI(chatId = chatId)
     }
 
-    suspend fun retrySendMessage(chatId: String): Result<Unit> = suspendRunCatching(defaultDispatcher) {
-        analyticsHelper.logMessageSent(isRetry = true)
+    suspend fun retrySendMessage(chatId: String): Result<Int> =
+        suspendRunCatching(defaultDispatcher) {
+            analyticsHelper.logMessageSent(isRetry = true)
 
-        val failedMessages = chatMessageQueries
-            .getChatMessagesWithChatIdAndStatus(chatId, ChatMessageStatus.FAILED)
-            .executeAsList()
+            val failedMessages = chatMessageQueries
+                .getChatMessagesWithChatIdAndStatus(chatId, ChatMessageStatus.FAILED)
+                .executeAsList()
 
-        failedMessages.forEach { message ->
-            chatMessageQueries.deleteChatMessage(message.id)
+            failedMessages.forEach { message ->
+                chatMessageQueries.deleteChatMessage(message.id)
+            }
+
+            // Send message to OpenAI
+            sendReceiveAndSaveAI(chatId = chatId)
         }
-
-        // Send message to OpenAI
-        sendReceiveAndSaveAI(chatId = chatId)
-    }
 
     suspend fun generateTitleFromChat(
         chatId: String,
     ): Result<String> = suspendRunCatching(defaultDispatcher) {
         val instruction = ChatMessage(
             role = ChatRole.System,
-            content = "Generate a very short title for this chat. Use the language used in the chat. Do not add any punctuation.",
+            content = "What would be a short and relevant title for this chat? You must strictly answer with only the title, no other text is allowed.",
         )
 
         val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)
@@ -98,9 +99,9 @@ class ChatMessageRepository(
      * - Update assistant message status to sent
      *
      * @param chatId Chat id
-     * @param assistantMessageId Assistant message id
+     * @return Number of messages sent by the user
      */
-    private suspend fun sendReceiveAndSaveAI(chatId: String) {
+    private suspend fun sendReceiveAndSaveAI(chatId: String): Int {
         // Save empty assistant message
         val assistantMessageId = uuid4().toString()
         chatMessageQueries.insertChatMessage(
@@ -144,6 +145,13 @@ class ChatMessageRepository(
             )
 
             analyticsHelper.logMessageReceived(receivedSuccessfully = true)
+
+            // Return number of messages sent by the user
+            return chatMessageQueries.countChatMessagesWithChatId(
+                chatId = chatId,
+                role = ChatRole.User,
+                status = ChatMessageStatus.SENT,
+            ).executeAsOne().toInt()
         } catch (e: Exception) {
             // Update assistant message status to failed
             chatMessageQueries.updateChatMessageStatus(
