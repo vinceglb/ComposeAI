@@ -4,7 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +39,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.unit.dp
 import com.aallam.openai.api.chat.ChatRole
 import com.ebfstudio.appgpt.common.ChatMessageEntity
@@ -50,6 +52,7 @@ import model.isFailed
 import org.jetbrains.compose.resources.painterResource
 import ui.components.ImageUrl
 import ui.components.appImagePath
+import util.rememberHapticFeedback
 
 @Composable
 fun Messages(
@@ -60,6 +63,7 @@ fun Messages(
 ) {
     val reverseMessages = remember(messages) { messages.reversed() }
     val listState = rememberLazyListState()
+    val hapticFeedback = rememberHapticFeedback()
 
     LazyColumn(
         state = listState,
@@ -78,6 +82,7 @@ fun Messages(
                 onClickCopy = onClickCopy,
                 onClickShare = onClickShare,
                 onRetry = onRetry,
+                hapticFeedback = hapticFeedback,
             )
         }
     }
@@ -92,6 +97,7 @@ fun Messages(
 fun MessageLine(
     message: ChatMessageEntity,
     isLast: Boolean,
+    hapticFeedback: HapticFeedback,
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
     onRetry: () -> Unit,
@@ -118,9 +124,9 @@ fun MessageLine(
         else -> MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
     }
 
-    val interactionSource = remember { MutableInteractionSource() }
-
     var showOptions by remember { mutableStateOf<Boolean?>(null) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val onCardClick = { showOptions = showOptions?.let { !it } ?: !isLast }
 
     Card(
         colors = CardDefaults.cardColors(
@@ -130,11 +136,16 @@ fun MessageLine(
         border = BorderStroke(1.dp, borderColor),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
+            .combinedClickable(
                 enabled = message.role == ChatRole.Assistant,
                 indication = null,
                 interactionSource = interactionSource,
-            ) { showOptions = showOptions?.let { !it } ?: !isLast },
+                onClick = onCardClick,
+                onLongClick = {
+                    onClickCopy(message.content)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
+            )
     ) {
         Row(modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 16.dp, bottom = 16.dp)) {
             if (message.role == ChatRole.Assistant) {
