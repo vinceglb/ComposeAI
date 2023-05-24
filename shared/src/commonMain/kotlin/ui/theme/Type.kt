@@ -11,7 +11,7 @@ suspend fun appTypography(defaultTypography: Typography): Typography {
     val outfitFamily = outfitFontFamily()
 
     return Typography(
-        bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = outfitFamily, fontWeight = FontWeight.Light, letterSpacing = (-0.1).sp),
+        bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = outfitFamily, fontWeight = FontWeight.Light, letterSpacing = (-0.03).sp),
         bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = outfitFamily),
         bodySmall = defaultTypography.bodySmall.copy(fontFamily = outfitFamily),
         labelLarge = defaultTypography.labelLarge.copy(fontFamily = outfitFamily),
