@@ -109,12 +109,12 @@ class ChatScreenModel(
                 it.copy(isSending = false)
             }
 
-            // Update chat title
-//            if (sendMessageResult.isSuccess) {
-//                chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
-//                    chatRepository.updateChatTitle(chatId, it)
-//                }
-//            }
+            // Update chat title for the first message
+            if (sendMessageResult.isSuccess && sendMessageResult.getOrThrow() == 1) {
+                chatMessageRepository.generateTitleFromChat(chatId).onSuccess {
+                    chatRepository.updateChatTitle(chatId, it)
+                }
+            }
         }
     }
 

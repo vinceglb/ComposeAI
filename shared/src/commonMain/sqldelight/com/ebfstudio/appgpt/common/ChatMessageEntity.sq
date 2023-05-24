@@ -40,3 +40,8 @@ WHERE id = ?;
 deleteChatMessage:
 DELETE FROM ChatMessageEntity
 WHERE id = ?;
+
+countChatMessagesWithChatId:
+SELECT COUNT(*)
+FROM ChatMessageEntity
+WHERE chatId = ? AND role = ? AND status = ?;
