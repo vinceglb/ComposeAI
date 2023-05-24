@@ -199,4 +199,5 @@ kotlin.sourceSets.all {
     languageSettings.optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
     languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
     languageSettings.optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+    languageSettings.optIn("androidx.compose.foundation.ExperimentalFoundationApi")
 }
