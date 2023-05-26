@@ -31,10 +31,18 @@ android {
         versionName = "1.1.0"
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlin {
         jvmToolchain(11)
     }
+}
+
+dependencies {
+    // Java 8+ API desugaring support
+    // - A subset of java.time
+    // - https://developer.android.com/studio/write/java8-support#library-desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
