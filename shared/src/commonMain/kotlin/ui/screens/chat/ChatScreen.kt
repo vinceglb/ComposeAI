@@ -1,5 +1,6 @@
 package ui.screens.chat
 
+import analytics.AdMobButton
 import analytics.TrackScreenViewEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -329,6 +330,7 @@ internal object ChatScreen : Screen {
             },
             actions = {
                 if (showTopBarActions.not()) return@CenterAlignedTopAppBar
+                AdMobButton()
                 IconButton(
                     onClick = onNewChat,
                 ) {

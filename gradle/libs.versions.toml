@@ -18,6 +18,7 @@ libresCompose = "1.1.8"
 markdown = "0.4.1"
 napier = "2.6.1"
 openaiClient = "3.2.3"
+playServicesAds = "22.1.0"
 resources = "0.3.2"
 settings = "1.0.0"
 sqlDelight = "2.0.0-alpha05"
@@ -53,6 +54,7 @@ multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-setti
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClient" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 resources = { module = "com.goncalossilva:resources", version.ref = "resources" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }

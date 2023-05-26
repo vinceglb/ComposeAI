@@ -112,6 +112,9 @@ kotlin {
                 api(libs.firebase.analytics.ktx)
                 api(libs.firebase.crashlytics.ktx)
                 api(libs.firebase.appcheck.playintegrity)
+
+                // AdMob
+                api(libs.play.services.ads)
             }
         }
         val iosX64Main by getting
@@ -147,10 +150,12 @@ android {
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlin {
         jvmToolchain(11)
     }
