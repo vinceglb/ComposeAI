@@ -17,9 +17,10 @@ class PreferenceRepository(
     fun welcomeShown(): Flow<Boolean> =
         preferenceLocalDataSource.welcomeShown()
 
-    suspend fun setWelcomeShown() = withContext(defaultDispatcher) {
-        preferenceLocalDataSource.setWelcomeShown()
-        analyticsHelper.logWelcomeSeen()
-    }
+    suspend fun setWelcomeShown(): Unit =
+        withContext(defaultDispatcher) {
+            preferenceLocalDataSource.setWelcomeShown()
+            analyticsHelper.logWelcomeSeen()
+        }
 
 }

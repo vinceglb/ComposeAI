@@ -11,6 +11,7 @@ import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
+import data.repository.TokenRepository
 import expect.shareText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 class ChatScreenModel(
     private val chatRepository: ChatRepository,
     private val chatMessageRepository: ChatMessageRepository,
+    private val tokenRepository: TokenRepository,
     private val analyticsHelper: AnalyticsHelper,
     initialChatId: String?,
 ) : ScreenModel {
@@ -45,8 +47,13 @@ class ChatScreenModel(
                 combine(
                     chatRepository.getChatStream(id),
                     chatMessageRepository.getMessagesStream(id),
-                ) { chat, messages ->
-                    ChatMessagesUiState.Success(chat = chat, messages = messages)
+                    tokenRepository.tokens(),
+                ) { chat, messages, tokens ->
+                    ChatMessagesUiState.Success(
+                        chat = chat,
+                        messages = messages,
+                        tokens = tokens,
+                    )
                 }
             }
         }.stateIn(
@@ -160,6 +167,12 @@ class ChatScreenModel(
         analyticsHelper.logMessageShared()
     }
 
+    fun onRewardEarned(tokens: Int) {
+        coroutineScope.launch {
+            tokenRepository.useTokens(add = tokens)
+        }
+    }
+
 }
 
 sealed interface ChatsUiState {
@@ -174,12 +187,19 @@ sealed interface ChatMessagesUiState {
     object Loading : ChatMessagesUiState
     data class Success(
         val chat: ChatEntity? = null,
-        val messages: List<ChatMessageEntity> = emptyList()
+        val messages: List<ChatMessageEntity> = emptyList(),
+        val tokens: Int = 0,
     ) : ChatMessagesUiState
 
     val chatOrNull: ChatEntity?
         get() = when (this) {
             is Success -> chat
+            else -> null
+        }
+
+    val tokensOrNull: Int?
+        get() = when (this) {
+            is Success -> tokens
             else -> null
         }
 }

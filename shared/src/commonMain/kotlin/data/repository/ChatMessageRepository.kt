@@ -13,6 +13,7 @@ import com.aallam.openai.client.OpenAI
 import com.benasher44.uuid.uuid4
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntityQueries
+import data.local.PreferenceLocalDataSource
 import data.repository.util.suspendRunCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +25,9 @@ import model.asModel
 class ChatMessageRepository(
     private val openAI: OpenAI,
     private val chatMessageQueries: ChatMessageEntityQueries,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val tokenRepository: TokenRepository,
     private val analyticsHelper: AnalyticsHelper,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
     fun getMessagesStream(chatId: String): Flow<List<ChatMessageEntity>> =
@@ -143,6 +145,9 @@ class ChatMessageRepository(
                 id = assistantMessageId,
                 status = ChatMessageStatus.SENT,
             )
+
+            // Consume one token
+            tokenRepository.useTokens(remove = 1)
 
             analyticsHelper.logMessageReceived(receivedSuccessfully = true)
 

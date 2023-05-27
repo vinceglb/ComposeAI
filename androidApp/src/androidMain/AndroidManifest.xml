@@ -34,9 +34,6 @@
         <!-- Disable Firebase Analytics by default -->
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
 
-        <!-- Disable collection of AD_ID for all build variants -->
-        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
-
         <!-- Disable Automatic Firebase Analytics screen reporting
              https://firebase.google.com/docs/analytics/screenviews#disable_screenview_tracking -->
         <meta-data android:name="google_analytics_automatic_screen_reporting_enabled" android:value="false" />
@@ -46,6 +43,10 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2728188054904091~6210917371"/>
 
     </application>
 

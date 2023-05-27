@@ -85,6 +85,18 @@ fun AnalyticsHelper.logWelcomeSeen() {
     )
 }
 
+fun AnalyticsHelper.logRewardedAdImpression() {
+    logEvent(
+        AnalyticsEvent(type = "ad_ra_impression"),
+    )
+}
+
+fun AnalyticsHelper.logRewardedAdReward() {
+    logEvent(
+        AnalyticsEvent(type = "ad_ra_reward_earned"),
+    )
+}
+
 /**
  * A side-effect which records a screen view event.
  */
