@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!--
-    Firebase automatically adds the AD_ID permission, even though we don't use it. If you use this
-    permission you must declare how you're using it to Google Play, otherwise the app will be
-    rejected when publishing it. To avoid this we remove the permission entirely.
-    -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 
     <application
         android:name=".App"
