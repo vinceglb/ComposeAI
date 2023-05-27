@@ -2,10 +2,12 @@ package analytics
 
 import android.app.Activity
 import android.content.Context
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.GeneratingTokens
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,7 +15,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.ebfstudio.appgpt.common.BuildConfig
+import com.ebfstudio.appgpt.common.BuildKonfig
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -22,21 +29,31 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
+import ui.components.AnimatedCounter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @Composable
-actual fun AdMobButton() {
+actual fun AdMobButton(
+    tokens: Int,
+    onRewardEarned: (Int) -> Unit,
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val analyticsHelper = LocalAnalyticsHelper.current
+
+    val adId = when (BuildConfig.DEBUG) {
+        true -> "ca-app-pub-3940256099942544/5224354917"
+        else -> BuildKonfig.ADMOB_REWARDED_AD_ID
+    }
 
     var ad: RewardedAd? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
-        load(context).onSuccess { ad = it }
+        load(context, adId).onSuccess { ad = it }
     }
 
-    IconButton(
+    TextButton(
         enabled = ad != null,
         onClick = {
             ad?.let { adReward ->
@@ -46,24 +63,42 @@ actual fun AdMobButton() {
                     resetRewardAd = { ad = null },
                     loadNewRewardAd = {
                         coroutineScope.launch {
-                            load(context).onSuccess { ad = it }
+                            load(context, adId).onSuccess { ad = it }
                         }
-                    }
+                    },
+                    onAdImpression = {
+                        analyticsHelper.logRewardedAdImpression()
+                    },
+                    onRewardEarned = {
+                        onRewardEarned(it)
+                        analyticsHelper.logRewardedAdReward()
+                    },
                 )
                 ad = null
             }
         }
     ) {
-        Icon(Icons.Rounded.Favorite, contentDescription = null)
+        Icon(
+            Icons.Rounded.GeneratingTokens,
+            contentDescription = null,
+        )
+        Spacer(Modifier.width(4.dp))
+        AnimatedCounter(
+            count = tokens,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
-suspend fun load(context: Context): Result<RewardedAd> =
+suspend fun load(
+    context: Context,
+    adId: String,
+): Result<RewardedAd> =
     suspendCoroutine { continuation ->
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(
             context,
-            "ca-app-pub-3940256099942544/5224354917",
+            adId,
             adRequest,
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
@@ -83,7 +118,9 @@ fun show(
     context: Context,
     ad: RewardedAd,
     resetRewardAd: () -> Unit,
-    loadNewRewardAd: () -> Unit
+    loadNewRewardAd: () -> Unit,
+    onAdImpression: () -> Unit,
+    onRewardEarned: (Int) -> Unit,
 ) {
     ad.fullScreenContentCallback = object : FullScreenContentCallback() {
         override fun onAdClicked() {
@@ -108,6 +145,7 @@ fun show(
         override fun onAdImpression() {
             // Called when an impression is recorded for an ad.
             Napier.d("Ad recorded an impression.")
+            onAdImpression()
         }
 
         override fun onAdShowedFullScreenContent() {
@@ -121,6 +159,7 @@ fun show(
         val rewardAmount = rewardItem.amount
         val rewardType = rewardItem.type
         Napier.d("User earned the reward. $rewardAmount - $rewardType")
+        onRewardEarned(rewardAmount)
     }
 }
 

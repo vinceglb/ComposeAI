@@ -178,6 +178,12 @@ buildkonfig {
             "OPENAI_API_KEY",
             props["openai_api_key"]?.toString() ?: "abc"
         )
+
+        buildConfigField(
+            STRING,
+            "ADMOB_REWARDED_AD_ID",
+            props["admob_rewarded_ad_id"]?.toString() ?: "abc"
+        )
     }
 }
 

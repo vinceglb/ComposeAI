@@ -9,6 +9,7 @@ import data.local.SettingsFactory
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.PreferenceRepository
+import data.repository.TokenRepository
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -36,12 +37,13 @@ val commonModule = module {
     // ScreenModels
     factoryOf(::AppScreenModel)
     factoryOf(::WelcomeScreenModel)
-    factory { params -> ChatScreenModel(get(), get(), get(), initialChatId = params.getOrNull()) }
+    factory { params -> ChatScreenModel(get(), get(), get(), get(), initialChatId = params.getOrNull()) }
 
     // Repositories
     singleOf(::ChatRepository)
     singleOf(::ChatMessageRepository)
     singleOf(::PreferenceRepository)
+    singleOf(::TokenRepository)
 
     // DataSources
     factoryOf(::PreferenceLocalDataSource)

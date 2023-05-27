@@ -95,6 +95,7 @@ internal object ChatScreen : Screen {
             currentChatUiState = currentChatUiState,
             chatsUiState = chatsUiState,
             onClickShare = screenModel::onMessageShared,
+            onRewardEarned = screenModel::onRewardEarned,
             onClickCopy = { text ->
                 localClipboardManager.setText(AnnotatedString(text))
                 screenModel.onMessageCopied()
@@ -111,6 +112,7 @@ internal object ChatScreen : Screen {
         onTextChange: (String) -> Unit,
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
+        onRewardEarned: (Int) -> Unit,
         screenUiState: ChatScreenUiState,
         currentChatUiState: ChatMessagesUiState,
         chatsUiState: ChatsUiState,
@@ -146,6 +148,7 @@ internal object ChatScreen : Screen {
                         onNewChat = onNewChat,
                         screenUiState = screenUiState,
                         currentChatUiState = currentChatUiState,
+                        onRewardEarned = onRewardEarned,
                         onMenuClick = { scope.launch { drawerState.open() } },
                     )
                 }
@@ -179,6 +182,7 @@ internal object ChatScreen : Screen {
                             onNewChat = onNewChat,
                             screenUiState = screenUiState,
                             currentChatUiState = currentChatUiState,
+                            onRewardEarned = onRewardEarned,
                             onMenuClick = { scope.launch { drawerState.open() } },
                         )
                     }
@@ -201,6 +205,7 @@ internal object ChatScreen : Screen {
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
         onTextChange: (String) -> Unit,
+        onRewardEarned: (Int) -> Unit,
         modifier: Modifier = Modifier,
     ) {
         val focusRequester = remember { FocusRequester() }
@@ -209,12 +214,14 @@ internal object ChatScreen : Screen {
             topBar = {
                 ChatTopBar(
                     chatTitle = currentChatUiState.chatOrNull?.title,
+                    tokens = currentChatUiState.tokensOrNull,
                     showTopBarActions = showTopBarActions,
                     onNewChat = {
                         onNewChat()
                         focusRequester.requestFocus()
                     },
                     onMenuClick = onMenuClick,
+                    onRewardEarned = onRewardEarned,
                 )
             },
             bottomBar = {
@@ -305,8 +312,10 @@ internal object ChatScreen : Screen {
     private fun ChatTopBar(
         chatTitle: String?,
         showTopBarActions: Boolean,
+        tokens: Int?,
         onNewChat: () -> Unit,
         onMenuClick: () -> Unit,
+        onRewardEarned: (Int) -> Unit,
     ) {
         CenterAlignedTopAppBar(
             title = {
@@ -329,15 +338,24 @@ internal object ChatScreen : Screen {
                 }
             },
             actions = {
-                if (showTopBarActions.not()) return@CenterAlignedTopAppBar
-                AdMobButton()
-                IconButton(
-                    onClick = onNewChat,
-                ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        contentDescription = null,
+                // Rewards button
+                if (tokens != null) {
+                    AdMobButton(
+                        tokens = tokens,
+                        onRewardEarned = onRewardEarned,
                     )
+                }
+
+                // New chat button
+                if (showTopBarActions) {
+                    IconButton(
+                        onClick = onNewChat,
+                    ) {
+                        Icon(
+                            Icons.Rounded.Add,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         )
