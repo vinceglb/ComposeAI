@@ -7,11 +7,15 @@ class PreferenceLocalDataSource(
     private val settings: FlowSettings
 ) {
 
-    fun welcomeShown(): Flow<Boolean> =
-        settings.getBooleanFlow(WELCOME_SHOWN, false)
+    // GETTERS
+
+    suspend fun welcomeShown(): Boolean =
+        settings.getBoolean(WELCOME_SHOWN, false)
 
     fun tokens(): Flow<Int> =
         settings.getIntFlow(TOKENS, DEFAULT_TOKENS)
+
+    // SETTERS
 
     suspend fun setWelcomeShown() {
         settings.putBoolean(WELCOME_SHOWN, true)

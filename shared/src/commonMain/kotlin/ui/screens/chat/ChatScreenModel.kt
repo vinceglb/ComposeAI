@@ -9,6 +9,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
+import com.ebfstudio.appgpt.common.GetAllChats
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.TokenRepository
@@ -24,6 +25,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import model.toChats
+import model.updatedAt
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 class ChatScreenModel(
     private val chatRepository: ChatRepository,
@@ -64,6 +71,7 @@ class ChatScreenModel(
 
     val chatsUiState: StateFlow<ChatsUiState> =
         chatRepository.getChatsStream()
+            .map { chats -> chats.map(GetAllChats::toChats) }
             .map { chats -> ChatsUiState.Success(chats = chats) }
             .stateIn(
                 scope = coroutineScope,
@@ -76,7 +84,9 @@ class ChatScreenModel(
         if (initialChatId == null) {
             coroutineScope.launch {
                 val latestChat = chatRepository.getChatsStream().first().firstOrNull()
-                if (latestChat != null) {
+                val fiveMinutesAgo = Clock.System.now().minus(5.minutes)
+
+                if ((latestChat != null) && (latestChat.updatedAt > fiveMinutesAgo)) {
                     chatId.update { latestChat.id }
                 }
             }
