@@ -19,7 +19,7 @@ suspend fun <T> suspendRunCatching(
 } catch (cancellationException: CancellationException) {
     throw cancellationException
 } catch (exception: Exception) {
-    Napier.i(
+    Napier.e(
         message = "Failed to evaluate a suspendRunCatchingBlock. Returning failure Result",
         throwable = exception,
     )
