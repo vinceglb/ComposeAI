@@ -7,7 +7,7 @@ CREATE TABLE ChatEntity (
 );
 
 getAllChats:
-SELECT ChatEntity.id, ChatEntity.title, ChatEntity.createdAt
+SELECT ChatEntity.id, ChatEntity.title, ChatEntity.createdAt, MAX(ChatMessageEntity.createdAt) AS updatedAtText
 FROM ChatEntity
 LEFT JOIN ChatMessageEntity ON ChatEntity.id = ChatMessageEntity.chatId
 GROUP BY ChatEntity.id, ChatEntity.title, ChatEntity.createdAt

@@ -203,12 +203,13 @@ libres {
 }
 
 kotlin.sourceSets.all {
+    languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
     languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
     languageSettings.optIn("com.aallam.openai.api.BetaOpenAI")
-    languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
-    languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
     languageSettings.optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-    languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+    languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
     languageSettings.optIn("androidx.compose.ui.ExperimentalComposeUiApi")
     languageSettings.optIn("androidx.compose.foundation.ExperimentalFoundationApi")
+    languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+    languageSettings.optIn("kotlin.time.ExperimentalTime")
 }

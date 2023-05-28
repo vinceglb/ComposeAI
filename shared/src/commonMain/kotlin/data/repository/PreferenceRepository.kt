@@ -5,7 +5,6 @@ import analytics.logWelcomeSeen
 import data.local.PreferenceLocalDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class PreferenceRepository(
@@ -14,8 +13,10 @@ class PreferenceRepository(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
-    fun welcomeShown(): Flow<Boolean> =
-        preferenceLocalDataSource.welcomeShown()
+    suspend fun welcomeShown(): Boolean =
+        withContext(defaultDispatcher) {
+            preferenceLocalDataSource.welcomeShown()
+        }
 
     suspend fun setWelcomeShown(): Unit =
         withContext(defaultDispatcher) {
