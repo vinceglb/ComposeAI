@@ -1,5 +1,6 @@
 package com.ebfstudio.appgpt
 
+import analytics.CrashlyticsAntilog
 import android.app.Application
 import com.ebfstudio.appgpt.common.BuildConfig
 import com.google.android.gms.ads.MobileAds
@@ -22,9 +23,6 @@ class App : Application() {
 
         appContextForImagesMP = this@App
 
-        // Init Napier
-        Napier.base(DebugAntilog())
-
         // Init App Check
         FirebaseApp.initializeApp(applicationContext)
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
@@ -33,10 +31,13 @@ class App : Application() {
         )
 
         // Init Firebase Analytics & Crashlytics in production only
-        if (BuildConfig.DEBUG.not()) {
-            Firebase.analytics.setAnalyticsCollectionEnabled(true)
-            Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)
-        }
+        val enabled = BuildConfig.DEBUG.not()
+        Firebase.analytics.setAnalyticsCollectionEnabled(enabled)
+        Firebase.crashlytics.setCrashlyticsCollectionEnabled(enabled)
+
+        // Init Napier
+        val antilog = if (BuildConfig.DEBUG) DebugAntilog() else CrashlyticsAntilog()
+        Napier.base(antilog)
 
         // Init Koin
         initKoin {
