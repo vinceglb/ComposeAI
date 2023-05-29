@@ -4,14 +4,12 @@ import AppScreenModel
 import com.aallam.openai.client.OpenAI
 import com.ebfstudio.appgpt.common.BuildKonfig
 import com.ebfstudio.appgpt.common.Database
-import com.knuddels.jtokkit.Encodings
-import com.knuddels.jtokkit.api.EncodingType
 import data.local.PreferenceLocalDataSource
 import data.local.SettingsFactory
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
-import data.repository.PreferenceRepository
 import data.repository.CoinRepository
+import data.repository.PreferenceRepository
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -60,10 +58,6 @@ val commonModule = module {
     single {
         val factory: SettingsFactory = get()
         factory.createSettings()
-    }
-    single {
-        val registry = Encodings.newLazyEncodingRegistry()
-        registry.getEncoding(EncodingType.CL100K_BASE)
     }
 }
 
