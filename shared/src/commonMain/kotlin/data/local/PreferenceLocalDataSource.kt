@@ -12,8 +12,8 @@ class PreferenceLocalDataSource(
     suspend fun welcomeShown(): Boolean =
         settings.getBoolean(WELCOME_SHOWN, false)
 
-    fun tokens(): Flow<Int> =
-        settings.getIntFlow(TOKENS, DEFAULT_TOKENS)
+    fun coins(): Flow<Int> =
+        settings.getIntFlow(COINS, 5)
 
     // SETTERS
 
@@ -21,15 +21,29 @@ class PreferenceLocalDataSource(
         settings.putBoolean(WELCOME_SHOWN, true)
     }
 
-    suspend fun setTokens(tokens: Int) {
-        settings.putInt(TOKENS, tokens)
+    suspend fun addTokens(tokens: Int): Int {
+        val currentTokens = settings.getInt(TOKENS_TOTAL, 0)
+        val newTokens = currentTokens + tokens
+        settings.putInt(TOKENS_TOTAL, newTokens)
+        return newTokens
+    }
+
+    suspend fun incrementMessages(): Int {
+        val currentMessages = settings.getInt(MESSAGES_TOTAL, 0)
+        val newMessages = currentMessages + 1
+        settings.putInt(MESSAGES_TOTAL, newMessages)
+        return newMessages
+    }
+
+    suspend fun setCoins(coins: Int) {
+        settings.putInt(COINS, coins)
     }
 
     companion object {
         private const val WELCOME_SHOWN = "welcome_shown"
-        private const val TOKENS = "tokens"
-
-        private const val DEFAULT_TOKENS = 10
+        private const val TOKENS_TOTAL = "tokens_total"
+        private const val MESSAGES_TOTAL = "messages_total"
+        private const val COINS = "coins"
     }
 
 }

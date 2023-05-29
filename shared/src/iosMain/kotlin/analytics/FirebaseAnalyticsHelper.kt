@@ -18,4 +18,9 @@ class FirebaseAnalyticsHelper : AnalyticsHelper {
 
         Napier.d(message = "Received analytics event: $event", tag = TAG)
     }
+
+    override fun setUserProperty(name: String, value: String) {
+        FIRAnalytics.setUserPropertyString(value = value, forName = name)
+        Napier.d(message = "Set user property: $name = $value", tag = TAG)
+    }
 }

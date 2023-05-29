@@ -28,4 +28,8 @@ class StubAnalyticsHelper : AnalyticsHelper {
     override fun logEvent(event: AnalyticsEvent) {
         Napier.d(message = "Received analytics event: $event", tag = TAG)
     }
+
+    override fun setUserProperty(name: String, value: String) {
+        Napier.d(message = "Set user property: $name = $value", tag = TAG)
+    }
 }

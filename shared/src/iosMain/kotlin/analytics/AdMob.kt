@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 actual fun AdMobButton(
-    tokens: Int,
+    coins: Int,
     onRewardEarned: (Int) -> Unit,
 ) {}

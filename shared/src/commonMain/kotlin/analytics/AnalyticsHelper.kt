@@ -25,6 +25,7 @@ import org.koin.core.component.inject
  */
 interface AnalyticsHelper {
     fun logEvent(event: AnalyticsEvent)
+    fun setUserProperty(name: String, value: String)
 }
 
 class AnalyticsInjected : KoinComponent {
