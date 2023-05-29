@@ -12,7 +12,7 @@ import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.GetAllChats
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
-import data.repository.TokenRepository
+import data.repository.CoinRepository
 import expect.shareText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,16 +26,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import model.toChats
 import model.updatedAt
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 class ChatScreenModel(
     private val chatRepository: ChatRepository,
     private val chatMessageRepository: ChatMessageRepository,
-    private val tokenRepository: TokenRepository,
+    private val coinRepository: CoinRepository,
     private val analyticsHelper: AnalyticsHelper,
     initialChatId: String?,
 ) : ScreenModel {
@@ -54,12 +52,10 @@ class ChatScreenModel(
                 combine(
                     chatRepository.getChatStream(id),
                     chatMessageRepository.getMessagesStream(id),
-                    tokenRepository.tokens(),
-                ) { chat, messages, tokens ->
+                ) { chat, messages ->
                     ChatMessagesUiState.Success(
                         chat = chat,
                         messages = messages,
-                        tokens = tokens,
                     )
                 }
             }
@@ -89,6 +85,12 @@ class ChatScreenModel(
                 if ((latestChat != null) && (latestChat.updatedAt > fiveMinutesAgo)) {
                     chatId.update { latestChat.id }
                 }
+            }
+        }
+
+        coroutineScope.launch {
+            coinRepository.coins().collect { coins ->
+                screenUiState.update { it.copy(coins = coins) }
             }
         }
     }
@@ -177,9 +179,9 @@ class ChatScreenModel(
         analyticsHelper.logMessageShared()
     }
 
-    fun onRewardEarned(tokens: Int) {
+    fun onRewardEarned(coins: Int) {
         coroutineScope.launch {
-            tokenRepository.useTokens(add = tokens)
+            coinRepository.useCoins(add = coins)
         }
     }
 
@@ -198,7 +200,6 @@ sealed interface ChatMessagesUiState {
     data class Success(
         val chat: ChatEntity? = null,
         val messages: List<ChatMessageEntity> = emptyList(),
-        val tokens: Int = 0,
     ) : ChatMessagesUiState
 
     val chatOrNull: ChatEntity?
@@ -206,15 +207,10 @@ sealed interface ChatMessagesUiState {
             is Success -> chat
             else -> null
         }
-
-    val tokensOrNull: Int?
-        get() = when (this) {
-            is Success -> tokens
-            else -> null
-        }
 }
 
 data class ChatScreenUiState(
     val text: String = "",
     val isSending: Boolean = false,
+    val coins: Int = 0,
 )

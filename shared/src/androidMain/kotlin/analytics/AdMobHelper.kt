@@ -35,7 +35,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Composable
 actual fun AdMobButton(
-    tokens: Int,
+    coins: Int,
     onRewardEarned: (Int) -> Unit,
 ) {
     val context = LocalContext.current
@@ -84,7 +84,7 @@ actual fun AdMobButton(
         )
         Spacer(Modifier.width(4.dp))
         AnimatedCounter(
-            count = tokens,
+            count = coins,
             fontWeight = FontWeight.Bold
         )
     }

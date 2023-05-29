@@ -214,7 +214,7 @@ internal object ChatScreen : Screen {
             topBar = {
                 ChatTopBar(
                     chatTitle = currentChatUiState.chatOrNull?.title,
-                    tokens = currentChatUiState.tokensOrNull,
+                    coins = screenUiState.coins,
                     showTopBarActions = showTopBarActions,
                     onNewChat = {
                         onNewChat()
@@ -312,7 +312,7 @@ internal object ChatScreen : Screen {
     private fun ChatTopBar(
         chatTitle: String?,
         showTopBarActions: Boolean,
-        tokens: Int?,
+        coins: Int?,
         onNewChat: () -> Unit,
         onMenuClick: () -> Unit,
         onRewardEarned: (Int) -> Unit,
@@ -339,9 +339,9 @@ internal object ChatScreen : Screen {
             },
             actions = {
                 // Rewards button
-                if (tokens != null) {
+                if (coins != null) {
                     AdMobButton(
-                        tokens = tokens,
+                        coins = coins,
                         onRewardEarned = onRewardEarned,
                     )
                 }

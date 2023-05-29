@@ -7,23 +7,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
-class TokenRepository(
+class CoinRepository(
     private val preferences: PreferenceLocalDataSource,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
-    fun tokens(): Flow<Int> =
-        preferences.tokens()
+    fun coins(): Flow<Int> =
+        preferences.coins()
 
-    suspend fun useTokens(remove: Int = 0, add: Int = 0): Unit =
+    suspend fun useCoins(remove: Int = 0, add: Int = 0): Unit =
         withContext(defaultDispatcher) {
-            val tokens = preferences.tokens().first()
-            var newTokens = tokens + add - remove
+            val tokens = preferences.coins().first()
+            var newCoins = tokens + add - remove
 
             // Prevent negative tokens
-            if (newTokens < 0) {
-                newTokens = 0
+            if (newCoins < 0) {
+                newCoins = 0
             }
 
-            preferences.setTokens(newTokens)
+            preferences.setCoins(newCoins)
         }
 }

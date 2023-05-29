@@ -31,6 +31,7 @@ fun AnalyticsHelper.logScreenView(screenName: String) {
             type = Types.SCREEN_VIEW,
             extras = listOf(
                 Param(ParamKeys.SCREEN_NAME, screenName),
+                Param(ParamKeys.SCREEN_CLASS, screenName),
             ),
         ),
     )
@@ -43,14 +44,29 @@ fun AnalyticsHelper.logMessageSent(isRetry: Boolean = false) {
     )
 }
 
-fun AnalyticsHelper.logMessageReceived(receivedSuccessfully: Boolean, errorName: String? = null) {
+fun AnalyticsHelper.logMessageReceived(
+    receivedSuccessfully: Boolean,
+    promptTokens: Int? = null,
+    completionTokens: Int? = null,
+    totalTokens: Int? = null,
+) {
     val eventType = if (receivedSuccessfully) "ai_message_successful" else "ai_message_failed"
+
+    // Report request tokens stats if available
+    val extras = mutableListOf<Param>()
+    promptTokens?.let { extras.add(Param("prompt_tokens", it.toString())) }
+    completionTokens?.let { extras.add(Param("completion_tokens", it.toString())) }
+    totalTokens?.let { extras.add(Param("total_tokens", it.toString())) }
+
+    // Count the number of user that did not report tokens stats
+    if (receivedSuccessfully && extras.isEmpty()) {
+        extras.add(Param("missing", "1"))
+    }
+
     logEvent(
         AnalyticsEvent(
             type = eventType,
-            extras = errorName?.let {
-                listOf(Param(ParamKeys.AI_ERROR_NAME, errorName))
-            } ?: emptyList()
+            extras = extras,
         ),
     )
 }
@@ -95,6 +111,14 @@ fun AnalyticsHelper.logRewardedAdReward() {
     logEvent(
         AnalyticsEvent(type = "ad_ra_reward_earned"),
     )
+}
+
+fun AnalyticsHelper.setUserTotalTokens(totalTokens: Int) {
+    setUserProperty("tokens_total", totalTokens.toString())
+}
+
+fun AnalyticsHelper.setUserTotalMessages(totalMessages: Int) {
+    setUserProperty("messages_total", totalMessages.toString())
 }
 
 /**
