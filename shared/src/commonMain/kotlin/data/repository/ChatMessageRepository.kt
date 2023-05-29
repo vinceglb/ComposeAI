@@ -89,7 +89,7 @@ class ChatMessageRepository(
     ): Result<String> = suspendRunCatching(defaultDispatcher) {
         val instruction = ChatMessage(
             role = ChatRole.System,
-            content = "Generate a very short title for this chat. Use the language used in the chat. Do not add any punctuation.",
+            content = "What would be a short and relevant title for this chat? You must strictly answer with only the title, no other text is allowed.",
         )
 
         val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)
@@ -113,9 +113,11 @@ class ChatMessageRepository(
      * - Update assistant message status to sent
      *
      * @param chatId Chat id
-     * @return Number of messages sent by the user
+     * @return Number of messages sent by the user in this chat
      */
     private suspend fun sendReceiveAndSaveAI(chatId: String): Int {
+        val messagesToSend = selectMessagesToSend(chatId)
+
         // Save empty assistant message
         val assistantMessageId = uuid4().toString()
         chatMessageQueries.insertChatMessage(
@@ -127,14 +129,10 @@ class ChatMessageRepository(
             status = ChatMessageStatus.LOADING,
         )
 
-        val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)
-            .executeAsList()
-            .map(ChatMessageEntity::asModel)
-
         // Create request to OpenAI
         val request = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo"),
-            messages = messages,
+            messages = messagesToSend,
         )
 
         // Get assistant response
@@ -162,7 +160,7 @@ class ChatMessageRepository(
             coinRepository.useCoins(remove = 1)
 
             // Report OpenAI tokens used
-            val count = countOpenAITokens(messages, assistantMessage)
+            val count = countOpenAITokens(messagesToSend, assistantMessage)
             val totalTokens = preferences.addTokens(count?.totalTokens ?: 0)
             val totalMessages = preferences.incrementMessages()
             analyticsHelper.setUserTotalTokens(totalTokens)
@@ -176,7 +174,7 @@ class ChatMessageRepository(
                 totalTokens = count?.totalTokens,
             )
 
-            // Return number of messages sent by the user
+            // Return number of messages sent by the user in this chat
             return chatMessageQueries.countChatMessagesWithChatId(
                 chatId = chatId,
                 role = ChatRole.User,
@@ -192,6 +190,38 @@ class ChatMessageRepository(
             analyticsHelper.logMessageReceived(receivedSuccessfully = false)
             throw e
         }
+    }
+
+    /**
+     * Get the selection of messages to send to OpenAI
+     *
+     * The OpenAI API has a limit of 4096 tokens per request.
+     * We need to select the last messages that will not exceed this limit.
+     * Also, we fix a limit of 800 tokens to avoid too long requests.
+     * If the tokenizer is not working, we limit to 6 messages.
+     *
+     * @param chatId Chat id
+     * @return List of messages to send to OpenAI
+     */
+    private fun selectMessagesToSend(chatId: String): List<ChatMessage> {
+        // Get chat messages
+        val localMessages = chatMessageQueries.getChatMessagesWithChatId(chatId)
+            .executeAsList()
+            .map(ChatMessageEntity::asModel)
+
+        // Here are the message we will send to OpenAI
+        val messagesToSend = mutableListOf<ChatMessage>()
+
+        // Select last messages until 1000 tokens
+        // If tokenizer is not working, we limit to 6 messages
+        localMessages.reversed().takeWhile { message ->
+            messagesToSend.add(message)
+            val count = countOpenAITokens(messagesToSend, "")?.promptTokens
+            (count != null && count < 800) || (count == null && messagesToSend.size <= 6)
+        }
+
+        // Put the list back in the right order
+        return messagesToSend.reversed()
     }
 
     /**
