@@ -69,6 +69,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.ebfstudio.appgpt.common.MainRes
 import di.getScreenModel
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
@@ -266,7 +267,7 @@ internal object ChatScreen : Screen {
         if (showCreateChatButton) {
             ExtendedFloatingActionButton(
                 onClick = onNewChat,
-                text = { Text(text = "New chat") },
+                text = { Text(text = MainRes.string.chat_button_new) },
                 icon = {
                     Icon(
                         imageVector = Icons.Rounded.Add,
@@ -284,7 +285,7 @@ internal object ChatScreen : Screen {
                     NavigationDrawerItem(
                         label = {
                             Text(
-                                text = chat.title ?: "Empty chat",
+                                text = chat.title ?: MainRes.string.chat_title_empty,
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = false
                             )
@@ -320,7 +321,7 @@ internal object ChatScreen : Screen {
         CenterAlignedTopAppBar(
             title = {
                 TypewriterText(
-                    text = chatTitle ?: "Compose AI",
+                    text = chatTitle ?: MainRes.string.app_name,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -431,7 +432,7 @@ internal object ChatScreen : Screen {
                                 decorationBox = { innerTextField ->
                                     if (text.isBlank()) {
                                         Text(
-                                            text = "Ask me anything...",
+                                            text = MainRes.string.chat_textfield_hint,
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             modifier = Modifier.alpha(0.6f)

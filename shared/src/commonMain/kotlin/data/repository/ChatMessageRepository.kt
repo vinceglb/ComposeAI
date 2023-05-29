@@ -15,7 +15,9 @@ import com.aallam.openai.client.OpenAI
 import com.benasher44.uuid.uuid4
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntityQueries
+import com.knuddels.jtokkit.Encodings
 import com.knuddels.jtokkit.api.Encoding
+import com.knuddels.jtokkit.api.EncodingType
 import data.local.PreferenceLocalDataSource
 import data.repository.util.suspendRunCatching
 import io.github.aakira.napier.Napier
@@ -32,9 +34,13 @@ class ChatMessageRepository(
     private val preferences: PreferenceLocalDataSource,
     private val coinRepository: CoinRepository,
     private val analyticsHelper: AnalyticsHelper,
-    private val encoding: Encoding,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
+
+    private val encoding: Encoding by lazy {
+        val registry = Encodings.newLazyEncodingRegistry()
+        registry.getEncoding(EncodingType.CL100K_BASE)
+    }
 
     fun getMessagesStream(chatId: String): Flow<List<ChatMessageEntity>> =
         chatMessageQueries.getChatMessagesWithChatId(chatId)
@@ -83,7 +89,7 @@ class ChatMessageRepository(
     ): Result<String> = suspendRunCatching(defaultDispatcher) {
         val instruction = ChatMessage(
             role = ChatRole.System,
-            content = "What would be a short and relevant title for this chat? You must strictly answer with only the title, no other text is allowed.",
+            content = "Generate a very short title for this chat. Use the language used in the chat. Do not add any punctuation.",
         )
 
         val messages = chatMessageQueries.getChatMessagesWithChatId(chatId)

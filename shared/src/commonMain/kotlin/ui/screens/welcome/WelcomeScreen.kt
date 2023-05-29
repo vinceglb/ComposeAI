@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.ebfstudio.appgpt.common.MainRes
 import di.getScreenModel
 import org.jetbrains.compose.resources.painterResource
 import ui.components.appImagePath
@@ -74,7 +75,7 @@ internal object WelcomeScreen : Screen {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = "Compose AI",
+                    text = MainRes.string.app_name,
                     style = MaterialTheme.typography.headlineSmall,
                 )
             }
@@ -82,14 +83,14 @@ internal object WelcomeScreen : Screen {
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "Start to chat now",
+                text = MainRes.string.welcome_title,
                 style = MaterialTheme.typography.headlineLarge,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Compose AI is a chatbot that can help you to find the best answers for your questions.",
+                text = MainRes.string.welcome_subtitle,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.outline,
@@ -106,7 +107,7 @@ internal object WelcomeScreen : Screen {
                     .height(48.dp),
             ) {
                 Text(
-                    text = "Start to chat",
+                    text = MainRes.string.welcome_button,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

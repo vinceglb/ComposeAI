@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Compose AI</string>
+
+    <!-- WelcomeScreen -->
+    <string name="welcome_title">Comienza a chatear ahora</string>
+    <string name="welcome_subtitle">Compose AI es un chatbot que puede ayudarte a encontrar las mejores respuestas para tus preguntas.</string>
+    <string name="welcome_button">Comenzar a chatear</string>
+
+    <!-- ChatScreen -->
+    <string name="chat_textfield_hint">Pregúntame cualquier cosa...</string>
+    <string name="chat_button_new">Nuevo chat</string>
+    <string name="chat_title_empty">Chat vacío</string>
+
+</resources>
