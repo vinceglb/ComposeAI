@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
@@ -23,6 +24,7 @@ import extendedspans.RoundedCornerSpanPainter
 import extendedspans.SquigglyUnderlineSpanPainter
 import extendedspans.drawBehind
 import extendedspans.rememberSquigglyUnderlineAnimator
+import io.github.aakira.napier.Napier
 import markdown.compose.LocalMarkdownColors
 import markdown.compose.LocalMarkdownTypography
 import markdown.compose.LocalReferenceLinkHandler
@@ -56,7 +58,7 @@ internal fun MarkdownText(
                 val position = layoutResult.getOffsetForPosition(pos)
                 content.getStringAnnotations(TAG_URL, position, position)
                     .firstOrNull()
-                    ?.let { uriHandler.openUri(referenceLinkHandler.find(it.item)) }
+                    ?.let { uriHandler.tryOpenUri(referenceLinkHandler.find(it.item)) }
             }
         }
     } else modifier
@@ -124,4 +126,12 @@ fun ExtendedSpansText(
         style = style,
         inlineContent = inlineContent,
     )
+}
+
+private fun UriHandler.tryOpenUri(uri: String) {
+    try {
+        this.openUri(uri)
+    } catch (e: Exception) {
+        Napier.e { "Failed to open uri: $uri" }
+    }
 }
