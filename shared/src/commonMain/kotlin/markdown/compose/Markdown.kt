@@ -4,12 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import io.github.aakira.napier.Napier
 import markdown.compose.elements.MarkdownBlockQuote
 import markdown.compose.elements.MarkdownBulletList
 import markdown.compose.elements.MarkdownCodeBlock
@@ -59,7 +56,6 @@ fun Markdown(
     modifier: Modifier = Modifier.fillMaxSize(),
     flavour: MarkdownFlavourDescriptor = GFMFlavourDescriptor()
 ) {
-    // val cleanedContent = content.trim().replace(Regex("\\n{2,}"), "\n")
     CompositionLocalProvider(
         LocalReferenceLinkHandler provides ReferenceLinkHandlerImpl(),
         LocalMarkdownPadding provides padding,
