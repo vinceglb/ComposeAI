@@ -27,8 +27,8 @@ android {
         applicationId = "com.ebfstudio.appgpt"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 18
-        versionName = "1.2.2"
+        versionCode = 19
+        versionName = "1.2.3"
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
