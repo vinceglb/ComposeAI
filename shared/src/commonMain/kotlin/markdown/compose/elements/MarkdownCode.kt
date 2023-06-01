@@ -43,9 +43,14 @@ internal fun MarkdownCodeFence(
     node: ASTNode
 ) {
     // CODE_FENCE_START, FENCE_LANG, {content}, CODE_FENCE_END
-    val start = node.children[2].startOffset
-    val end = node.children[node.children.size - 2].endOffset
-    MarkdownCode(content.subSequence(start, end).toString().replaceIndent())
+    val start = node.children.getOrNull(2)?.startOffset
+    val end = node.children.getOrNull(node.children.size - 2)?.endOffset
+
+    if (start == null || end == null) {
+        MarkdownCode(content)
+    } else {
+        MarkdownCode(content.subSequence(start, end).toString().replaceIndent())
+    }
 }
 
 @Composable
