@@ -1,7 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.30.1"
 activityCompose = "1.7.2"
-agp = "8.2.0-alpha06"
+agp = "8.0.2"
 androidGradlePlugin = "8.0.1"
 appcompat = "1.6.1"
 buildkonfigGradlePlugin = "0.13.3"
