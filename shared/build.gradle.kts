@@ -83,7 +83,7 @@ kotlin {
                 implementation(libs.markdown)
 
                 // Tokenizer
-                api("com.knuddels:jtokkit:0.5.0")
+                implementation(libs.jtokkit)
             }
         }
         val androidMain by getting {

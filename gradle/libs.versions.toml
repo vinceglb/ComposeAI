@@ -1,6 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.30.1"
-activityCompose = "1.7.1"
+activityCompose = "1.7.2"
+agp = "8.2.0-alpha06"
 androidGradlePlugin = "8.0.1"
 appcompat = "1.6.1"
 buildkonfigGradlePlugin = "0.13.3"
@@ -13,7 +14,9 @@ firebaseBom = "32.1.0"
 firebaseCrashlyticsGradle = "2.9.5"
 googleServices = "4.3.15"
 imageLoader = "1.4.0"
+jtokkit = "0.5.0"
 koin = "3.4.0"
+kotlin = "1.8.20"
 kotlinxDatetime = "0.4.0"
 libresCompose = "1.1.8"
 markdown = "0.4.1"
@@ -45,6 +48,7 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
+jtokkit = { module = "com.knuddels:jtokkit", version.ref = "jtokkit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -62,3 +66,6 @@ uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
 
 [plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
