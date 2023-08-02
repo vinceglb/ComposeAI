@@ -35,7 +35,7 @@ kotlin {
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
 
         pod("FirebaseAnalytics") {
-            version = "~> 10.9.0"
+            version = "~> 10.13"
         }
     }
 
@@ -85,9 +85,6 @@ kotlin {
 
                 // Markdown
                 implementation(libs.markdown)
-
-                // Tokenizer
-                implementation(libs.jtokkit)
             }
         }
 
