@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.konan.properties.Properties
 
@@ -7,13 +9,15 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.codingfeline.buildkonfig")
-    id("app.cash.sqldelight") version "2.0.0-alpha05"
+    id("app.cash.sqldelight") version "2.0.0"
     id("io.github.skeptick.libres")
 }
 
+@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    android()
+    targetHierarchy.default()
 
+    android()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -86,6 +90,7 @@ kotlin {
                 implementation(libs.jtokkit)
             }
         }
+
         val androidMain by getting {
             dependencies {
                 api(libs.activity.compose)
@@ -120,15 +125,9 @@ kotlin {
                 api(libs.play.services.ads)
             }
         }
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
 
+        val iosMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 // SQL
                 api(libs.native.driver)
@@ -138,8 +137,8 @@ kotlin {
 }
 
 android {
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "com.ebfstudio.appgpt.common"
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")

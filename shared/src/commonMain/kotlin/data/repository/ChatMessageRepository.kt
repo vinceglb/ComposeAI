@@ -58,7 +58,7 @@ class ChatMessageRepository(
         chatMessageQueries.insertChatMessage(
             id = uuid4().toString(),
             role = userMessage.role,
-            content = userMessage.content,
+            content = userMessage.content ?: "?",
             createdAt = Clock.System.now(),
             chatId = chatId,
             status = ChatMessageStatus.SENT,
