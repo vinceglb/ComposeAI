@@ -401,12 +401,13 @@ internal object ChatScreen : Screen {
                     verticalAlignment = Alignment.Bottom,
                 ) {
                     // Rewards button
-                    AdMobButton(
-                        coins = coins,
-                        onRewardEarned = onRewardEarned,
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
+                    AnimatedVisibility(text.isEmpty()) {
+                        AdMobButton(
+                            coins = coins,
+                            onRewardEarned = onRewardEarned,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
 
                     Surface(
                         shape = MaterialTheme.shapes.large,

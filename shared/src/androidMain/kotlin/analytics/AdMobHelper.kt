@@ -37,6 +37,7 @@ import kotlin.coroutines.suspendCoroutine
 actual fun AdMobButton(
     coins: Int,
     onRewardEarned: (Int) -> Unit,
+    modifier: Modifier,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -76,7 +77,8 @@ actual fun AdMobButton(
                 )
                 ad = null
             }
-        }
+        },
+        modifier = modifier,
     ) {
         Icon(
             Icons.Rounded.GeneratingTokens,
