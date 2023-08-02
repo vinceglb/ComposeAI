@@ -32,14 +32,22 @@ android {
         versionName = "1.2.4"
     }
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlin {
-        jvmToolchain(17)
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     // See more
@@ -68,7 +76,10 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    
+
+    // Android
+    implementation(libs.activity.compose)
+
     // Java 8+ API desugaring support
     // - A subset of java.time
     // - https://developer.android.com/studio/write/java8-support#library-desugaring
