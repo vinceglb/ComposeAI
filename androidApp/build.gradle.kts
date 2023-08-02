@@ -1,27 +1,28 @@
 plugins {
-    kotlin("multiplatform")
+    // kotlin("multiplatform")
+    kotlin("android")
     id("com.android.application")
-    id("org.jetbrains.compose")
+    // id("org.jetbrains.compose")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
 
-kotlin {
-    android()
-    sourceSets {
-        val androidMain by getting {
-            dependencies {
-                implementation(project(":shared"))
-            }
-        }
-    }
-}
+//kotlin {
+//    android()
+//    sourceSets {
+//        val androidMain by getting {
+//            dependencies {
+//                implementation(project(":shared"))
+//            }
+//        }
+//    }
+//}
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "com.ebfstudio.appgpt"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    // sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
     defaultConfig {
         applicationId = "com.ebfstudio.appgpt"
@@ -30,11 +31,13 @@ android {
         versionCode = 20
         versionName = "1.2.4"
     }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlin {
         jvmToolchain(17)
     }
@@ -64,6 +67,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared"))
+    
     // Java 8+ API desugaring support
     // - A subset of java.time
     // - https://developer.android.com/studio/write/java8-support#library-desugaring

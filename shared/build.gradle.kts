@@ -30,7 +30,7 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
-            isStatic = true
+            // isStatic = true
         }
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
 
@@ -134,6 +134,10 @@ kotlin {
             }
         }
     }
+}
+
+compose {
+    kotlinCompilerPlugin.set(libs.versions.kotlinComposeCompiler)
 }
 
 android {
