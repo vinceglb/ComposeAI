@@ -215,23 +215,23 @@ internal object ChatScreen : Screen {
             topBar = {
                 ChatTopBar(
                     chatTitle = currentChatUiState.chatOrNull?.title,
-                    coins = screenUiState.coins,
                     showTopBarActions = showTopBarActions,
                     onNewChat = {
                         onNewChat()
                         focusRequester.requestFocus()
                     },
                     onMenuClick = onMenuClick,
-                    onRewardEarned = onRewardEarned,
                 )
             },
             bottomBar = {
                 ChatBottomBar(
                     text = screenUiState.text,
                     isLoading = screenUiState.isSending,
+                    coins = screenUiState.coins,
                     focusRequester = focusRequester,
                     onTextChange = onTextChange,
                     onSend = onSend,
+                    onRewardEarned = onRewardEarned,
                 )
             },
             modifier = modifier,
@@ -313,10 +313,8 @@ internal object ChatScreen : Screen {
     private fun ChatTopBar(
         chatTitle: String?,
         showTopBarActions: Boolean,
-        coins: Int?,
         onNewChat: () -> Unit,
         onMenuClick: () -> Unit,
-        onRewardEarned: (Int) -> Unit,
     ) {
         CenterAlignedTopAppBar(
             title = {
@@ -339,14 +337,6 @@ internal object ChatScreen : Screen {
                 }
             },
             actions = {
-                // Rewards button
-                if (coins != null) {
-                    AdMobButton(
-                        coins = coins,
-                        onRewardEarned = onRewardEarned,
-                    )
-                }
-
                 // New chat button
                 if (showTopBarActions) {
                     IconButton(
@@ -366,9 +356,11 @@ internal object ChatScreen : Screen {
     private fun ChatBottomBar(
         text: String,
         isLoading: Boolean,
+        coins: Int,
         focusRequester: FocusRequester,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
+        onRewardEarned: (Int) -> Unit,
     ) {
         val enableSend = text.isNotBlank() && !isLoading
         val transition = updateTransition(targetState = enableSend)
@@ -408,6 +400,14 @@ internal object ChatScreen : Screen {
                     modifier = Modifier.padding(8.dp),
                     verticalAlignment = Alignment.Bottom,
                 ) {
+                    // Rewards button
+                    AdMobButton(
+                        coins = coins,
+                        onRewardEarned = onRewardEarned,
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     Surface(
                         shape = MaterialTheme.shapes.large,
                         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -451,7 +451,9 @@ internal object ChatScreen : Screen {
                             )
                         }
                     }
+
                     Spacer(modifier = Modifier.width(8.dp))
+
                     FilledIconButton(
                         onClick = onSend,
                         enabled = enableSend,
