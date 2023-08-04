@@ -120,6 +120,9 @@ kotlin {
 
                 // AdMob
                 api(libs.play.services.ads)
+
+                val billing_version = "6.0.1"
+                implementation("com.android.billingclient:billing-ktx:$billing_version")
             }
         }
 
