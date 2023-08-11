@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import com.ebfstudio.appgpt.common.MainRes
 import di.getScreenModel
 import org.jetbrains.compose.resources.painterResource
 import ui.components.AnimatedCounter
@@ -126,13 +127,13 @@ internal object BankScreen : Screen {
                     .clip(shape = MaterialTheme.shapes.medium)
             )
             Text(
-                text = "You are a premium user 🎉",
+                text = MainRes.string.premium_title,
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp)
             )
             Text(
-                text = "You can now send unlimited messages to the IA.",
+                text = MainRes.string.premium_subtitle,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -147,7 +148,7 @@ internal object BankScreen : Screen {
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "Go to the chat")
+                Text(text = MainRes.string.premium_button)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -184,19 +185,19 @@ internal object BankScreen : Screen {
                     .clip(shape = MaterialTheme.shapes.medium)
             )
             Text(
-                text = "Continue chatting",
+                text = MainRes.string.bank_title,
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp)
             )
             Text(
-                text = "You will get access on all our platforms.\n" +
-                        "Explore and watch videos on your phone,\n" +
-                        "tablet, and laptop.",
+                text = MainRes.string.bank_subtitle,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+                    .padding(top = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -276,20 +277,20 @@ internal object BankScreen : Screen {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "3 Tokens".uppercase(),
+                        text = MainRes.string.bank_card_ad_tokens.uppercase(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         letterSpacing = 1.8.sp,
                     )
 
                     Text(
-                        text = "FREE",
+                        text = MainRes.string.bank_card_ad_title.uppercase(),
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                     )
 
                     Text(
-                        text = "Watch an ad to get 3 tokens",
+                        text = MainRes.string.bank_card_ad_subtitle,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -354,7 +355,7 @@ internal object BankScreen : Screen {
 
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Monthly".uppercase(),
+                            text = MainRes.string.bank_card_sub_monthly.uppercase(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             letterSpacing = 1.8.sp,
@@ -374,7 +375,7 @@ internal object BankScreen : Screen {
                                 .padding(bottom = 8.dp)
                         ) {
                             Text(
-                                text = "50% off for limited time only",
+                                text = MainRes.string.bank_card_sub_offer,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -382,7 +383,7 @@ internal object BankScreen : Screen {
                         }
 
                         Text(
-                            text = "Send unlimited messages. Cancel anytime.",
+                            text = MainRes.string.bank_card_sub_subtitle,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
