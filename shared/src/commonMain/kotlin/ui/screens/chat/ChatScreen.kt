@@ -65,7 +65,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -370,7 +369,6 @@ internal object ChatScreen : Screen {
         onSend: () -> Unit,
     ) {
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
-        val keyboardController = LocalSoftwareKeyboardController.current
 
         val enableSend = text.isNotBlank() && !isLoading
         val transition = updateTransition(targetState = enableSend)
@@ -478,9 +476,9 @@ internal object ChatScreen : Screen {
                                     capitalization = KeyboardCapitalization.Sentences,
                                 ),
                                 modifier = Modifier
+                                    .focusRequester(focusRequester)
                                     .padding(horizontal = 16.dp, vertical = 12.dp)
                                     .fillMaxWidth(1f)
-                                    .focusRequester(focusRequester)
                             )
                         }
                     }
@@ -493,8 +491,6 @@ internal object ChatScreen : Screen {
                                 onSend()
                             } else {
                                 bottomSheetNavigator.show(BankScreen)
-                                focusRequester.freeFocus()
-                                keyboardController?.hide()
                             }
                         },
                         enabled = enableSend,
