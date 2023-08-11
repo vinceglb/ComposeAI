@@ -13,4 +13,19 @@
     <string name="chat_button_new">Nowa rozmowa</string>
     <string name="chat_title_empty">Pusta rozmowa</string>
 
+    <!-- PremiumScreen -->
+    <string name="premium_title">Jesteś użytkownikiem premium 🎉</string>
+    <string name="premium_subtitle">Możesz teraz wysyłać nieograniczoną liczbę wiadomości do SI.</string>
+    <string name="premium_button">Przejdź do czatu</string>
+
+    <!-- BankScreen -->
+    <string name="bank_title">Kontynuuj rozmowę</string>
+    <string name="bank_subtitle">Oglądaj reklamy lub subskrybuj wersję premium, aby kontynuować rozmowę.</string>
+    <string name="bank_card_ad_tokens">3 Tokeny</string>
+    <string name="bank_card_ad_title">ZA DARMO</string>
+    <string name="bank_card_ad_subtitle">Obejrzyj reklamę, aby zdobyć 3 tokeny</string>
+    <string name="bank_card_sub_monthly">Miesięcznie</string>
+    <string name="bank_card_sub_offer">50% taniej tylko przez ograniczony czas</string>
+    <string name="bank_card_sub_subtitle">Wysyłaj nieograniczoną liczbę wiadomości. Wypowiedz subskrypcję w dowolnym momencie.</string>
+
 </resources>

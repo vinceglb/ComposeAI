@@ -13,4 +13,19 @@
     <string name="chat_button_new">New chat</string>
     <string name="chat_title_empty">Empty chat</string>
 
+    <!-- PremiumScreen -->
+    <string name="premium_title">You are a premium user 🎉</string>
+    <string name="premium_subtitle">You can now send unlimited messages to the IA.</string>
+    <string name="premium_button">Go to the chat</string>
+
+    <!-- BankScreen -->
+    <string name="bank_title">Continue chatting</string>
+    <string name="bank_subtitle">Watch ads or subscribe to the premium version to continue chatting.</string>
+    <string name="bank_card_ad_tokens">3 Tokens</string>
+    <string name="bank_card_ad_title">FREE</string>
+    <string name="bank_card_ad_subtitle">Watch an ad to get 3 tokens</string>
+    <string name="bank_card_sub_monthly">Monthly</string>
+    <string name="bank_card_sub_offer">50% off for limited time only</string>
+    <string name="bank_card_sub_subtitle">Send unlimited messages. Cancel anytime.</string>
+
 </resources>
