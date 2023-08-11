@@ -10,13 +10,16 @@ import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
 import data.repository.PreferenceRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
+import ui.screens.bank.BankViewModel
 import ui.screens.chat.ChatScreenModel
 import ui.screens.welcome.WelcomeScreenModel
 
@@ -37,7 +40,8 @@ val commonModule = module {
     // ScreenModels
     factoryOf(::AppScreenModel)
     factoryOf(::WelcomeScreenModel)
-    factory { params -> ChatScreenModel(get(), get(), get(), get(), initialChatId = params.getOrNull()) }
+    factory { params -> ChatScreenModel(get(), get(), get(), get(), get(), initialChatId = params.getOrNull()) }
+    factoryOf(::BankViewModel)
 
     // Repositories
     singleOf(::ChatRepository)
@@ -59,6 +63,7 @@ val commonModule = module {
         val factory: SettingsFactory = get()
         factory.createSettings()
     }
+    factory { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 }
 
 expect fun sharedPlatformModule(): Module
