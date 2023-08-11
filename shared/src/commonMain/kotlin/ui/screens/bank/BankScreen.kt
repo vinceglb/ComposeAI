@@ -307,7 +307,7 @@ internal object BankScreen : Screen {
             initialValue = MaterialTheme.colorScheme.surfaceVariant,
             targetValue = MaterialTheme.colorScheme.primary,
             animationSpec = infiniteRepeatable(
-                animation = tween(2_000),
+                animation = tween(1_600),
                 repeatMode = RepeatMode.Reverse
             )
         )
@@ -316,7 +316,7 @@ internal object BankScreen : Screen {
             targetValue = 3.dp,
             typeConverter = Dp.VectorConverter,
             animationSpec = infiniteRepeatable(
-                animation = tween(2_000),
+                animation = tween(1_600),
                 repeatMode = RepeatMode.Reverse
             )
         )
