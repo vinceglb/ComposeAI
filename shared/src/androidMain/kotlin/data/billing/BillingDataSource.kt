@@ -13,18 +13,25 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.acknowledgePurchase
 import com.android.billingclient.api.queryProductDetails
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import model.AppPricing
+import model.AppProduct
+import model.AppProductOffer
+import model.AppPurchase
 
 // https://github.com/android/play-billing-samples/tree/main
 // https://github.com/android/play-billing-samples/blob/main/ClassyTaxiAppKotlin/app/src/main/java/com/example/billing/gpbl/BillingClientLifecycle.kt
-actual class BillingDataSource(
+class BillingDataSource(
     context: Context,
     private val externalScope: CoroutineScope,
 ) : PurchasesUpdatedListener,
@@ -35,17 +42,21 @@ actual class BillingDataSource(
         .enablePendingPurchases()
         .build()
 
+    private val _unlimitedSubProduct: MutableStateFlow<ProductDetails?> = MutableStateFlow(null)
     private val _subscriptionPurchases = MutableStateFlow<List<Purchase>>(emptyList())
 
-    private val _unlimitedSubProduct: MutableStateFlow<ProductDetails?> = MutableStateFlow(null)
+    val unlimitedSubProduct: StateFlow<ProductDetails?> = _unlimitedSubProduct.asStateFlow()
+    val subscriptionPurchases: StateFlow<List<Purchase>> = _subscriptionPurchases.asStateFlow()
+
+    // TODO Move to BillingRepository
+//    val isSubToUnlimited: StateFlow<Boolean> = _subscriptionPurchases.map { purchases ->
+//        purchases.any { it.products.contains(UNLIMITED_MESSAGES_SUBSCRIPTION) }
+//    }.stateIn(externalScope, SharingStarted.WhileSubscribed(), false)
 
     /**
      * Cached in-app product purchases details.
      */
     private var cachedPurchasesList: List<Purchase>? = null
-
-
-    // val billingState: StateFlow<BillingState> = _billingState.asStateFlow()
 
     init {
         connect()
@@ -67,6 +78,7 @@ actual class BillingDataSource(
             // You can query product details and purchases here.
             externalScope.launch {
                 querySubscriptionProductDetails()
+                querySubscriptionPurchases()
             }
         }
     }
@@ -169,6 +181,28 @@ actual class BillingDataSource(
         }
     }
 
+    /**
+     * Query Google Play Billing for existing subscription purchases.
+     *
+     * New purchases will be provided to the PurchasesUpdatedListener.
+     * You still need to check the Google Play Billing API to know when purchase tokens are removed.
+     */
+    fun querySubscriptionPurchases() {
+        if (!billingClient.isReady) {
+            Napier.e { "querySubscriptionPurchases: BillingClient is not ready" }
+            billingClient.startConnection(this)
+        }
+
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(ProductType.SUBS)
+            .build()
+
+        billingClient.queryPurchasesAsync(params) { billingResult, purchasesList ->
+            Napier.d("queryPurchasesAsync: ${billingResult.responseCode} - ${purchasesList.size}")
+            processPurchases(purchasesList)
+        }
+    }
+
     override fun onPurchasesUpdated(
         billingResult: BillingResult,
         purchases: MutableList<Purchase>?
@@ -212,6 +246,7 @@ actual class BillingDataSource(
      */
     private fun processPurchases(purchasesList: List<Purchase>?) {
         Napier.d { "processPurchases: ${purchasesList?.size} purchase(s)" }
+        Napier.d { "processPurchases: ${purchasesList}" }
         purchasesList?.let { list ->
             if (isUnchangedPurchaseList(list)) {
                 Napier.d { "processPurchases: Purchase list has not changed" }
@@ -225,6 +260,10 @@ actual class BillingDataSource(
                 }
 
                 _subscriptionPurchases.emit(subscriptionPurchaseList)
+
+                // Acknowledge purchases
+                list.filter { purchase -> purchase.isAcknowledged.not() }
+                    .forEach { purchase -> acknowledgePurchase(purchase.purchaseToken) }
             }
             logAcknowledgementStatus(list)
         }
@@ -325,3 +364,28 @@ actual class BillingDataSource(
     }
 
 }
+
+fun ProductDetails.toAppProduct(): AppProduct = AppProduct(
+    productId = productId,
+    name = name,
+    title = title,
+    description = description,
+    productType = productType,
+    offers = subscriptionOfferDetails?.map { detail ->
+        AppProductOffer(
+            offerId = detail.offerId,
+            basePlanId = detail.basePlanId,
+            offerToken = detail.offerToken,
+            pricing = detail.pricingPhases.pricingPhaseList.map { pricing ->
+                AppPricing(
+                    formattedPrice = pricing.formattedPrice,
+                    priceCurrencyCode = pricing.priceCurrencyCode,
+                )
+            }
+        )
+    } ?: emptyList()
+)
+
+fun Purchase.toAppPurchase(): AppPurchase = AppPurchase(
+    products = products
+)

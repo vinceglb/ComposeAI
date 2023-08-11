@@ -19,6 +19,7 @@ import data.repository.util.suspendRunCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import model.ChatMessageStatus
 import model.asModel
@@ -28,6 +29,7 @@ class ChatMessageRepository(
     private val chatMessageQueries: ChatMessageEntityQueries,
     private val preferences: PreferenceLocalDataSource,
     private val coinRepository: CoinRepository,
+    private val billingRepository: BillingRepository,
     private val analyticsHelper: AnalyticsHelper,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
@@ -41,6 +43,10 @@ class ChatMessageRepository(
         contentMessage: String,
     ): Result<Int> = suspendRunCatching(defaultDispatcher) {
         analyticsHelper.logMessageSent()
+
+        if (coinRepository.coins().first() <= 0) {
+            throw NoCoinsException()
+        }
 
         // Save user message
         val userMessage = ChatMessage(role = ChatRole.User, content = contentMessage)
@@ -146,7 +152,9 @@ class ChatMessageRepository(
             )
 
             // Consume one token
-            coinRepository.useCoins(remove = 1)
+            if (billingRepository.isSubToUnlimited.value.not()) {
+                coinRepository.useCoins(remove = 1)
+            }
 
             // Report OpenAI tokens used
             val totalMessages = preferences.incrementMessages()
@@ -202,3 +210,5 @@ class ChatMessageRepository(
         return messagesToSend.reversed()
     }
 }
+
+class NoCoinsException : Exception("No coins")

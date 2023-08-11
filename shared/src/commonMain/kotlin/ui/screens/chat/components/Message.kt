@@ -57,6 +57,7 @@ import util.rememberHapticFeedback
 @Composable
 fun Messages(
     messages: List<ChatMessageEntity>,
+    conversationId: String,
     onClickCopy: (String) -> Unit,
     onClickShare: (String) -> Unit,
     onRetry: () -> Unit,
@@ -77,7 +78,8 @@ fun Messages(
             contentType = { _, item -> item.role },
         ) { index, chatMessage ->
             MessageLine(
-                chatMessage,
+                message = chatMessage,
+                conversationId = conversationId,
                 isLast = index == 0,
                 onClickCopy = onClickCopy,
                 onClickShare = onClickShare,
@@ -96,6 +98,7 @@ fun Messages(
 @Composable
 fun MessageLine(
     message: ChatMessageEntity,
+    conversationId: String,
     isLast: Boolean,
     hapticFeedback: HapticFeedback,
     onClickCopy: (String) -> Unit,
@@ -159,7 +162,7 @@ fun MessageLine(
                 )
             } else {
                 ImageUrl(
-                    url = "https://api.dicebear.com/6.x/shapes/svg?seed=${message.id}",
+                    url = "https://api.dicebear.com/6.x/thumbs/svg?seed=${conversationId}",
                     contentDescription = null,
                     modifier = Modifier
                         .size(40.dp)
