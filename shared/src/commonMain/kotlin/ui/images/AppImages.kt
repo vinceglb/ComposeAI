@@ -5,5 +5,5 @@ object AppImages {
     const val composeAILight = "drawable/ic_launcher_light_playstore.png"
     const val verified = "drawable/ic_verified.xml"
     const val pattern = "drawable/pattern.jpg"
-    const val pattern3 = "drawable/pattern3.png"
+    const val pattern3 = "drawable/pattern3.jpg"
 }
