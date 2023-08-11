@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -62,6 +64,12 @@ internal object BankScreen : Screen {
     override fun Content() {
         val screenModel: BankViewModel = getScreenModel()
         val uiState by screenModel.uiState.collectAsState()
+
+        // Clear focus when the screen is shown
+        val focusManager = LocalFocusManager.current
+        LaunchedEffect(Unit) {
+            focusManager.clearFocus()
+        }
 
         uiState.let { state ->
             when (state) {
