@@ -1,6 +1,5 @@
 package ui.screens.chat
 
-import analytics.AdMobButton
 import analytics.TrackScreenViewEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -9,6 +8,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material.icons.rounded.ChatBubbleOutline
 import androidx.compose.material.icons.rounded.Forum
+import androidx.compose.material.icons.rounded.GeneratingTokens
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
@@ -48,6 +49,7 @@ import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,17 +65,24 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import com.ebfstudio.appgpt.common.MainRes
 import di.getScreenModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
+import ui.components.AnimatedCounter
 import ui.components.TypewriterText
+import ui.images.AppImages
+import ui.screens.bank.BankScreen
 import ui.screens.chat.components.Messages
 
 internal object ChatScreen : Screen {
@@ -96,7 +105,6 @@ internal object ChatScreen : Screen {
             currentChatUiState = currentChatUiState,
             chatsUiState = chatsUiState,
             onClickShare = screenModel::onMessageShared,
-            onRewardEarned = screenModel::onRewardEarned,
             onClickCopy = { text ->
                 localClipboardManager.setText(AnnotatedString(text))
                 screenModel.onMessageCopied()
@@ -113,7 +121,6 @@ internal object ChatScreen : Screen {
         onTextChange: (String) -> Unit,
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
-        onRewardEarned: (Int) -> Unit,
         screenUiState: ChatScreenUiState,
         currentChatUiState: ChatMessagesUiState,
         chatsUiState: ChatsUiState,
@@ -149,7 +156,6 @@ internal object ChatScreen : Screen {
                         onNewChat = onNewChat,
                         screenUiState = screenUiState,
                         currentChatUiState = currentChatUiState,
-                        onRewardEarned = onRewardEarned,
                         onMenuClick = { scope.launch { drawerState.open() } },
                     )
                 }
@@ -183,7 +189,6 @@ internal object ChatScreen : Screen {
                             onNewChat = onNewChat,
                             screenUiState = screenUiState,
                             currentChatUiState = currentChatUiState,
-                            onRewardEarned = onRewardEarned,
                             onMenuClick = { scope.launch { drawerState.open() } },
                         )
                     }
@@ -206,7 +211,6 @@ internal object ChatScreen : Screen {
         onClickCopy: (String) -> Unit,
         onClickShare: (String) -> Unit,
         onTextChange: (String) -> Unit,
-        onRewardEarned: (Int) -> Unit,
         modifier: Modifier = Modifier,
     ) {
         val focusRequester = remember { FocusRequester() }
@@ -228,26 +232,29 @@ internal object ChatScreen : Screen {
                     text = screenUiState.text,
                     isLoading = screenUiState.isSending,
                     coins = screenUiState.coins,
+                    isSubToUnlimited = screenUiState.isSubToUnlimited,
                     focusRequester = focusRequester,
                     onTextChange = onTextChange,
                     onSend = onSend,
-                    onRewardEarned = onRewardEarned,
                 )
             },
             modifier = modifier,
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding)) {
                 when (currentChatUiState) {
-                    ChatMessagesUiState.Empty,
                     ChatMessagesUiState.Loading -> Unit
+                    ChatMessagesUiState.Empty -> Unit
 
                     is ChatMessagesUiState.Success -> {
-                        Messages(
-                            messages = currentChatUiState.messages,
-                            onClickCopy = onClickCopy,
-                            onClickShare = onClickShare,
-                            onRetry = onRetry,
-                        )
+                        Column {
+                            Messages(
+                                messages = currentChatUiState.messages,
+                                conversationId = currentChatUiState.chat?.id ?: "?",
+                                onClickCopy = onClickCopy,
+                                onClickShare = onClickShare,
+                                onRetry = onRetry,
+                            )
+                        }
                     }
                 }
             }
@@ -357,11 +364,14 @@ internal object ChatScreen : Screen {
         text: String,
         isLoading: Boolean,
         coins: Int,
+        isSubToUnlimited: Boolean,
         focusRequester: FocusRequester,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
-        onRewardEarned: (Int) -> Unit,
     ) {
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val keyboardController = LocalSoftwareKeyboardController.current
+
         val enableSend = text.isNotBlank() && !isLoading
         val transition = updateTransition(targetState = enableSend)
         val sendContainerColor by transition.animateColor { state ->
@@ -402,11 +412,33 @@ internal object ChatScreen : Screen {
                 ) {
                     // Rewards button
                     AnimatedVisibility(text.isEmpty()) {
-                        AdMobButton(
-                            coins = coins,
-                            onRewardEarned = onRewardEarned,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
+                        if (isSubToUnlimited.not()) {
+                            TextButton(
+                                onClick = { bottomSheetNavigator.show(BankScreen) },
+                                modifier = Modifier.padding(end = 8.dp)
+                            ) {
+                                Icon(
+                                    Icons.Rounded.GeneratingTokens,
+                                    contentDescription = null,
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                AnimatedCounter(
+                                    count = coins,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { bottomSheetNavigator.show(BankScreen) },
+                                modifier = Modifier.padding(end = 8.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(AppImages.verified),
+                                    contentDescription = "Verified",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        }
                     }
 
                     Surface(
@@ -456,7 +488,15 @@ internal object ChatScreen : Screen {
                     Spacer(modifier = Modifier.width(8.dp))
 
                     FilledIconButton(
-                        onClick = onSend,
+                        onClick = {
+                            if (coins > 0) {
+                                onSend()
+                            } else {
+                                bottomSheetNavigator.show(BankScreen)
+                                focusRequester.freeFocus()
+                                keyboardController?.hide()
+                            }
+                        },
                         enabled = enableSend,
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier.size(48.dp),

@@ -10,6 +10,7 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.GetAllChats
+import data.repository.BillingRepository
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
@@ -34,6 +35,7 @@ class ChatScreenModel(
     private val chatRepository: ChatRepository,
     private val chatMessageRepository: ChatMessageRepository,
     private val coinRepository: CoinRepository,
+    private val billingRepository: BillingRepository,
     private val analyticsHelper: AnalyticsHelper,
     initialChatId: String?,
 ) : ScreenModel {
@@ -91,6 +93,12 @@ class ChatScreenModel(
         coroutineScope.launch {
             coinRepository.coins().collect { coins ->
                 screenUiState.update { it.copy(coins = coins) }
+            }
+        }
+
+        coroutineScope.launch {
+            billingRepository.isSubToUnlimited.collect { isSubToUnlimited ->
+                screenUiState.update { it.copy(isSubToUnlimited = isSubToUnlimited) }
             }
         }
     }
@@ -179,12 +187,6 @@ class ChatScreenModel(
         analyticsHelper.logMessageShared()
     }
 
-    fun onRewardEarned(coins: Int) {
-        coroutineScope.launch {
-            coinRepository.useCoins(add = coins)
-        }
-    }
-
 }
 
 sealed interface ChatsUiState {
@@ -213,4 +215,5 @@ data class ChatScreenUiState(
     val text: String = "",
     val isSending: Boolean = false,
     val coins: Int = 0,
+    val isSubToUnlimited: Boolean = false,
 )
