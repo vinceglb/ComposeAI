@@ -44,6 +44,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(compose.material) // https://github.com/adrielcafe/voyager/issues/185
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
@@ -51,6 +52,7 @@ kotlin {
 
                 // Voyager
                 implementation(libs.voyager.navigator)
+                implementation(libs.voyager.bottomSheetNavigator)
 
                 // Koin
                 implementation(libs.koin.core)
@@ -96,6 +98,7 @@ kotlin {
 
                 // Koin
                 api(libs.koin.android)
+                api(libs.koin.androidx.compose)
 
                 // DataStore
                 implementation(libs.datastore.preferences)
@@ -121,8 +124,8 @@ kotlin {
                 // AdMob
                 api(libs.play.services.ads)
 
-                val billing_version = "6.0.1"
-                implementation("com.android.billingclient:billing-ktx:$billing_version")
+                // Billing
+                implementation(libs.billing.ktx)
             }
         }
 

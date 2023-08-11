@@ -2,20 +2,20 @@
 accompanistSystemuicontroller = "0.30.1"
 activityCompose = "1.7.2"
 agp = "8.2.0-alpha15"
-androidGradlePlugin = "8.0.1"
 appcompat = "1.6.1"
+billingKtx = "6.0.1"
 buildkonfigGradlePlugin = "0.13.3"
 compose = "1.4.3"
 coreKtx = "1.10.1"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
 desugar_jdk_libs = "2.0.3"
-firebaseBom = "32.2.0"
-firebaseCrashlyticsGradle = "2.9.7"
+firebaseBom = "32.2.2"
+firebaseCrashlyticsGradle = "2.9.8"
 googleServices = "4.3.15"
 imageLoader = "1.4.0"
-jtokkit = "0.6.1"
 koin = "3.4.3"
+koinCompose = "3.4.6"
 kotlin = "1.9.0"
 kotlinComposeCompiler = "1.5.0"
 kotlinxDatetime = "0.4.0"
@@ -35,6 +35,7 @@ accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -49,8 +50,8 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
-jtokkit = { module = "com.knuddels:jtokkit", version.ref = "jtokkit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCompose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libresCompose" }
@@ -65,6 +66,7 @@ play-services-ads = { module = "com.google.android.gms:play-services-ads", versi
 resources = { module = "com.goncalossilva:resources", version.ref = "resources" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
+voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
