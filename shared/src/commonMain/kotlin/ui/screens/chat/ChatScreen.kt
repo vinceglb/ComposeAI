@@ -52,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -80,6 +81,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
 import ui.components.AnimatedCounter
 import ui.components.TypewriterText
+import ui.components.rememberInAppReviewState
 import ui.images.AppImages
 import ui.screens.bank.BankScreen
 import ui.screens.chat.components.Messages
@@ -93,6 +95,17 @@ internal object ChatScreen : Screen {
         val screenUiState by screenModel.screenUiState.collectAsState()
         val chatsUiState by screenModel.chatsUiState.collectAsState()
         val localClipboardManager = LocalClipboardManager.current
+
+        val inAppReviewState = rememberInAppReviewState(
+            onComplete = screenModel::onInAppReviewComplete,
+            onError = screenModel::onInAppReviewError,
+        )
+        LaunchedEffect(screenUiState.actionShowInAppReview) {
+            if (screenUiState.actionShowInAppReview) {
+                inAppReviewState.show()
+                screenModel.onInAppReviewShown()
+            }
+        }
 
         ChatScreen(
             onSend = screenModel::onSendMessage,

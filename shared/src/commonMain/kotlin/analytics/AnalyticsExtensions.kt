@@ -101,6 +101,18 @@ fun AnalyticsHelper.logWelcomeSeen() {
     )
 }
 
+fun AnalyticsHelper.logInAppReviewComplete() {
+    logEvent(
+        AnalyticsEvent(type = "in_app_review_complete"),
+    )
+}
+
+fun AnalyticsHelper.logInAppReviewError() {
+    logEvent(
+        AnalyticsEvent(type = "in_app_review_error"),
+    )
+}
+
 fun AnalyticsHelper.logRewardedAdImpression() {
     logEvent(
         AnalyticsEvent(type = "ad_ra_impression"),

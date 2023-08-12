@@ -40,7 +40,7 @@ val commonModule = module {
     // ScreenModels
     factoryOf(::AppScreenModel)
     factoryOf(::WelcomeScreenModel)
-    factory { params -> ChatScreenModel(get(), get(), get(), get(), get(), initialChatId = params.getOrNull()) }
+    factory { params -> ChatScreenModel(get(), get(), get(), get(), get(), get(), initialChatId = params.getOrNull()) }
     factoryOf(::BankViewModel)
 
     // Repositories
