@@ -126,6 +126,9 @@ kotlin {
 
                 // Billing
                 implementation(libs.billing.ktx)
+
+                // In-App Review
+                implementation(libs.review.ktx)
             }
         }
 

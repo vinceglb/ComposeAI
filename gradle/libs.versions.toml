@@ -25,6 +25,7 @@ napier = "2.6.1"
 openaiClient = "3.3.2"
 playServicesAds = "22.2.0"
 resources = "0.3.2"
+reviewKtx = "2.0.1"
 settings = "1.0.0"
 sqlDelight = "2.0.0"
 uuid = "0.7.0"
@@ -64,6 +65,7 @@ native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "s
 openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClient" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 resources = { module = "com.goncalossilva:resources", version.ref = "resources" }
+review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
 voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
