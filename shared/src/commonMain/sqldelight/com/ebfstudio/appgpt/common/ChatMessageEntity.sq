@@ -45,3 +45,8 @@ countChatMessagesWithChatId:
 SELECT COUNT(*)
 FROM ChatMessageEntity
 WHERE chatId = ? AND role = ? AND status = ?;
+
+countAllChatMessages:
+SELECT COUNT(*)
+FROM ChatMessageEntity
+WHERE role = ? AND status = ?;

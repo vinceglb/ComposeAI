@@ -3,6 +3,8 @@ package ui.screens.chat
 import analytics.AnalyticsHelper
 import analytics.logConversationSelected
 import analytics.logCreateNewConversation
+import analytics.logInAppReviewComplete
+import analytics.logInAppReviewError
 import analytics.logMessageCopied
 import analytics.logMessageShared
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -14,6 +16,7 @@ import data.repository.BillingRepository
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
+import data.repository.PreferenceRepository
 import expect.shareText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +39,7 @@ class ChatScreenModel(
     private val chatMessageRepository: ChatMessageRepository,
     private val coinRepository: CoinRepository,
     private val billingRepository: BillingRepository,
+    private val preferenceRepository: PreferenceRepository,
     private val analyticsHelper: AnalyticsHelper,
     initialChatId: String?,
 ) : ScreenModel {
@@ -99,6 +103,18 @@ class ChatScreenModel(
         coroutineScope.launch {
             billingRepository.isSubToUnlimited.collect { isSubToUnlimited ->
                 screenUiState.update { it.copy(isSubToUnlimited = isSubToUnlimited) }
+            }
+        }
+
+        // Show in-app review after 4 messages
+        coroutineScope.launch {
+            combine(
+                chatMessageRepository.getNumberOfMessages(),
+                preferenceRepository.inAppReviewShown()
+            ) { numberOfMessages, inAppReviewShown ->
+                numberOfMessages >= 2 && !inAppReviewShown
+            }.collect { showInAppReview ->
+                screenUiState.update { it.copy(actionShowInAppReview = showInAppReview) }
             }
         }
     }
@@ -187,6 +203,18 @@ class ChatScreenModel(
         analyticsHelper.logMessageShared()
     }
 
+    fun onInAppReviewShown() {
+        screenUiState.update { it.copy(actionShowInAppReview = false) }
+        coroutineScope.launch { preferenceRepository.setInAppReviewShown() }
+    }
+
+    fun onInAppReviewComplete() {
+        analyticsHelper.logInAppReviewComplete()
+    }
+
+    fun onInAppReviewError() {
+        analyticsHelper.logInAppReviewError()
+    }
 }
 
 sealed interface ChatsUiState {
@@ -216,4 +244,5 @@ data class ChatScreenUiState(
     val isSending: Boolean = false,
     val coins: Int = 0,
     val isSubToUnlimited: Boolean = false,
+    val actionShowInAppReview: Boolean = false,
 )

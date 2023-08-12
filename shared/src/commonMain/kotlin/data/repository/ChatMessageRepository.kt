@@ -6,6 +6,7 @@ import analytics.logMessageSent
 import analytics.setUserTotalMessages
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
@@ -37,6 +38,14 @@ class ChatMessageRepository(
         chatMessageQueries.getChatMessagesWithChatId(chatId)
             .asFlow()
             .mapToList(defaultDispatcher)
+
+    fun getNumberOfMessages(): Flow<Long> =
+        chatMessageQueries.countAllChatMessages(
+            role = ChatRole.User,
+            status = ChatMessageStatus.SENT,
+        )
+            .asFlow()
+            .mapToOne(defaultDispatcher)
 
     suspend fun sendMessage(
         chatId: String,

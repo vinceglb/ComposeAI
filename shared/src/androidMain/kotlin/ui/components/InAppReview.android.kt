@@ -16,6 +16,7 @@ import kotlinx.coroutines.tasks.await
 actual class InAppReviewState(
     context: Context,
     actual val onComplete: () -> Unit,
+    actual val onError: () -> Unit,
 ) {
     private val manager = ReviewManagerFactory.create(context)
 
@@ -29,11 +30,15 @@ actual class InAppReviewState(
         doShow = false
 
         try {
-            val request = manager.requestReviewFlow()
-            val reviewInfo = request.await()
+            Napier.d { "InAppReview: Requesting review flow" }
+
+            val reviewInfo = manager.requestReviewFlow().await()
             manager.launchReviewFlow(activity, reviewInfo).await()
             onComplete()
+
+            Napier.d { "InAppReview: Review flow completed" }
         } catch (e: Exception) {
+            onError()
             Napier.w { "InAppReview failed: $e" }
         }
     }
@@ -41,10 +46,11 @@ actual class InAppReviewState(
 
 @Composable
 actual fun rememberInAppReviewState(
-    onComplete: () -> Unit
+    onComplete: () -> Unit,
+    onError: () -> Unit,
 ): InAppReviewState {
     val context = LocalContext.current
-    val inAppReviewState = remember { InAppReviewState(context, onComplete) }
+    val inAppReviewState = remember { InAppReviewState(context, onComplete, onError) }
 
     LaunchedEffect(inAppReviewState.doShow) {
         if (inAppReviewState.doShow) {

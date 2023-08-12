@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 
 actual class InAppReviewState(
     actual val onComplete: () -> Unit,
+    actual val onError: () -> Unit,
 ) {
     actual fun show() {
         TODO()
@@ -12,7 +13,8 @@ actual class InAppReviewState(
 
 @Composable
 actual fun rememberInAppReviewState(
-    onComplete: () -> Unit
+    onComplete: () -> Unit,
+    onError: () -> Unit,
 ): InAppReviewState {
-    return InAppReviewState(onComplete)
+    return InAppReviewState(onComplete, onError)
 }
