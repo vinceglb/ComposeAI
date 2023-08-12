@@ -28,8 +28,8 @@ android {
         applicationId = "com.ebfstudio.appgpt"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 23
-        versionName = "1.3.1"
+        versionCode = 24
+        versionName = "1.3.2"
     }
 
     buildFeatures {
