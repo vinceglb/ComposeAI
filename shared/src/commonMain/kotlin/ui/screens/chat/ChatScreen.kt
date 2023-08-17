@@ -76,7 +76,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import com.ebfstudio.appgpt.common.MainRes
 import di.getScreenModel
+import expect.platform
 import kotlinx.coroutines.launch
+import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
 import ui.components.AnimatedCounter
@@ -422,32 +424,34 @@ internal object ChatScreen : Screen {
                     verticalAlignment = Alignment.Bottom,
                 ) {
                     // Rewards button
-                    AnimatedVisibility(text.isEmpty()) {
-                        if (isSubToUnlimited.not()) {
-                            TextButton(
-                                onClick = { bottomSheetNavigator.show(BankScreen) },
-                                modifier = Modifier.padding(end = 8.dp)
-                            ) {
-                                Icon(
-                                    Icons.Rounded.GeneratingTokens,
-                                    contentDescription = null,
-                                )
-                                Spacer(Modifier.width(4.dp))
-                                AnimatedCounter(
-                                    count = coins,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        } else {
-                            IconButton(
-                                onClick = { bottomSheetNavigator.show(BankScreen) },
-                                modifier = Modifier.padding(end = 8.dp)
-                            ) {
-                                Image(
-                                    painter = painterResource(AppImages.verified),
-                                    contentDescription = "Verified",
-                                    modifier = Modifier.size(24.dp),
-                                )
+                    if (platform() == AppPlatform.ANDROID) {
+                        AnimatedVisibility(text.isEmpty()) {
+                            if (isSubToUnlimited.not()) {
+                                TextButton(
+                                    onClick = { bottomSheetNavigator.show(BankScreen) },
+                                    modifier = Modifier.padding(end = 8.dp)
+                                ) {
+                                    Icon(
+                                        Icons.Rounded.GeneratingTokens,
+                                        contentDescription = null,
+                                    )
+                                    Spacer(Modifier.width(4.dp))
+                                    AnimatedCounter(
+                                        count = coins,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            } else {
+                                IconButton(
+                                    onClick = { bottomSheetNavigator.show(BankScreen) },
+                                    modifier = Modifier.padding(end = 8.dp)
+                                ) {
+                                    Image(
+                                        painter = painterResource(AppImages.verified),
+                                        contentDescription = "Verified",
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                }
                             }
                         }
                     }

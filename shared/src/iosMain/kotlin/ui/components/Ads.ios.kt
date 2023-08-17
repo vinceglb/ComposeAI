@@ -16,4 +16,4 @@ actual class AdsState(
 @Composable
 actual fun rememberAdsState(
     onRewardEarned: (Int) -> Unit,
-): AdsState = TODO()
+): AdsState = AdsState(onRewardEarned)

@@ -10,5 +10,5 @@ actual class SubscriptionState {
 
 @Composable
 actual fun rememberSubscriptionState(): SubscriptionState {
-    TODO()
+    return SubscriptionState()
 }

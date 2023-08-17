@@ -6,9 +6,7 @@ actual class InAppReviewState(
     actual val onComplete: () -> Unit,
     actual val onError: () -> Unit,
 ) {
-    actual fun show() {
-        TODO()
-    }
+    actual fun show() {}
 }
 
 @Composable
