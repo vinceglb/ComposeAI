@@ -17,11 +17,13 @@ import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntityQueries
 import data.local.PreferenceLocalDataSource
 import data.repository.util.suspendRunCatching
+import expect.platform
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
+import model.AppPlatform
 import model.ChatMessageStatus
 import model.asModel
 
@@ -53,7 +55,7 @@ class ChatMessageRepository(
     ): Result<Int> = suspendRunCatching(defaultDispatcher) {
         analyticsHelper.logMessageSent()
 
-        if (coinRepository.coins().first() <= 0) {
+        if (coinRepository.coins().first() <= 0 && platform() == AppPlatform.ANDROID) {
             throw NoCoinsException()
         }
 
