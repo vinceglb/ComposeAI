@@ -1,143 +1,162 @@
-@file:Suppress("UNUSED_VARIABLE")
-
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods")
-    id("com.android.library")
-    id("org.jetbrains.compose")
-    id("com.codingfeline.buildkonfig")
-    id("app.cash.sqldelight") version "2.0.0"
-    id("io.github.skeptick.libres")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.android.library)
+    // kotlin("native.cocoapods")
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.buildKonfig)
+    id("app.cash.sqldelight") version "2.0.1" // TODO alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.libres)
 }
 
-@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
-
-    android()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    cocoapods {
-        version = "1.0.0"
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../iosApp/Podfile")
-        framework {
-            baseName = "shared"
-            isStatic = true
-        }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
-
-        pod("FirebaseAnalytics") {
-            version = "~> 10.13"
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
         }
     }
 
+//    iosX64()
+//    iosArm64()
+//    iosSimulatorArm64()
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
+//    cocoapods {
+//        version = "1.0.0"
+//        summary = "Some description for the Shared Module"
+//        homepage = "Link to the Shared Module homepage"
+//        ios.deploymentTarget = "14.1"
+//        podfile = project.file("../iosApp/Podfile")
+//        framework {
+//            baseName = "shared"
+//            isStatic = true
+//        }
+//        extraSpecAttributes["resources"] =
+//            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+//
+//        pod("FirebaseAnalytics") {
+//            version = "~> 10.21"
+//        }
+//    }
+
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material) // https://github.com/adrielcafe/voyager/issues/185
-                implementation(compose.material3)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-                implementation(compose.materialIconsExtended)
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material) // https://github.com/adrielcafe/voyager/issues/185
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
 
-                // Voyager
-                implementation(libs.voyager.navigator)
-                implementation(libs.voyager.bottomSheetNavigator)
+            // Voyager
+            implementation(libs.voyager.koin)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.bottomSheetNavigator)
 
-                // Koin
-                implementation(libs.koin.core)
+            // Koin
+            implementation(libs.koin.core)
 
-                // Image Loader
-                implementation(libs.image.loader)
+            // Image Loader
+             implementation(libs.image.loader)
 
-                // Resource
-                implementation(libs.resources)
+            // Resource
+            // implementation(libs.resources)
 
-                // OpenAI
-                implementation(libs.openai.client)
+            // OpenAI
+            implementation(libs.openai.client)
 
-                // Settings
-                implementation(libs.multiplatform.settings)
-                implementation(libs.multiplatform.settings.coroutines)
+            // Settings
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
 
-                // SQL
-                implementation(libs.coroutines.extensions)
+            // SQL
+            implementation(libs.coroutines.extensions)
 
-                // UUID
-                implementation(libs.uuid)
+            // UUID
+            implementation(libs.uuid)
 
-                // DateTime
-                implementation(libs.kotlinx.datetime)
+            // DateTime
+            implementation(libs.kotlinx.datetime)
 
-                // Libres (resources)
-                implementation(libs.libres.compose)
+            // Libres (resources)
+            // implementation(libs.libres.compose)
 
-                // Napier (log)
-                api(libs.napier)
+            // Napier (log)
+            api(libs.napier)
 
-                // Markdown
-                implementation(libs.markdown)
-            }
+            // Markdown
+            implementation(libs.markdown)
+
+            // Coil
+//            implementation(libs.coil3)
+//            implementation(libs.coil3.compose)
+//            implementation(libs.coil3.network)
+//            implementation(libs.coil3.network.ktor)
         }
 
-        val androidMain by getting {
-            dependencies {
-                api(libs.activity.compose)
-                api(libs.appcompat)
-                api(libs.core.ktx)
+        androidMain.dependencies {
+            api(libs.activity.compose)
+            api(libs.core.ktx)
 
-                // Koin
-                api(libs.koin.android)
-                api(libs.koin.androidx.compose)
+            // Koin
+            api(libs.koin.android)
+            api(libs.koin.androidx.compose)
 
-                // DataStore
-                implementation(libs.datastore.preferences)
+            // DataStore
+            implementation(libs.datastore.preferences)
 
-                // Settings
-                implementation(libs.multiplatform.settings.datastore)
+            // Settings
+            implementation(libs.multiplatform.settings.datastore)
 
-                // SQL
-                implementation(libs.android.driver)
+            // SQL
+            implementation(libs.android.driver)
 
-                // Accompanist
-                implementation(libs.accompanist.systemuicontroller)
+            // Accompanist
+            implementation(libs.accompanist.systemuicontroller)
 
-                // Splash Screen
-                api(libs.core.splashscreen)
+            // Splash Screen
+            api(libs.core.splashscreen)
 
-                // Firebase
-                api(project.dependencies.platform(libs.firebase.bom))
-                api(libs.firebase.analytics.ktx)
-                api(libs.firebase.crashlytics.ktx)
-                api(libs.firebase.appcheck.playintegrity)
+            // Firebase
+            api(project.dependencies.platform(libs.firebase.bom))
+            api(libs.firebase.analytics.ktx)
+            api(libs.firebase.crashlytics.ktx)
+            api(libs.firebase.appcheck.playintegrity)
 
-                // AdMob
-                api(libs.play.services.ads)
+            // AdMob
+            api(libs.play.services.ads)
 
-                // Billing
-                implementation(libs.billing.ktx)
+            // Billing
+            implementation(libs.billing.ktx)
 
-                // In-App Review
-                implementation(libs.review.ktx)
-            }
+            // In-App Review
+            implementation(libs.review.ktx)
+
+            // Ktor
+            implementation(libs.ktor.client.okhttp)
         }
 
-        val iosMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                // SQL
-                api(libs.native.driver)
-            }
+        iosMain.dependencies {
+            // SQL
+            api(libs.native.driver)
+
+            // Ktor
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -148,18 +167,22 @@ compose {
 
 android {
     namespace = "com.ebfstudio.appgpt.common"
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
+//    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
+    defaultConfig {
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+    }
 
     buildFeatures {
         buildConfig = true
     }
 
-    defaultConfig {
-        minSdk = (findProperty("android.minSdk") as String).toInt()
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
     }
 
     compileOptions {
@@ -175,25 +198,25 @@ android {
 buildkonfig {
     packageName = "com.ebfstudio.appgpt.common"
 
-    val props = Properties()
-
-    try {
-        props.load(file("../local.properties").inputStream())
-    } catch (e: Exception) {
-        // keys are private and can not be committed to git
-    }
+//    val props = Properties()
+//
+//    try {
+//        props.load(file("../local.properties").inputStream())
+//    } catch (e: Exception) {
+//        // keys are private and can not be committed to git
+//    }
 
     defaultConfigs {
         buildConfigField(
             STRING,
             "OPENAI_API_KEY",
-            props["openai_api_key"]?.toString() ?: "abc"
+            gradleLocalProperties(project.rootDir).getProperty("openai_api_key")
         )
 
         buildConfigField(
             STRING,
             "ADMOB_REWARDED_AD_ID",
-            props["admob_rewarded_ad_id"]?.toString() ?: "abc"
+            gradleLocalProperties(project.rootDir).getProperty("admob_rewarded_ad_id")
         )
     }
 }

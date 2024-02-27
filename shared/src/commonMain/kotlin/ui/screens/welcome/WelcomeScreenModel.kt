@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import data.repository.PreferenceRepository
 import kotlinx.coroutines.launch
 
@@ -16,7 +16,7 @@ class WelcomeScreenModel(
         private set
 
     fun setWelcomeShown() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             preferenceRepository.setWelcomeShown()
             uiState = uiState.copy(doNavigateToChat = true)
         }

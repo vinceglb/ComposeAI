@@ -14,7 +14,7 @@ fun AppTheme(
 ) {
     // Load Typography
     val defaultTypography = MaterialTheme.typography
-    val typography: Typography = runBlocking { appTypography(defaultTypography) }
+    val typography: Typography = appTypography(defaultTypography)
     val colorSchemeTemp = platformColorScheme(darkTheme)
     val colorScheme = colorSchemeTemp.copy()
 

@@ -15,3 +15,4 @@ iosApp/iosApp.xcodeproj/*
 shared/shared.podspec
 androidApp/release/*
 androidApp/google-services.json
+.kotlin/

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material.icons.rounded.ChatBubbleOutline
@@ -35,6 +36,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -73,9 +75,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import com.ebfstudio.appgpt.common.MainRes
-import di.getScreenModel
+import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.ic_verified
 import expect.platform
 import kotlinx.coroutines.launch
 import model.AppPlatform
@@ -84,7 +88,6 @@ import org.koin.core.parameter.parametersOf
 import ui.components.AnimatedCounter
 import ui.components.TypewriterText
 import ui.components.rememberInAppReviewState
-import ui.images.AppImages
 import ui.screens.bank.BankScreen
 import ui.screens.chat.components.Messages
 
@@ -189,9 +192,9 @@ internal object ChatScreen : Screen {
                     }
                 ) {
                     Row {
-                        Divider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
-                            modifier = Modifier.width(1.dp).fillMaxHeight()
+                        HorizontalDivider(
+                            modifier = Modifier.width(1.dp).fillMaxHeight(),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
                         )
                         ChatScreenContent(
                             showTopBarActions = false,
@@ -447,7 +450,7 @@ internal object ChatScreen : Screen {
                                     modifier = Modifier.padding(end = 8.dp)
                                 ) {
                                     Image(
-                                        painter = painterResource(AppImages.verified),
+                                        painter = painterResource(Res.drawable.ic_verified),
                                         contentDescription = "Verified",
                                         modifier = Modifier.size(24.dp),
                                     )
@@ -521,7 +524,7 @@ internal object ChatScreen : Screen {
                         )
                     ) {
                         Icon(
-                            Icons.Rounded.Send,
+                            Icons.AutoMirrored.Rounded.Send,
                             contentDescription = null,
                             modifier = Modifier.rotate(sendIconRotation)
                         )

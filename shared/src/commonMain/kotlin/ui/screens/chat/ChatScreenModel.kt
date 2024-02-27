@@ -8,7 +8,7 @@ import analytics.logInAppReviewError
 import analytics.logMessageCopied
 import analytics.logMessageShared
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.ebfstudio.appgpt.common.ChatEntity
 import com.ebfstudio.appgpt.common.ChatMessageEntity
 import com.ebfstudio.appgpt.common.GetAllChats
@@ -66,7 +66,7 @@ class ChatScreenModel(
                 }
             }
         }.stateIn(
-            scope = coroutineScope,
+            scope = screenModelScope,
             started = SharingStarted.Eagerly,
             initialValue = ChatMessagesUiState.Loading,
         )
@@ -76,7 +76,7 @@ class ChatScreenModel(
             .map { chats -> chats.map(GetAllChats::toChats) }
             .map { chats -> ChatsUiState.Success(chats = chats) }
             .stateIn(
-                scope = coroutineScope,
+                scope = screenModelScope,
                 started = SharingStarted.Eagerly,
                 initialValue = ChatsUiState.Loading,
             )
@@ -84,7 +84,7 @@ class ChatScreenModel(
     init {
         // If no chat id is provided, get the latest chat id
         if (initialChatId == null) {
-            coroutineScope.launch {
+            screenModelScope.launch {
                 val latestChat = chatRepository.getChatsStream().first().firstOrNull()
                 val fiveMinutesAgo = Clock.System.now().minus(5.minutes)
 
@@ -94,20 +94,20 @@ class ChatScreenModel(
             }
         }
 
-        coroutineScope.launch {
+        screenModelScope.launch {
             coinRepository.coins().collect { coins ->
                 screenUiState.update { it.copy(coins = coins) }
             }
         }
 
-        coroutineScope.launch {
+        screenModelScope.launch {
             billingRepository.isSubToUnlimited.collect { isSubToUnlimited ->
                 screenUiState.update { it.copy(isSubToUnlimited = isSubToUnlimited) }
             }
         }
 
         // Show in-app review after 4 messages
-        coroutineScope.launch {
+        screenModelScope.launch {
             combine(
                 chatMessageRepository.getNumberOfMessages(),
                 preferenceRepository.inAppReviewShown()
@@ -120,7 +120,7 @@ class ChatScreenModel(
     }
 
     fun onSendMessage() {
-        coroutineScope.launch {
+        screenModelScope.launch {
             // Get chat id, or create a new one
             val chatId = when {
                 chatId.value != null -> chatId.value
@@ -164,7 +164,7 @@ class ChatScreenModel(
     fun onRetrySendMessage() {
         val chatId = chatId.value ?: return
 
-        coroutineScope.launch {
+        screenModelScope.launch {
             // Start loading
             screenUiState.update {
                 it.copy(isSending = true)
@@ -205,7 +205,7 @@ class ChatScreenModel(
 
     fun onInAppReviewShown() {
         screenUiState.update { it.copy(actionShowInAppReview = false) }
-        coroutineScope.launch { preferenceRepository.setInAppReviewShown() }
+        screenModelScope.launch { preferenceRepository.setInAppReviewShown() }
     }
 
     fun onInAppReviewComplete() {

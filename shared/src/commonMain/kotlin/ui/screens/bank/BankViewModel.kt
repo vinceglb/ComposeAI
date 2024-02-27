@@ -1,7 +1,7 @@
 package ui.screens.bank
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import data.repository.BillingRepository
 import data.repository.CoinRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,10 +26,10 @@ class BankViewModel(
             unlimitedSub = unlimitedSub,
             isSubToUnlimited = isSubToUnlimited,
         )
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(5_000), BankUiState.Loading)
+    }.stateIn(screenModelScope, SharingStarted.WhileSubscribed(5_000), BankUiState.Loading)
 
     fun onRewardEarned(coins: Int) {
-        coroutineScope.launch {
+        screenModelScope.launch {
             coinRepository.useCoins(add = coins)
         }
     }
@@ -37,7 +37,7 @@ class BankViewModel(
 }
 
 sealed class BankUiState {
-    object Loading : BankUiState()
+    data object Loading : BankUiState()
 
     data class Success(
         val coins: Int = 0,

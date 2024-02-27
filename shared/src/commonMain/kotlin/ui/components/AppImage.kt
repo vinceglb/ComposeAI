@@ -2,12 +2,15 @@ package ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import ui.images.AppImages
+import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.ic_launcher_light_playstore
+import composeai.shared.generated.resources.ic_launcher_playstore
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
-fun appImagePath(): String {
+fun appImagePath(): DrawableResource {
     return when(isSystemInDarkTheme()) {
-        true -> AppImages.composeAIDark
-        else -> AppImages.composeAILight
+        true -> Res.drawable.ic_launcher_playstore
+        else -> Res.drawable.ic_launcher_light_playstore
     }
 }

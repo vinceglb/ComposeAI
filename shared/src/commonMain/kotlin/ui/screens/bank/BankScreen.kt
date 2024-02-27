@@ -50,14 +50,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import com.ebfstudio.appgpt.common.MainRes
-import di.getScreenModel
+import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.ic_verified
+import composeai.shared.generated.resources.pattern
+import composeai.shared.generated.resources.pattern3
 import org.jetbrains.compose.resources.painterResource
 import ui.components.AnimatedCounter
 import ui.components.rememberAdsState
 import ui.components.rememberSubscriptionState
-import ui.images.AppImages
 
 internal object BankScreen : Screen {
 
@@ -117,7 +120,7 @@ internal object BankScreen : Screen {
                     .clip(CircleShape)
             )
             Image(
-                painter = painterResource(AppImages.pattern3),
+                painter = painterResource(Res.drawable.pattern3),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -175,7 +178,7 @@ internal object BankScreen : Screen {
                     .clip(CircleShape)
             )
             Image(
-                painter = painterResource(AppImages.pattern),
+                painter = painterResource(Res.drawable.pattern),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -344,7 +347,7 @@ internal object BankScreen : Screen {
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Image(
-                        painter = painterResource(AppImages.verified),
+                        painter = painterResource(Res.drawable.ic_verified),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(all = 16.dp)

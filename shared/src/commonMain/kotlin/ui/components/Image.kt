@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
-import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImagePainter
 
 @Composable
 internal fun ImageUrl(
@@ -20,7 +20,7 @@ internal fun ImageUrl(
         LocalImageLoader provides generateImageLoader(),
     ) {
         Image(
-            painter = rememberAsyncImagePainter(url),
+            painter = rememberImagePainter(url),
             contentDescription = contentDescription,
             modifier = modifier,
             contentScale = contentScale,

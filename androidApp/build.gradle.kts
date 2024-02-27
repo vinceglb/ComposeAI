@@ -1,9 +1,13 @@
 plugins {
     // kotlin("multiplatform")
+    // alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.googleServices)
+    // alias(libs.plugins.firebase.crashlytics)
     kotlin("android")
-    id("com.android.application")
+    // id("com.android.application")
     // id("org.jetbrains.compose")
-    id("com.google.gms.google-services")
+    // id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
 
@@ -19,8 +23,8 @@ plugins {
 //}
 
 android {
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "com.ebfstudio.appgpt"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     // sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
@@ -28,8 +32,8 @@ android {
         applicationId = "com.ebfstudio.appgpt"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 24
-        versionName = "1.3.2"
+        versionCode = 25
+        versionName = "1.4.0"
     }
 
     buildFeatures {
@@ -41,7 +45,7 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        // isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }

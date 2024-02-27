@@ -11,4 +11,4 @@ fun GetAllChats.toChats(): ChatEntity = ChatEntity(
 )
 
 val GetAllChats.updatedAt: Instant
-    get() = updatedAtText?.let { Instant.parse(updatedAtText) } ?: createdAt
+    get() = updatedAtText ?: createdAt
