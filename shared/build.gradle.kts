@@ -71,9 +71,6 @@ kotlin {
             // Koin
             implementation(libs.koin.core)
 
-            // Image Loader
-             implementation(libs.image.loader)
-
             // Resource
             // implementation(libs.resources)
 
@@ -93,9 +90,6 @@ kotlin {
             // DateTime
             implementation(libs.kotlinx.datetime)
 
-            // Libres (resources)
-            // implementation(libs.libres.compose)
-
             // Napier (log)
             api(libs.napier)
 
@@ -103,10 +97,9 @@ kotlin {
             implementation(libs.markdown)
 
             // Coil
-//            implementation(libs.coil3)
-//            implementation(libs.coil3.compose)
-//            implementation(libs.coil3.network)
-//            implementation(libs.coil3.network.ktor)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.svg)
+            implementation(libs.coil3.network.ktor)
         }
 
         androidMain.dependencies {

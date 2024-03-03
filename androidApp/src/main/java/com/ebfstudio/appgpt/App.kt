@@ -11,10 +11,10 @@ import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderF
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import di.initKoin
+import expect.appContextForImagesMP
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.android.ext.koin.androidContext
-import ui.components.appContextForImagesMP
 
 class App : Application() {
 
