@@ -5,13 +5,13 @@ agp = "8.2.2"
 android-compileSdk = "34"
 billingKtx = "6.1.0"
 buildkonfigGradlePlugin = "0.15.1"
-coil3 = "3.0.0-alpha04"
-compose = "1.6.0-rc03"
+coil3 = "3.0.0-alpha06"
+compose = "1.6.0"
 coreKtx = "1.12.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
 desugar_jdk_libs = "2.0.4"
-firebaseBom = "32.7.2"
+firebaseBom = "32.7.3"
 firebaseCrashlyticsGradle = "2.9.9"
 googleServices = "4.4.1"
 imageLoader = "1.7.6"
@@ -38,10 +38,9 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
-coil3 = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 coil3-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
-coil3-network = { module = "io.coil-kt.coil3:coil-network-core", version.ref = "coil3" }
 coil3-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil3" }
+coil3-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil3" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }

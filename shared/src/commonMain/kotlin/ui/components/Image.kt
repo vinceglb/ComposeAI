@@ -1,13 +1,9 @@
 package ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import com.seiko.imageloader.ImageLoader
-import com.seiko.imageloader.LocalImageLoader
-import com.seiko.imageloader.rememberImagePainter
+import coil3.compose.AsyncImage
 
 @Composable
 internal fun ImageUrl(
@@ -16,17 +12,10 @@ internal fun ImageUrl(
     contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null,
 ) {
-    CompositionLocalProvider(
-        LocalImageLoader provides generateImageLoader(),
-    ) {
-        Image(
-            painter = rememberImagePainter(url),
-            contentDescription = contentDescription,
-            modifier = modifier,
-            contentScale = contentScale,
-        )
-    }
+    AsyncImage(
+        url,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = contentScale,
+    )
 }
-
-expect fun generateImageLoader(): ImageLoader
-

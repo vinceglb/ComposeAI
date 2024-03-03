@@ -1,7 +1,7 @@
 package expect
 
+import android.content.Context
 import android.content.Intent
-import ui.components.appContextForImagesMP
 
 actual fun shareText(text: String) {
     val sendIntent: Intent = Intent().apply {
@@ -16,3 +16,5 @@ actual fun shareText(text: String) {
 
     appContextForImagesMP.startActivity(shareIntent)
 }
+
+lateinit var appContextForImagesMP: Context
