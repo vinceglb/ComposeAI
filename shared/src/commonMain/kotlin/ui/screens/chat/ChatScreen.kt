@@ -30,9 +30,7 @@ import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material.icons.rounded.ChatBubbleOutline
 import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material.icons.rounded.GeneratingTokens
-import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
@@ -77,13 +75,17 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import com.ebfstudio.appgpt.common.MainRes
 import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.app_name
+import composeai.shared.generated.resources.chat_button_new
+import composeai.shared.generated.resources.chat_textfield_hint
+import composeai.shared.generated.resources.chat_title_empty
 import composeai.shared.generated.resources.ic_verified
 import expect.platform
 import kotlinx.coroutines.launch
 import model.AppPlatform
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.core.parameter.parametersOf
 import ui.components.AnimatedCounter
 import ui.components.TypewriterText
@@ -291,7 +293,7 @@ internal object ChatScreen : Screen {
         if (showCreateChatButton) {
             ExtendedFloatingActionButton(
                 onClick = onNewChat,
-                text = { Text(text = MainRes.string.chat_button_new) },
+                text = { Text(text = stringResource(Res.string.chat_button_new)) },
                 icon = {
                     Icon(
                         imageVector = Icons.Rounded.Add,
@@ -309,7 +311,7 @@ internal object ChatScreen : Screen {
                     NavigationDrawerItem(
                         label = {
                             Text(
-                                text = chat.title ?: MainRes.string.chat_title_empty,
+                                text = chat.title ?: stringResource(Res.string.chat_title_empty),
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = false
                             )
@@ -343,7 +345,7 @@ internal object ChatScreen : Screen {
         CenterAlignedTopAppBar(
             title = {
                 TypewriterText(
-                    text = chatTitle ?: MainRes.string.app_name,
+                    text = chatTitle ?: stringResource(Res.string.app_name),
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -483,7 +485,7 @@ internal object ChatScreen : Screen {
                                 decorationBox = { innerTextField ->
                                     if (text.isBlank()) {
                                         Text(
-                                            text = MainRes.string.chat_textfield_hint,
+                                            text = stringResource(Res.string.chat_textfield_hint),
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             modifier = Modifier.alpha(0.6f)

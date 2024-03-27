@@ -26,8 +26,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.ebfstudio.appgpt.common.MainRes
+import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.app_name
+import composeai.shared.generated.resources.welcome_button
+import composeai.shared.generated.resources.welcome_subtitle
+import composeai.shared.generated.resources.welcome_title
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import ui.components.appImagePath
 import ui.screens.chat.ChatScreen
 
@@ -75,7 +80,7 @@ internal object WelcomeScreen : Screen {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = MainRes.string.app_name,
+                    text = stringResource(Res.string.app_name),
                     style = MaterialTheme.typography.headlineSmall,
                 )
             }
@@ -83,14 +88,15 @@ internal object WelcomeScreen : Screen {
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = MainRes.string.welcome_title,
+                text = stringResource(Res.string.welcome_title),
                 style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = MainRes.string.welcome_subtitle,
+                text = stringResource(Res.string.welcome_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.outline,
@@ -107,7 +113,7 @@ internal object WelcomeScreen : Screen {
                     .height(48.dp),
             ) {
                 Text(
-                    text = MainRes.string.welcome_button,
+                    text = stringResource(Res.string.welcome_button),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
