@@ -4,11 +4,9 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.library)
-    // kotlin("native.cocoapods")
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.buildKonfig)
     id("app.cash.sqldelight") version "2.0.1" // TODO alias(libs.plugins.sqlDelight)
-    alias(libs.plugins.libres)
 }
 
 kotlin {
@@ -20,10 +18,6 @@ kotlin {
         }
     }
 
-//    iosX64()
-//    iosArm64()
-//    iosSimulatorArm64()
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -34,24 +28,6 @@ kotlin {
             isStatic = true
         }
     }
-
-//    cocoapods {
-//        version = "1.0.0"
-//        summary = "Some description for the Shared Module"
-//        homepage = "Link to the Shared Module homepage"
-//        ios.deploymentTarget = "14.1"
-//        podfile = project.file("../iosApp/Podfile")
-//        framework {
-//            baseName = "shared"
-//            isStatic = true
-//        }
-//        extraSpecAttributes["resources"] =
-//            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
-//
-//        pod("FirebaseAnalytics") {
-//            version = "~> 10.21"
-//        }
-//    }
 
     sourceSets {
         commonMain.dependencies {
@@ -70,9 +46,6 @@ kotlin {
 
             // Koin
             implementation(libs.koin.core)
-
-            // Resource
-            // implementation(libs.resources)
 
             // OpenAI
             implementation(libs.openai.client)
@@ -150,21 +123,24 @@ kotlin {
 
             // Ktor
             implementation(libs.ktor.client.darwin)
+
+            // Fix SQDelight bug
+            implementation(libs.stately.common)
+        }
+
+        targets.all {
+            compilations.all {
+                compilerOptions.configure {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
         }
     }
-}
-
-compose {
-    kotlinCompilerPlugin.set(libs.versions.kotlinComposeCompiler)
 }
 
 android {
     namespace = "com.ebfstudio.appgpt.common"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//    sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
-//    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
@@ -191,14 +167,6 @@ android {
 buildkonfig {
     packageName = "com.ebfstudio.appgpt.common"
 
-//    val props = Properties()
-//
-//    try {
-//        props.load(file("../local.properties").inputStream())
-//    } catch (e: Exception) {
-//        // keys are private and can not be committed to git
-//    }
-
     defaultConfigs {
         buildConfigField(
             STRING,
@@ -221,12 +189,6 @@ sqldelight {
             schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
         }
     }
-}
-
-// https://github.com/Skeptick/libres
-libres {
-    generatedClassName = "MainRes"
-    camelCaseNamesForAppleFramework = true
 }
 
 kotlin.sourceSets.all {

@@ -1,0 +1,32 @@
+<resources>
+
+    <string name="app_name">Compose AI</string>
+
+    <!-- WelcomeScreen -->
+    <string name="welcome_title">Commencez à discuter maintenant</string>
+    <string name="welcome_subtitle">Compose AI est un chatbot qui peut vous aider à trouver les meilleures réponses à vos questions.</string>
+    <string name="welcome_button">Commencer à discuter</string>
+
+    <!-- ChatScreen -->
+    <string name="chat_textfield_hint">Posez-moi une question...</string>
+    <string name="chat_button_new">Nouvelle discussion</string>
+    <string name="chat_title_empty">Discussion vide</string>
+
+    <!-- PremiumScreen -->
+    <string name="premium_title">Vous êtes un utilisateur premium 🎉</string>
+    <string name="premium_subtitle">Vous pouvez maintenant envoyer des messages illimités à l'IA.</string>
+    <string name="premium_button">Aller au chat</string>
+
+    <!-- BankScreen -->
+    <string name="bank_title">Continuer à discuter</string>
+    <string name="bank_subtitle">Regardez des publicités ou abonnez-vous à la version premium pour continuer à discuter.</string>
+    <string name="bank_card_ad_tokens">3 Jetons</string>
+    <string name="bank_card_ad_title">GRATUIT</string>
+    <string name="bank_card_ad_subtitle">Regardez une publicité pour obtenir 3 jetons</string>
+    <string name="bank_card_sub_monthly">Mensuel</string>
+    <string name="bank_card_sub_offer">50 % de réduction pour une durée limitée</string>
+    <string name="bank_card_sub_subtitle">Envoyez des messages illimités. Annulez à tout moment.</string>
+
+
+
+</resources>

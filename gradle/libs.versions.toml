@@ -3,32 +3,32 @@ accompanistSystemuicontroller = "0.34.0"
 activityCompose = "1.8.2"
 agp = "8.2.2"
 android-compileSdk = "34"
-billingKtx = "6.1.0"
+billingKtx = "6.2.0"
 buildkonfigGradlePlugin = "0.15.1"
 coil3 = "3.0.0-alpha06"
-compose = "1.6.0"
+compose = "1.6.1"
 coreKtx = "1.12.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
 desugar_jdk_libs = "2.0.4"
-firebaseBom = "32.7.3"
+firebaseBom = "32.8.0"
 firebaseCrashlyticsGradle = "2.9.9"
 googleServices = "4.4.1"
 imageLoader = "1.7.6"
 koin = "3.5.3"
-kotlin = "1.9.22"
-kotlinComposeCompiler = "1.5.8"
+kotlin = "1.9.23"
+kotlinComposeCompiler = "1.5.11"
 kotlinxDatetime = "0.5.0"
 ktor = "2.3.8"
-libresCompose = "1.2.2"
 markdown = "0.6.1"
 napier = "2.6.1"
 openaiClient = "3.7.0"
-playServicesAds = "22.6.0"
+playServicesAds = "23.0.0"
 resources = "0.4.0"
 reviewKtx = "2.0.1"
 settings = "1.1.1"
 sqlDelight = "2.0.1"
+statelyCommon = "2.0.6"
 uuid = "0.8.2"
 voyager = "1.1.0-alpha03"
 
@@ -52,7 +52,6 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
-gradle-plugin = { module = "io.github.skeptick.libres:gradle-plugin", version.ref = "libresCompose" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
@@ -60,7 +59,6 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-libres-compose = { module = "io.github.skeptick.libres:libres-compose", version.ref = "libresCompose" }
 markdown = { module = "org.jetbrains:markdown", version.ref = "markdown" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "settings" }
@@ -71,6 +69,7 @@ openai-client = { module = "com.aallam.openai:openai-client", version.ref = "ope
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 resources = { module = "com.goncalossilva:resources", version.ref = "resources" }
 review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
+stately-common = { module = "co.touchlab:stately-common", version.ref = "statelyCommon" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
@@ -84,4 +83,3 @@ jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 sqlDelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
-libres = { id = "io.github.skeptick.libres", version.ref = "libresCompose" }

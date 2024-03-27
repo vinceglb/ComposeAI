@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   version = "1.3">
+   <BuildAction>
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForRunning = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BF8CD5252BB42338000DF423"
+               BuildableName = "ComposeAI.app"
+               BlueprintName = "ComposeAI"
+               ReferencedContainer = "container:ComposeAI.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <LaunchAction
+      useCustomWorkingDirectory = "YES"
+      buildConfiguration = "Debug"
+      allowLocationSimulation = "YES"
+      customWorkingDirectory = "/Users/vincent/AndroidStudioProjects/ComposeAI">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BF8CD5252BB42338000DF423"
+            BuildableName = "ComposeAI.app"
+            BlueprintName = "ComposeAI"
+            ReferencedContainer = "container:ComposeAI.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+</Scheme>

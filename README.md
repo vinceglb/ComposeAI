@@ -37,8 +37,7 @@
 - 💡 [Koin](https://insert-koin.io/) for the dependency injection framework
 - 🗃️ [SQLDelight](https://github.com/cashapp/sqldelight) for native SQLite database
 - ⚙️ [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for saving simple key-value data
-- 🧑‍🎨 [ImageLoader](https://github.com/qdsfdhvh/compose-imageloader/tree/master) for displaying images from URL
-- 🌐 [Libres](https://github.com/Skeptick/libres) for resources generation
+- 🧑‍🎨 [Coil3](https://coil-kt.github.io/coil/upgrading_to_coil3/) for displaying images from URL
 - 🔊 [Napier](https://github.com/AAkira/Napier) for easy logging
 - 🔨 [BuildKonfig](https://github.com/yshrsmz/BuildKonfig) for BuildConfig for Kotlin Multiplatform Project
 - 🔥 Firebase [Analytics](https://firebase.google.com/docs/analytics) & [Crashlytics](https://firebase.google.com/docs/crashlytics) for usage and crash reporting

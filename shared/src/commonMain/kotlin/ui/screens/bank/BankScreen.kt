@@ -52,12 +52,23 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import com.ebfstudio.appgpt.common.MainRes
 import composeai.shared.generated.resources.Res
+import composeai.shared.generated.resources.bank_card_ad_subtitle
+import composeai.shared.generated.resources.bank_card_ad_title
+import composeai.shared.generated.resources.bank_card_ad_tokens
+import composeai.shared.generated.resources.bank_card_sub_monthly
+import composeai.shared.generated.resources.bank_card_sub_offer
+import composeai.shared.generated.resources.bank_card_sub_subtitle
+import composeai.shared.generated.resources.bank_subtitle
+import composeai.shared.generated.resources.bank_title
 import composeai.shared.generated.resources.ic_verified
 import composeai.shared.generated.resources.pattern
 import composeai.shared.generated.resources.pattern3
+import composeai.shared.generated.resources.premium_button
+import composeai.shared.generated.resources.premium_subtitle
+import composeai.shared.generated.resources.premium_title
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import ui.components.AnimatedCounter
 import ui.components.rememberAdsState
 import ui.components.rememberSubscriptionState
@@ -130,13 +141,13 @@ internal object BankScreen : Screen {
                     .clip(shape = MaterialTheme.shapes.medium)
             )
             Text(
-                text = MainRes.string.premium_title,
+                text = stringResource(Res.string.premium_title),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp)
             )
             Text(
-                text = MainRes.string.premium_subtitle,
+                text = stringResource(Res.string.premium_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -151,7 +162,7 @@ internal object BankScreen : Screen {
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = MainRes.string.premium_button)
+                Text(text = stringResource(Res.string.premium_button))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -188,13 +199,13 @@ internal object BankScreen : Screen {
                     .clip(shape = MaterialTheme.shapes.medium)
             )
             Text(
-                text = MainRes.string.bank_title,
+                text = stringResource(Res.string.bank_title),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp)
             )
             Text(
-                text = MainRes.string.bank_subtitle,
+                text = stringResource(Res.string.bank_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -280,20 +291,20 @@ internal object BankScreen : Screen {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = MainRes.string.bank_card_ad_tokens.uppercase(),
+                        text = stringResource(Res.string.bank_card_ad_tokens).uppercase(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         letterSpacing = 1.8.sp,
                     )
 
                     Text(
-                        text = MainRes.string.bank_card_ad_title.uppercase(),
+                        text = stringResource(Res.string.bank_card_ad_title).uppercase(),
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                     )
 
                     Text(
-                        text = MainRes.string.bank_card_ad_subtitle,
+                        text = stringResource(Res.string.bank_card_ad_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -358,7 +369,7 @@ internal object BankScreen : Screen {
 
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = MainRes.string.bank_card_sub_monthly.uppercase(),
+                            text = stringResource(Res.string.bank_card_sub_monthly).uppercase(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             letterSpacing = 1.8.sp,
@@ -378,7 +389,7 @@ internal object BankScreen : Screen {
                                 .padding(bottom = 8.dp)
                         ) {
                             Text(
-                                text = MainRes.string.bank_card_sub_offer,
+                                text = stringResource(Res.string.bank_card_sub_offer),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -386,7 +397,7 @@ internal object BankScreen : Screen {
                         }
 
                         Text(
-                            text = MainRes.string.bank_card_sub_subtitle,
+                            text = stringResource(Res.string.bank_card_sub_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
