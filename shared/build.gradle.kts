@@ -171,13 +171,13 @@ buildkonfig {
         buildConfigField(
             STRING,
             "OPENAI_API_KEY",
-            gradleLocalProperties(project.rootDir).getProperty("openai_api_key")
+            gradleLocalProperties(project.rootDir, providers).getProperty("openai_api_key")
         )
 
         buildConfigField(
             STRING,
             "ADMOB_REWARDED_AD_ID",
-            gradleLocalProperties(project.rootDir).getProperty("admob_rewarded_ad_id")
+            gradleLocalProperties(project.rootDir, providers).getProperty("admob_rewarded_ad_id")
         )
     }
 }
