@@ -10,6 +10,7 @@ import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
 import data.repository.PreferenceRepository
+import io.ktor.utils.io.core.String
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,6 +23,8 @@ import org.koin.dsl.module
 import ui.screens.bank.BankViewModel
 import ui.screens.chat.ChatScreenModel
 import ui.screens.welcome.WelcomeScreenModel
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
@@ -36,6 +39,7 @@ fun initKoin() {
     initKoin {  }
 }
 
+@OptIn(ExperimentalEncodingApi::class)
 val commonModule = module {
     // ScreenModels
     factoryOf(::AppScreenModel)
@@ -58,7 +62,7 @@ val commonModule = module {
 
     // Others
     factory { Dispatchers.Default }
-    single { OpenAI(BuildKonfig.OPENAI_API_KEY) }
+    single { OpenAI(String(Base64.decode(BuildKonfig.OPENAI_API_KEY))) }
     single {
         val factory: SettingsFactory = get()
         factory.createSettings()
