@@ -536,4 +536,3 @@ internal object ChatScreen : Screen {
         }
     }
 }
-

@@ -49,7 +49,7 @@ The app architecture is based on the latest guidelines from Google. You can take
 
 ## Gettings started
 
-Compose AI use the OpenAI API with GPT3.5-turbo the get the responses. We need to setup your own OpenAI API key before launching the app.
+Compose AI use the OpenAI API with gpt-4o-mini the get the responses. We need to setup your own OpenAI API key before launching the app.
 
 - Create your OpenAI developper account [here](https://platform.openai.com/)
 - Create a new API key [here](https://platform.openai.com/account/api-keys) or use an existing one

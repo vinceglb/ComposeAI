@@ -3,6 +3,7 @@ plugins {
     // alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.application)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.compose.compiler)
     // alias(libs.plugins.firebase.crashlytics)
     kotlin("android")
     // id("com.android.application")
@@ -32,8 +33,8 @@ android {
         applicationId = "com.ebfstudio.appgpt"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 26
-        versionName = "1.4.1"
+        versionCode = 27
+        versionName = "1.5.0"
     }
 
     buildFeatures {

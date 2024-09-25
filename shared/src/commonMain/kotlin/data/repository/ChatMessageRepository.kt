@@ -103,12 +103,12 @@ class ChatMessageRepository(
             .map(ChatMessageEntity::asModel)
 
         val request = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
+            model = ModelId("gpt-4o-mini"),
             messages = messages + instruction,
         )
 
         val response = openAI.chatCompletion(request)
-        response.choices.first().message?.content ?: "?"
+        response.choices.first().message.content ?: "?"
     }
 
     /**
@@ -137,7 +137,7 @@ class ChatMessageRepository(
 
         // Create request to OpenAI
         val request = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
+            model = ModelId("gpt-4o-mini"),
             messages = messagesToSend,
         )
 
