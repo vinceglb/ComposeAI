@@ -5,8 +5,10 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.buildKonfig)
-    id("app.cash.sqldelight") version "2.0.1" // TODO alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.sqlDelight)
+    // id("app.cash.sqldelight") version "2.0.1" // TODO alias(libs.plugins.sqlDelight)
 }
 
 kotlin {

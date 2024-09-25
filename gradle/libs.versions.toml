@@ -1,36 +1,35 @@
 [versions]
 accompanistSystemuicontroller = "0.34.0"
-activityCompose = "1.9.0"
-agp = "8.3.2"
+activityCompose = "1.9.2"
+agp = "8.6.1"
 android-compileSdk = "34"
-billingKtx = "6.2.1"
+billingKtx = "7.1.0"
 buildkonfigGradlePlugin = "0.15.1"
-coil3 = "3.0.0-alpha06"
-compose = "1.6.2"
-coreKtx = "1.13.0"
+coil3 = "3.0.0-alpha10"
+compose = "1.7.0-beta02"
+coreKtx = "1.13.1"
 coreSplashscreen = "1.0.1"
-datastorePreferences = "1.1.0"
-desugar_jdk_libs = "2.0.4"
-firebaseBom = "32.8.1"
-firebaseCrashlyticsGradle = "2.9.9"
-googleServices = "4.4.1"
+datastorePreferences = "1.1.1"
+desugar_jdk_libs = "2.1.2"
+firebaseBom = "33.3.0"
+firebaseCrashlyticsGradle = "3.0.2"
+googleServices = "4.4.2"
 imageLoader = "1.7.6"
-koin = "3.5.3"
-kotlin = "1.9.23"
+koin = "3.5.6"
+kotlin = "2.0.20"
 kotlinComposeCompiler = "1.5.11"
-kotlinxDatetime = "0.5.0"
-ktor = "2.3.8"
+kotlinxDatetime = "0.6.1"
+ktor = "2.3.12"
 markdown = "0.6.1"
 napier = "2.6.1"
-openaiClient = "3.7.0"
-playServicesAds = "23.0.0"
-resources = "0.4.0"
+openaiClient = "3.8.2"
+playServicesAds = "23.3.0"
 reviewKtx = "2.0.1"
 settings = "1.1.1"
-sqlDelight = "2.0.1"
+sqlDelight = "2.0.2"
 statelyCommon = "2.0.6"
-uuid = "0.8.2"
-voyager = "1.1.0-alpha03"
+uuid = "0.8.4"
+voyager = "1.1.0-beta02"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -39,7 +38,7 @@ android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = 
 billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
 coil3-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
-coil3-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil3" }
+coil3-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil3" }
 coil3-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil3" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -67,7 +66,6 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClient" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
-resources = { module = "com.goncalossilva:resources", version.ref = "resources" }
 review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "statelyCommon" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
@@ -79,7 +77,8 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfigGradlePlugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-sqlDelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
