@@ -103,7 +103,7 @@ class ChatMessageRepository(
             .map(ChatMessageEntity::asModel)
 
         val request = ChatCompletionRequest(
-            model = ModelId("gpt-4o-mini"),
+            model = ModelId("gpt-4.5-preview"),
             messages = messages + instruction,
         )
 

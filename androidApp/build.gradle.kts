@@ -5,11 +5,12 @@ plugins {
     alias(libs.plugins.googleServices)
     alias(libs.plugins.compose.compiler)
     // alias(libs.plugins.firebase.crashlytics)
-    kotlin("android")
+    // kotlin("android")
     // id("com.android.application")
     // id("org.jetbrains.compose")
     // id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    alias(libs.plugins.kotlin.android)
 }
 
 //kotlin {
@@ -41,9 +42,9 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
+//    }
 
     compileOptions {
         // isCoreLibraryDesugaringEnabled = true
@@ -77,6 +78,9 @@ android {
             )
         }
     }
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
 }
 
 dependencies {
@@ -84,6 +88,7 @@ dependencies {
 
     // Android
     implementation(libs.activity.compose)
+    implementation(libs.core.ktx)
 
     // Java 8+ API desugaring support
     // - A subset of java.time

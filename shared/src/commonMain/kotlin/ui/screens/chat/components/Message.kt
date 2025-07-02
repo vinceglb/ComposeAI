@@ -161,6 +161,7 @@ fun MessageLine(
                         .border(2.dp, borderColor, MaterialTheme.shapes.small)
                 )
             } else {
+                println("https://api.dicebear.com/6.x/thumbs/svg?seed=${conversationId}")
                 ImageUrl(
                     url = "https://api.dicebear.com/6.x/thumbs/svg?seed=${conversationId}",
                     contentDescription = null,

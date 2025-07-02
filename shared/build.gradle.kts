@@ -1,5 +1,6 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -13,10 +14,8 @@ plugins {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -129,14 +128,13 @@ kotlin {
             // Fix SQDelight bug
             implementation(libs.stately.common)
         }
+    }
 
-        targets.all {
-            compilations.all {
-                compilerOptions.configure {
-                    freeCompilerArgs.add("-Xexpect-actual-classes")
-                }
-            }
-        }
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xexpect-actual-classes",
+            "-Xopt-in=kotlin.time.ExperimentalTime",
+        )
     }
 }
 
@@ -152,18 +150,18 @@ android {
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
+//    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlin {
-        jvmToolchain(17)
-    }
+//    kotlin {
+//        jvmToolchain(17)
+//    }
 }
 
 buildkonfig {

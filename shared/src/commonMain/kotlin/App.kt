@@ -6,6 +6,7 @@ import analytics.LocalAnalyticsHelper
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
@@ -46,19 +47,21 @@ fun App(
             setup()
 
             Surface {
-                Crossfade(screen) { screen ->
-                    when (screen) {
-                        null -> Box(modifier = Modifier.fillMaxSize())
-                        else -> BottomSheetNavigator(
-                            scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.33f),
-                            sheetShape = MaterialTheme.shapes.large.copy(
-                                bottomStart = CornerSize(0.dp),
-                                bottomEnd = CornerSize(0.dp)
-                            ),
-                            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-                            sheetContentColor = MaterialTheme.colorScheme.onSurface,
-                        ) {
-                            Navigator(screen = screen)
+                Box(modifier = Modifier.systemBarsPadding()) {
+                    Crossfade(screen) { screen ->
+                        when (screen) {
+                            null -> Box(modifier = Modifier.fillMaxSize())
+                            else -> BottomSheetNavigator(
+                                scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.33f),
+                                sheetShape = MaterialTheme.shapes.large.copy(
+                                    bottomStart = CornerSize(0.dp),
+                                    bottomEnd = CornerSize(0.dp)
+                                ),
+                                sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+                                sheetContentColor = MaterialTheme.colorScheme.onSurface,
+                            ) {
+                                Navigator(screen = screen)
+                            }
                         }
                     }
                 }
