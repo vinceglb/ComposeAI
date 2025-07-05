@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,7 +51,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import composeai.shared.generated.resources.Res
 import composeai.shared.generated.resources.bank_card_ad_subtitle
@@ -77,7 +78,7 @@ internal object BankScreen : Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: BankViewModel = getScreenModel()
+        val screenModel: BankViewModel = koinScreenModel()
         val uiState by screenModel.uiState.collectAsState()
 
         // Clear focus when the screen is shown
@@ -120,7 +121,9 @@ internal object BankScreen : Screen {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(scrollState),
+            modifier = Modifier
+                .navigationBarsPadding()
+                .verticalScroll(scrollState),
         ) {
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant,
@@ -178,7 +181,9 @@ internal object BankScreen : Screen {
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(scrollState),
+            modifier = Modifier
+                .navigationBarsPadding()
+                .verticalScroll(scrollState),
         ) {
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant,
