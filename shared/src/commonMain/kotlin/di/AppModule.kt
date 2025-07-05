@@ -2,10 +2,11 @@ package di
 
 import AppScreenModel
 import com.aallam.openai.client.OpenAI
-import com.ebfstudio.appgpt.common.BuildKonfig
+import com.ebfstudio.appgpt.common.BuildKonfigCommon
 import com.ebfstudio.appgpt.common.Database
 import data.local.PreferenceLocalDataSource
 import data.local.SettingsFactory
+import data.repository.BillingRepository
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
@@ -52,6 +53,7 @@ val commonModule = module {
     singleOf(::ChatMessageRepository)
     singleOf(::PreferenceRepository)
     singleOf(::CoinRepository)
+    singleOf(::BillingRepository)
 
     // DataSources
     factoryOf(::PreferenceLocalDataSource)
@@ -62,7 +64,7 @@ val commonModule = module {
 
     // Others
     factory { Dispatchers.Default }
-    single { OpenAI(String(Base64.decode(BuildKonfig.OPENAI_API_KEY))) }
+    single { OpenAI(String(Base64.decode(BuildKonfigCommon.OPENAI_API_KEY))) }
     single {
         val factory: SettingsFactory = get()
         factory.createSettings()

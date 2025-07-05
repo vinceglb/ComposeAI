@@ -109,12 +109,16 @@ internal object ChatScreen : Screen {
             onComplete = screenModel::onInAppReviewComplete,
             onError = screenModel::onInAppReviewError,
         )
-        LaunchedEffect(screenUiState.actionShowInAppReview) {
-            if (screenUiState.actionShowInAppReview) {
-                inAppReviewState.show()
-                screenModel.onInAppReviewShown()
-            }
+
+        LaunchedEffect(Unit) {
+            inAppReviewState.show()
         }
+
+//        LaunchedEffect(screenUiState.actionShowInAppReview) {
+//            if (screenUiState.actionShowInAppReview) {
+//                screenModel.onInAppReviewShown()
+//            }
+//        }
 
         ChatScreen(
             onSend = screenModel::onSendMessage,
