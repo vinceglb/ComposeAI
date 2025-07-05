@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.sqlDelight)
-    // id("app.cash.sqldelight") version "2.0.1" // TODO alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -74,6 +73,10 @@ kotlin {
             implementation(libs.coil3.compose)
             implementation(libs.coil3.svg)
             implementation(libs.coil3.network.ktor)
+
+            // RevenueCat
+            api(libs.purchases.core)
+            implementation( libs.purchases.ui)
         }
 
         androidMain.dependencies {
@@ -128,6 +131,14 @@ kotlin {
             // Fix SQDelight bug
             implementation(libs.stately.common)
         }
+
+        // RevenueCat setup
+        // https://www.revenuecat.com/docs/getting-started/installation/kotlin-multiplatform#opt-in-to-experimentalforeignapi
+        named { it.lowercase().startsWith("ios") }.configureEach {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
+        }
     }
 
     compilerOptions {
@@ -166,6 +177,7 @@ android {
 
 buildkonfig {
     packageName = "com.ebfstudio.appgpt.common"
+    exposeObjectWithName = "BuildKonfigCommon"
 
     defaultConfigs {
         buildConfigField(
@@ -178,6 +190,12 @@ buildkonfig {
             STRING,
             "ADMOB_REWARDED_AD_ID",
             gradleLocalProperties(project.rootDir, providers).getProperty("admob_rewarded_ad_id")
+        )
+
+        buildConfigField(
+            STRING,
+            "REVENUECAT_API_KEY",
+            gradleLocalProperties(project.rootDir, providers).getProperty("revenuecat_api_key")
         )
     }
 }

@@ -39,6 +39,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +56,9 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import composeai.shared.generated.resources.Res
 import composeai.shared.generated.resources.bank_card_ad_subtitle
 import composeai.shared.generated.resources.bank_card_ad_title
@@ -68,6 +74,7 @@ import composeai.shared.generated.resources.pattern3
 import composeai.shared.generated.resources.premium_button
 import composeai.shared.generated.resources.premium_subtitle
 import composeai.shared.generated.resources.premium_title
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.components.AnimatedCounter
@@ -100,6 +107,7 @@ internal object BankScreen : Screen {
                         )
                     }
                 }
+
                 is BankUiState.Success -> {
                     if (state.isSubToUnlimited) {
                         PremiumScreen()
@@ -349,8 +357,33 @@ internal object BankScreen : Screen {
             )
         )
 
+        fun launchBillingFlow() {
+            Purchases.sharedInstance.getOfferings(
+                onError = {
+                    Napier.e { "Failed to fetch offerings: $it" }
+                },
+                onSuccess = { offerings ->
+                    offerings.current?.availablePackages?.takeUnless { it.isEmpty() }
+                        ?.let { packages ->
+                            Napier.d { "Available offerings: $packages" }
+                        }
+                }
+            )
+        }
+
+        var showPaywall by remember { mutableStateOf(false) }
+
+        if (showPaywall) {
+            val options = remember {
+                PaywallOptions(dismissRequest = { showPaywall = false }) {
+                    shouldDisplayDismissButton = true
+                }
+            }
+            Paywall(options)
+        }
+
         OutlinedCard(
-            onClick = subscriptionState::launchBillingFlow,
+            onClick = { showPaywall = true },
             enabled = uiState.unlimitedSub != null,
             border = BorderStroke(borderSize, borderColor),
             modifier = Modifier

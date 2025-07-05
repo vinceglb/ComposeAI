@@ -1,34 +1,14 @@
 plugins {
-    // kotlin("multiplatform")
-    // alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.application)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.compose.compiler)
-    // alias(libs.plugins.firebase.crashlytics)
-    // kotlin("android")
-    // id("com.android.application")
-    // id("org.jetbrains.compose")
-    // id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     alias(libs.plugins.kotlin.android)
 }
 
-//kotlin {
-//    android()
-//    sourceSets {
-//        val androidMain by getting {
-//            dependencies {
-//                implementation(project(":shared"))
-//            }
-//        }
-//    }
-//}
-
 android {
     namespace = "com.ebfstudio.appgpt"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    // sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
     defaultConfig {
         applicationId = "com.ebfstudio.appgpt"
@@ -41,10 +21,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
-//    }
 
     compileOptions {
         // isCoreLibraryDesugaringEnabled = true
@@ -78,9 +54,6 @@ android {
             )
         }
     }
-//    kotlinOptions {
-//        jvmTarget = "17"
-//    }
 }
 
 dependencies {

@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.ebfstudio.appgpt.common.BuildConfig
-import com.ebfstudio.appgpt.common.BuildKonfig
+import com.ebfstudio.appgpt.common.BuildKonfigCommon
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -116,7 +116,7 @@ actual class AdsState(
     companion object {
         private val adId = when (BuildConfig.DEBUG) {
             true -> "ca-app-pub-3940256099942544/5224354917"
-            else -> BuildKonfig.ADMOB_REWARDED_AD_ID
+            else -> BuildKonfigCommon.ADMOB_REWARDED_AD_ID
         }
     }
 }
