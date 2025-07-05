@@ -6,6 +6,7 @@ import com.ebfstudio.appgpt.common.BuildKonfigCommon
 import com.ebfstudio.appgpt.common.Database
 import data.local.PreferenceLocalDataSource
 import data.local.SettingsFactory
+import data.repository.BillingRepository
 import data.repository.ChatMessageRepository
 import data.repository.ChatRepository
 import data.repository.CoinRepository
@@ -52,6 +53,7 @@ val commonModule = module {
     singleOf(::ChatMessageRepository)
     singleOf(::PreferenceRepository)
     singleOf(::CoinRepository)
+    singleOf(::BillingRepository)
 
     // DataSources
     factoryOf(::PreferenceLocalDataSource)

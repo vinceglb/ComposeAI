@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import model.AppProduct
 
 class BankViewModel(
     billingRepository: BillingRepository,
@@ -18,12 +17,10 @@ class BankViewModel(
 
     val uiState: StateFlow<BankUiState> = combine(
         coinRepository.coins(),
-        billingRepository.unlimitedSubProduct,
         billingRepository.isSubToUnlimited,
-    ) { coins, unlimitedSub, isSubToUnlimited ->
+    ) { coins, isSubToUnlimited ->
         BankUiState.Success(
             coins = coins,
-            unlimitedSub = unlimitedSub,
             isSubToUnlimited = isSubToUnlimited,
         )
     }.stateIn(screenModelScope, SharingStarted.WhileSubscribed(5_000), BankUiState.Loading)
@@ -41,7 +38,6 @@ sealed class BankUiState {
 
     data class Success(
         val coins: Int = 0,
-        val unlimitedSub: AppProduct? = null,
         val isSubToUnlimited: Boolean = false,
     ) : BankUiState()
 }

@@ -111,9 +111,6 @@ kotlin {
             // AdMob
             api(libs.play.services.ads)
 
-            // Billing
-            implementation(libs.billing.ktx)
-
             // In-App Review
             implementation(libs.review.ktx)
 

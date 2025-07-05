@@ -57,6 +57,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
 import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import composeai.shared.generated.resources.Res
@@ -79,7 +80,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.components.AnimatedCounter
 import ui.components.rememberAdsState
-import ui.components.rememberSubscriptionState
 
 internal object BankScreen : Screen {
 
@@ -236,7 +236,7 @@ internal object BankScreen : Screen {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            SubscriptionCard(uiState = uiState)
+            SubscriptionCard()
 
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -327,9 +327,7 @@ internal object BankScreen : Screen {
     }
 
     @Composable
-    private fun SubscriptionCard(uiState: BankUiState.Success) {
-        val subscriptionState = rememberSubscriptionState()
-
+    private fun SubscriptionCard() {
         val infiniteTransition = rememberInfiniteTransition()
         val borderColor by infiniteTransition.animateColor(
             initialValue = MaterialTheme.colorScheme.surfaceVariant,
@@ -357,16 +355,34 @@ internal object BankScreen : Screen {
             )
         )
 
-        fun launchBillingFlow() {
+        var unlimitedPackage by remember { mutableStateOf<Package?>(null) }
+
+        LaunchedEffect(Unit) {
             Purchases.sharedInstance.getOfferings(
-                onError = {
-                    Napier.e { "Failed to fetch offerings: $it" }
-                },
+                onError = { Napier.e { "Failed to fetch offerings: $it" } },
                 onSuccess = { offerings ->
                     offerings.current?.availablePackages?.takeUnless { it.isEmpty() }
                         ?.let { packages ->
-                            Napier.d { "Available offerings: $packages" }
+                            unlimitedPackage = packages.firstOrNull()
                         }
+                }
+            )
+        }
+
+        fun launchBillingFlow() {
+            val packageToPurchase = unlimitedPackage ?: run {
+                Napier.e { "No available package to purchase." }
+                return
+            }
+
+            Purchases.sharedInstance.purchase(
+                packageToPurchase = packageToPurchase,
+                onError = { error, userCancelled -> Napier.e { "Failed to launch billing flow: $error, userCancelled: $userCancelled" } },
+                onSuccess = { storeTransaction, customerInfo ->
+                    Napier.d { "Billing flow launched successfully for package. StoreTransaction = $storeTransaction, CustomerInfo = $customerInfo" }
+                    if (customerInfo.entitlements["unlimited"]?.isActive == true) {
+                        Napier.d { "User has an active unlimited subscription." }
+                    }
                 }
             )
         }
@@ -383,8 +399,9 @@ internal object BankScreen : Screen {
         }
 
         OutlinedCard(
-            onClick = { showPaywall = true },
-            enabled = uiState.unlimitedSub != null,
+            onClick = ::launchBillingFlow,
+            enabled = unlimitedPackage != null,
+            // enabled = uiState.unlimitedSub != null,
             border = BorderStroke(borderSize, borderColor),
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -414,8 +431,7 @@ internal object BankScreen : Screen {
                         )
 
                         Text(
-                            text = uiState.unlimitedSub?.offers?.firstOrNull()?.pricing?.firstOrNull()?.formattedPrice
-                                ?: "-",
+                            text = unlimitedPackage?.storeProduct?.price?.formatted ?: "-",
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                         )
