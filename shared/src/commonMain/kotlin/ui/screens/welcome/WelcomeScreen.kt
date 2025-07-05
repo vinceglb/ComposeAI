@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import composeai.shared.generated.resources.Res
@@ -41,7 +42,7 @@ internal object WelcomeScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel: WelcomeScreenModel = getScreenModel()
+        val screenModel: WelcomeScreenModel = koinScreenModel()
         val uiState = screenModel.uiState
 
         LaunchedEffect(uiState.doNavigateToChat) {
@@ -110,6 +111,7 @@ internal object WelcomeScreen : Screen {
                 onClick = onNavigateToChatScreen,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding()
                     .height(48.dp),
             ) {
                 Text(
@@ -118,7 +120,7 @@ internal object WelcomeScreen : Screen {
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+             Spacer(modifier = Modifier.height(40.dp))
         }
 
         TrackScreenViewEvent(screenName = "Welcome")

@@ -47,21 +47,19 @@ fun App(
             setup()
 
             Surface {
-                Box(modifier = Modifier.systemBarsPadding()) {
-                    Crossfade(screen) { screen ->
-                        when (screen) {
-                            null -> Box(modifier = Modifier.fillMaxSize())
-                            else -> BottomSheetNavigator(
-                                scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.33f),
-                                sheetShape = MaterialTheme.shapes.large.copy(
-                                    bottomStart = CornerSize(0.dp),
-                                    bottomEnd = CornerSize(0.dp)
-                                ),
-                                sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-                                sheetContentColor = MaterialTheme.colorScheme.onSurface,
-                            ) {
-                                Navigator(screen = screen)
-                            }
+                Crossfade(screen) { screen ->
+                    when (screen) {
+                        null -> Box(modifier = Modifier.fillMaxSize())
+                        else -> BottomSheetNavigator(
+                            scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.33f),
+                            sheetShape = MaterialTheme.shapes.large.copy(
+                                bottomStart = CornerSize(0.dp),
+                                bottomEnd = CornerSize(0.dp)
+                            ),
+                            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+                            sheetContentColor = MaterialTheme.colorScheme.onSurface,
+                        ) {
+                            Navigator(screen = screen)
                         }
                     }
                 }

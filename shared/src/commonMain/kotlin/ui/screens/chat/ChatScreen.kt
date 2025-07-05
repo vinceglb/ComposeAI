@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -73,7 +75,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import composeai.shared.generated.resources.Res
 import composeai.shared.generated.resources.app_name
@@ -97,7 +99,7 @@ internal object ChatScreen : Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: ChatScreenModel = getScreenModel { parametersOf(null as String?) }
+        val screenModel: ChatScreenModel = koinScreenModel { parametersOf(null as String?) }
         val currentChatUiState by screenModel.currentChatUiState.collectAsState()
         val screenUiState by screenModel.screenUiState.collectAsState()
         val chatsUiState by screenModel.chatsUiState.collectAsState()
@@ -255,6 +257,9 @@ internal object ChatScreen : Screen {
                     focusRequester = focusRequester,
                     onTextChange = onTextChange,
                     onSend = onSend,
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding()
                 )
             },
             modifier = modifier,
@@ -387,6 +392,7 @@ internal object ChatScreen : Screen {
         focusRequester: FocusRequester,
         onTextChange: (String) -> Unit,
         onSend: () -> Unit,
+        modifier: Modifier = Modifier,
     ) {
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
@@ -411,7 +417,7 @@ internal object ChatScreen : Screen {
             }
         }
 
-        Surface {
+        Surface(modifier) {
             Column {
                 AnimatedVisibility(
                     visible = isLoading,
